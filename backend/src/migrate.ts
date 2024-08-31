@@ -7,7 +7,9 @@ fs.readFile("dist/database/init.sql", "utf8", function (err, data) {
   if (err) throw err;
   db.query(data, function (err, result) {
     if (err) throw err;
-    console.log("Database migration completed!");
+    if (result) {
+      console.log("Database migration completed!");
+    }
     exit();
   });
 });

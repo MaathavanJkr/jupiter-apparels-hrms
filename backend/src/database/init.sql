@@ -1,43 +1,28 @@
-DROP TABLE IF EXISTS organizations;
-
-DROP TABLE IF EXISTS branches;
-
-DROP TABLE IF EXISTS departments;
-
-DROP TABLE IF EXISTS roles;
-
-DROP TABLE IF EXISTS permissions;
-
-DROP TABLE IF EXISTS role_permissions;
-
-DROP TABLE IF EXISTS job_titles;
-
-DROP TABLE IF EXISTS pay_grades;
-
-DROP TABLE IF EXISTS contract_statuses;
-
-DROP TABLE IF EXISTS employees;
-
-DROP TABLE IF EXISTS employee_dependents;
-
-DROP TABLE IF EXISTS emergency_contacts;
-
-DROP TABLE IF EXISTS leave_applications;
-
-DROP TABLE IF EXISTS leaves;
-
-DROP TABLE IF EXISTS leave_balances;
-
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS leave_balances;
+DROP TABLE IF EXISTS leaves;
+DROP TABLE IF EXISTS leave_applications;
+DROP TABLE IF EXISTS emergency_contacts;
+DROP TABLE IF EXISTS employee_dependents;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS contract_statuses;
+DROP TABLE IF EXISTS pay_grades;
+DROP TABLE IF EXISTS job_titles;
+DROP TABLE IF EXISTS role_permissions;
+DROP TABLE IF EXISTS permissions;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS departments;
+DROP TABLE IF EXISTS branches;
+DROP TABLE IF EXISTS organizations;
 
 CREATE TABLE
     organizations (
-        org_id INT PRIMARY KEY,
-        name VARCHAR(30),
-        address VARCHAR(80),
-        reg_no INT
+        org_id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(30) NOT NULL,
+        address VARCHAR(80) NOT NULL,
+        reg_no INT NOT NULL
     );
-
+-- Need to Update the queries --
 CREATE TABLE
     branches (
         branch_id INT PRIMARY KEY,
