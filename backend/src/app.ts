@@ -1,6 +1,10 @@
 // src/app.ts
 import express from 'express';
 import organizationRoutes from './routes/organization.route';
+import userRoutes from './routes/user.route';
+import emergencyContactRoutes from './routes/emergencyContact.route';
+import employeeDependentRoutes from './routes/dependent.route';
+import employmentStatusRoutes from './routes/employmentStatus.route';
 
 const app = express();
 
@@ -9,5 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 
 //Settiing up Routes
 app.use('/organization', organizationRoutes);
+app.use('/user',userRoutes);
+app.use('/emergencycontact',emergencyContactRoutes);
+app.use('/dependent',employeeDependentRoutes);
+app.use('/employmentstatus',employmentStatusRoutes);
+
 
 export default app;
