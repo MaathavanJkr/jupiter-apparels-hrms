@@ -13,7 +13,7 @@ export const createEmploymentStatus = async (req: Request, res: Response) => {
         const [result] = await db
         .promise()
         .query(
-            "INSERT INTO employment_status (status) VALUES (?)",
+            "INSERT INTO employment_statuses (status) VALUES (?)",
             [status]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "Employment Status created successfully"});
@@ -26,7 +26,7 @@ export const getEmploymentStatuses = async (req: Request, res: Response) => {
     try {
         const [statuses] = await db
         .promise()
-        .query<EmploymentStatus[]>("SELECT * FROM employment_status");
+        .query<EmploymentStatus[]>("SELECT * FROM employment_statuses");
         res.status(200).json(statuses);
     } catch (error) {
         res.status(500).json({error: "Database Query failed", message: error});
@@ -39,7 +39,7 @@ export const getEmploymentStatusByID = async (req:Request, res:Response) => {
     try {
         const [statuses] = await db
         .promise()
-        .query<EmploymentStatus[]>("SELECT * FROM employment_status WHERE  employment_status_id = ?", [id]);
+        .query<EmploymentStatus[]>("SELECT * FROM employment_statuses WHERE  employment_statuses_id = ?", [id]);
         if (statuses.length === 0) {
             res.status(404).json({ message: `Employment Status with id: ${id} not found` });
         } else {
@@ -60,7 +60,7 @@ export const updateEmploymentStatus = async (req: Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "UPDATE employment_status SET status=? WHERE  employment_status_id = ?",
+            "UPDATE employment_statuses SET status=? WHERE  employment_statuses_id = ?",
             [status, id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
@@ -79,7 +79,7 @@ export const deleteEmploymentStatus = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "DELETE FROM employment_status where employment_status_id = ?", [id]
+            "DELETE FROM employment_statuses where employment_statuses_id = ?", [id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
             res.status(200).json({
