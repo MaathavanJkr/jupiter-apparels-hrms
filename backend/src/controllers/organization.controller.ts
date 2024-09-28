@@ -10,7 +10,7 @@ export const createOrganization = async (req: Request, res: Response) => {
         const [result] = await db
           .promise()
           .query(
-            "INSERT INTO organizations (name, address, reg_no) VALUES (?, ?, ?)",
+            "INSERT INTO Organization (name, address, reg_no) VALUES (?, ?, ?)",
             [name, address, reg_no]
           );
         res.status(201).json({ id: (result as ResultSetHeader).insertId, message: "Organization created" });
@@ -23,7 +23,7 @@ export const getOrganizations = async (req: Request, res: Response) => {
   try {
     const [organizations] = await db
       .promise()
-      .query<Organization[]>("SELECT * FROM organizations");
+      .query<Organization[]>("SELECT * FROM Organization");
     res.status(200).json(organizations);
   } catch (error) {
     res.status(500).json({ error: "Database query failed", message: error });
@@ -35,7 +35,7 @@ export const getOrganizationByID = async (req: Request, res: Response) => {
     try {
         const [organizations] = await db
           .promise()
-          .query<Organization[]>("SELECT * FROM organizations WHERE id = ?", id);
+          .query<Organization[]>("SELECT * FROM Organization WHERE id = ?", id);
 
         res.status(200).json(organizations[0]);
       } catch (error) {
@@ -50,7 +50,7 @@ export const updateOrganization = async (req: Request, res: Response) => {
         await db
           .promise()
           .query(
-            "UPDATE organizations SET name = ?, address = ?, reg_no = ? WHERE id = ?",
+            "UPDATE Organization SET name = ?, address = ?, reg_no = ? WHERE id = ?",
             [name, address, reg_no, id]
           );
         res.status(200).json({ message: "Organization updated" });
@@ -65,7 +65,7 @@ export const deleteOrganization = async (req: Request, res: Response) => {
     try {
         const [result] = await db
           .promise()
-          .query("DELETE FROM organizations WHERE id = ?", id);
+          .query("DELETE FROM Organization WHERE id = ?", id);
         res.status(200).json({ id: result, message: `Organization with id: ${id} deleted` });
       } catch (error) {
         res.status(500).json({ error: "Database query failed", message: error });
