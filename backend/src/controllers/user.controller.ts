@@ -17,7 +17,7 @@ export const createUser = async (req: Request, res: Response) => {
         const [result] = await db
         .promise()
         .query (
-            "INSERT INTO users (employee_id, role, username, password) VALUES(?,?,?,?)",
+            "INSERT INTO User (employee_id, role, username, password) VALUES(?,?,?,?)",
             [employee_id, role, username, hashedPassword]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "User created successfully"});
@@ -30,7 +30,7 @@ export const getUsers = async (req: Request, res: Response) => {
     try {
         const [users] = await db
         .promise()
-        .query<User[]>("SELECT * FROM users");
+        .query<User[]>("SELECT * FROM User");
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({error: "Database Query failed", message: error});
@@ -43,7 +43,7 @@ export const getUserByID = async (req:Request, res:Response) => {
     try {
         const [users] = await db
         .promise()
-        .query<User[]>("SELECT * FROM users WHERE user_id = ?", [id]);
+        .query<User[]>("SELECT * FROM User WHERE user_id = ?", [id]);
         if (users.length === 0) {
             res.status(404).json({ message: `User with id: ${id} not found` });
         } else {
@@ -66,7 +66,7 @@ export const updateUser = async (req: Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "UPDATE users SET role=?, username=?, password=? WHERE user_id = ?",
+            "UPDATE User SET role=?, username=?, password=? WHERE user_id = ?",
             [role, username, hashedPassword??password, id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
@@ -85,7 +85,7 @@ export const deleteUser = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "DELETE FROM users where user_id = ?", [id]
+            "DELETE FROM User where user_id = ?", [id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
             res.status(200).json({
