@@ -17,7 +17,7 @@ export const createUser = async (req: Request, res: Response) => {
         const [result] = await db
         .promise()
         .query (
-            "INSERT INTO User (employee_id, role, username, password) VALUES(?,?,?,?)",
+            "INSERT INTO User (user_id, employee_id, role, username, password) VALUES(UUID(),?,?,?,?)",
             [employee_id, role, username, hashedPassword]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "User created successfully"});

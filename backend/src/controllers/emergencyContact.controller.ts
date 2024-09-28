@@ -13,7 +13,7 @@ export const createEmergencyContact = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "INSERT INTO Emergency_Contact (employee_id, name, relationship, contact_number, address) VALUES (?,?,?,?,?)",
+            "INSERT INTO Emergency_Contact (emergency_id,employee_id, name, relationship, contact_number, address) VALUES (UUID(),?,?,?,?,?)",
             [employee_id, name, relationship, contact_number, address]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "Emergency Contact created successfully"});

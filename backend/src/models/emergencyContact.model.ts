@@ -1,7 +1,7 @@
 import { RowDataPacket } from "mysql2";
 
 export interface EmergencyContact extends RowDataPacket {
-    emergency_id: number,
+    emergency_id: string,
     employee_id: number,
     name: string,
     relationship: string,

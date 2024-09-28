@@ -3,21 +3,21 @@ import db from "../database/database";
 import { EmployeeDependent } from "../models/dependent.model";
 import { ResultSetHeader } from "mysql2";
 
+
 export const createEmployeeDependent = async (req:Request, res:Response) => {
     const {employee_id, name, relationship_to_employee, birth_date} = req.body;
     if (!employee_id || !name || !relationship_to_employee || !birth_date) {
         return res.status(400).json({ error: "Missing required fields" });
     }
     
-
     try {
-        const [result] = await db
+        await db
         .promise()
         .query(
-            "INSERT INTO Employee_Dependent (employee_id, name, relationship_to_employee, birth_date) VALUES (?,?,?,?)",
+            "INSERT INTO Employee_Dependent (dependent_id,employee_id, name, relationship_to_employee, birth_date) VALUES (UUID(),?,?,?,?)",
             [employee_id, name, relationship_to_employee, birth_date]
         );
-        res.status(201).json({id: (result as ResultSetHeader).insertId, message: "Employee Dependent created successfully"});
+        res.status(201).json({message: "Employee Dependent created successfully"});
     } catch (error) {
         res.status(500).json({error: "Database Query Failed", message: error});
     }

@@ -13,7 +13,7 @@ export const createEmploymentStatus = async (req: Request, res: Response) => {
         const [result] = await db
         .promise()
         .query(
-            "INSERT INTO Employment_Status (status) VALUES (?)",
+            "INSERT INTO Employment_Status (employment_status_id,status) VALUES (UUID(),?)",
             [status]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "Employment Status created successfully"});
