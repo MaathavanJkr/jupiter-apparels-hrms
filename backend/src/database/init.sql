@@ -93,6 +93,7 @@ CREATE TABLE
         marital_status VARCHAR(10),
         age INT,
         address VARCHAR(80),
+        contact_number VARCHAR(10),
         email VARCHAR(30),
         nic VARCHAR(20),
         job_title_id INT,
