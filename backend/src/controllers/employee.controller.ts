@@ -6,14 +6,14 @@ import { ResultSetHeader } from "mysql2";
 
 export const createEmployee = async (req: Request, res: Response) => {
     const { department_id,branch_id,supervisor_id,first_name,last_name,birthday,
-        gender,marital_status,address,email,NIC,
+        gender,marital_status,address,contact_number,email,NIC,
         job_title_id,pay_grade_id,employee_status_id } = req.body;
     try {
         const [result] = await db
             .promise()
             .query(
-                "INSERT INTO employees (department_id,branch_id,supervisor_id,first_name,last_name,birthday,gender,marital_status,address,email,NIC,job_title_id,pay_grade_id,employee_status_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,? , ?, )",
-                [department_id, branch_id, supervisor_id, first_name, last_name, birthday, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employee_status_id]
+                "INSERT INTO employees (department_id,branch_id,supervisor_id,first_name,last_name,birthday,gender,marital_status,address,contact_number,email,NIC,job_title_id,pay_grade_id,employee_status_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,? , ?, )",
+                [department_id, branch_id, supervisor_id, first_name, last_name, birthday, gender, marital_status, address, contact_number,email, NIC, job_title_id, pay_grade_id, employee_status_id]
             );
         res.status(201).json({ id: (result as ResultSetHeader).insertId, message: "Employee created" });
     } catch (error) {
@@ -54,8 +54,8 @@ export const updateEmployee = async (req: Request, res: Response) => {
         await db
             .promise()
             .query(
-                "UPDATE employees SET department_id = ?, branch_id = ?, supervisor_id = ?, first_name = ?, last_name = ?, birthday = ?, gender = ?,marital_status = ?, address = ?, email = ?, NIC = ?, job_title_id = ?, pay_grade_id = ?,employee_status_id = ?  WHERE id = ?",
-                [department_id,branch_id,supervisor_id,first_name,last_name,birthday,gender,marital_status,address,email,NIC,job_title_id,pay_grade_id,employee_status_id, id]
+                "UPDATE employees SET department_id = ?, branch_id = ?, supervisor_id = ?, first_name = ?, last_name = ?, birthday = ?, gender = ?,marital_status = ?, address = ?, contact_number = ?,email = ?, NIC = ?, job_title_id = ?, pay_grade_id = ?,employee_status_id = ?  WHERE id = ?",
+                [department_id,branch_id,supervisor_id,first_name,last_name,birthday,gender,marital_status,address,contact_number,email,NIC,job_title_id,pay_grade_id,employee_status_id, id]
             );
         res.status(200).json({ message: "Organization updated" });
     } catch (error) {
