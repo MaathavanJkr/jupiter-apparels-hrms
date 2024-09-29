@@ -23,6 +23,7 @@ export interface Employee extends RowDataPacket{
     gender: Gender;
     marital_status: MaritalStatus;
     address: string;
+    contact_number: string;
     email: string;
     NIC: string;
     job_title_id: number;
