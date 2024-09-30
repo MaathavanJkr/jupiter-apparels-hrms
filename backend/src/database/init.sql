@@ -112,7 +112,7 @@ CREATE TABLE leave_applications (
     end_date DATE,
     reason VARCHAR(255),
     submission_date DATE,
-    status ENUM('Pending', 'Approved', 'Rejected') NOT NULL,
+    status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT "Pending",
     response_date DATE,
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
 );
