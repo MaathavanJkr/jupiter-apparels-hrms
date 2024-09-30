@@ -13,7 +13,7 @@ export const createEmploymentStatus = async (req: Request, res: Response) => {
         const [result] = await db
         .promise()
         .query(
-            "INSERT INTO Employment_Status (employment_status_id,status) VALUES (UUID(),?)",
+            "INSERT INTO employment_statuses (employment_status_id,status) VALUES (UUID(),?)",
             [status]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "Employment Status created successfully"});
@@ -39,7 +39,7 @@ export const getEmploymentStatusByID = async (req:Request, res:Response) => {
     try {
         const [statuses] = await db
         .promise()
-        .query<EmploymentStatus[]>("SELECT * FROM Employment_Status WHERE  employment_status_id = ?", [id]);
+        .query<EmploymentStatus[]>("SELECT * FROM employment_statuses WHERE  employment_status_id = ?", [id]);
         if (statuses.length === 0) {
             res.status(404).json({ message: `Employment Status with id: ${id} not found` });
         } else {
@@ -60,7 +60,7 @@ export const updateEmploymentStatus = async (req: Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "UPDATE Employment_Status SET status=? WHERE  employment_status_id = ?",
+            "UPDATE employment_statuses SET status=? WHERE  employment_status_id = ?",
             [status, id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
@@ -79,7 +79,7 @@ export const deleteEmploymentStatus = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "DELETE FROM Employment_Status where employment_status_id = ?", [id]
+            "DELETE FROM employment_statuses where employment_status_id = ?", [id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
             res.status(200).json({

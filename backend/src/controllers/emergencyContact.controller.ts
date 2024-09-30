@@ -13,7 +13,7 @@ export const createEmergencyContact = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "INSERT INTO Emergency_Contact (emergency_id,employee_id, name, relationship, contact_number, address) VALUES (UUID(),?,?,?,?,?)",
+            "INSERT INTO emergency_contacts (emergency_id,employee_id, name, relationship, contact_number, address) VALUES (UUID(),?,?,?,?,?)",
             [employee_id, name, relationship, contact_number, address]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "Emergency Contact created successfully"});
@@ -26,7 +26,7 @@ export const getEmergencyContacts = async (req: Request, res: Response) => {
     try {
         const [emergencyContacts] = await db
         .promise()
-        .query<EmergencyContact[]>("SELECT * FROM Emergency_Contact");
+        .query<EmergencyContact[]>("SELECT * FROM emergency_contacts");
        
         res.status(200).send(emergencyContacts);
         
@@ -41,7 +41,7 @@ export const getEmergencyContactByID = async (req:Request, res:Response) => {
     try {
         const [emergencyContacts] = await db
         .promise()
-        .query<EmergencyContact[]>("SELECT * FROM Emergency_Contact WHERE emergency_id = ?", [id]);
+        .query<EmergencyContact[]>("SELECT * FROM emergency_contacts WHERE emergency_id = ?", [id]);
         if (emergencyContacts.length === 0) {
             res.status(404).json({ message: `Employee Dependent with id: ${id} not found` });
         } else {
@@ -59,7 +59,7 @@ export const updateEmergencyContact = async (req: Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "UPDATE Emergency_Contact SET name=?, relationship=?, contact_number=?, address=? WHERE emergency_id = ?",
+            "UPDATE emergency_contacts SET name=?, relationship=?, contact_number=?, address=? WHERE emergency_id = ?",
             [name, relationship, contact_number, address, id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
@@ -78,7 +78,7 @@ export const deleteEmergencyContact = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "DELETE FROM Emergency_Contact where emergency_id = ?", [id]
+            "DELETE FROM emergency_contacts where emergency_id = ?", [id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
             res.status(200).json({
@@ -101,7 +101,7 @@ export const getEmergencyContactByEmployeeID = async  (req:Request, res:Response
         const [emergencyContacts] = await db
         .promise()
         .query <EmergencyContact[]>(
-            "SELECT * FROM Emergency_Contact WHERE employee_id = ?", [employee_id]
+            "SELECT * FROM emergency_contacts WHERE employee_id = ?", [employee_id]
         );
         res.status(200).send(emergencyContacts);
     } catch (error) {

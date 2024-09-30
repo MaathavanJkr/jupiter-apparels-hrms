@@ -18,7 +18,7 @@ export const createUser = async (req: Request, res: Response) => {
         const [result] = await db
         .promise()
         .query (
-            "INSERT INTO User (user_id, employee_id, role, username, password) VALUES(UUID(),?,?,?,?)",
+            "INSERT INTO users (user_id, employee_id, role, username, password) VALUES(UUID(),?,?,?,?)",
             [employee_id, role, username, hashedPassword]
         );
         res.status(201).json({id: (result as ResultSetHeader).insertId, message: "User created successfully"});
@@ -31,7 +31,7 @@ export const getUsers = async (req: Request, res: Response) => {
     try {
         const [users] = await db
         .promise()
-        .query<User[]>("SELECT user_id, employee_id, role, username FROM User");
+        .query<User[]>("SELECT user_id, employee_id, role, username FROM users");
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({error: "Database Query failed", message: error});
@@ -44,7 +44,7 @@ export const getUserByID = async (req:Request, res:Response) => {
     try {
         const [users] = await db
         .promise()
-        .query<User[]>("SELECT user_id, employee_id, role, username FROM User WHERE user_id = ?", [id]);
+        .query<User[]>("SELECT user_id, employee_id, role, username FROM users WHERE user_id = ?", [id]);
         if (users.length === 0) {
             res.status(404).json({ message: `User with id: ${id} not found` });
         } else {
@@ -63,7 +63,7 @@ export const updateUser = async (req: Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "UPDATE User SET role=?, username=? WHERE user_id = ?",
+            "UPDATE users SET role=?, username=? WHERE user_id = ?",
             [role, username, id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
@@ -82,7 +82,7 @@ export const changePassword = async (req: Request, res: Response) => {
     try {
         const [users] = await db
         .promise()
-        .query<User[]>("SELECT password FROM User WHERE user_id = ?", [id]);
+        .query<User[]>("SELECT password FROM users WHERE user_id = ?", [id]);
         if (users.length === 0) {
             res.status(404).json({ message: `User with id: ${id} not found` });
         } else {
@@ -91,7 +91,7 @@ export const changePassword = async (req: Request, res: Response) => {
                 const hashedPassword = bcrypt.hashSync(newPassword, 10);
                 const [result] = await db
                 .promise()
-                .query("UPDATE User SET password = ? WHERE user_id = ?" ,[hashedPassword,id]);
+                .query("UPDATE users SET password = ? WHERE user_id = ?" ,[hashedPassword,id]);
 
                 if ((result as ResultSetHeader).affectedRows > 0) {
                     res.status(200).json({ message: "Password changed successfully" });
@@ -108,7 +108,7 @@ export const deleteUser = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "DELETE FROM User where user_id = ?", [id]
+            "DELETE FROM users where user_id = ?", [id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
             res.status(200).json({
@@ -147,12 +147,12 @@ export const getUserInfo = async (req: Request, res: Response) => {
                 es.status AS employment_status, 
                 j.title AS job_title,
                 e.contact_number AS contact_number
-            FROM User u
-            INNER JOIN Employee e ON e.employee_id = u.employee_id
-            INNER JOIN Department d ON d.department_id = e.department_id
-            INNER JOIN Branch b ON b.branch_id = e.branch_id
-            INNER JOIN Employment_Status es ON es.employment_status_id = e.employment_status_id
-            INNER JOIN Job_Title j ON j.job_title_id = e.job_title_id`
+            FROM users u
+            INNER JOIN employees e ON e.employee_id = u.employee_id
+            INNER JOIN departments d ON d.department_id = e.department_id
+            INNER JOIN branches b ON b.branch_id = e.branch_id
+            INNER JOIN employment_statuses es ON es.employment_status_id = e.employment_status_id
+            INNER JOIN job_titles j ON j.job_title_id = e.job_title_id`
         );
         res.status(200).json(result);
     } catch(error){
@@ -185,12 +185,12 @@ export const getUserInfoByID = async (req:Request,res:Response) => {
                 es.status AS employment_status, 
                 j.title AS job_title,
                 e.contact_number AS contact_number
-            FROM User u
-            INNER JOIN Employee e ON e.employee_id = u.employee_id
-            INNER JOIN Department d ON d.department_id = e.department_id
-            INNER JOIN Branch b ON b.branch_id = e.branch_id
-            INNER JOIN Employment_Status es ON es.employment_status_id = e.employment_status_id
-            INNER JOIN Job_Title j ON j.job_title_id = e.job_title_id`
+            FROM users u
+            INNER JOIN employees e ON e.employee_id = u.employee_id
+            INNER JOIN departments d ON d.department_id = e.department_id
+            INNER JOIN branches b ON b.branch_id = e.branch_id
+            INNER JOIN employment_statuses es ON es.employment_status_id = e.employment_status_id
+            INNER JOIN job_titles j ON j.job_title_id = e.job_title_id`
         );
         if (result.length === 0) {
             res.status(404).json({ message: `User with id: ${id} not found` });

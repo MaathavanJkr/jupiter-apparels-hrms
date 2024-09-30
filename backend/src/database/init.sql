@@ -1,35 +1,35 @@
-DROP TABLE IF EXISTS User;
-DROP TABLE IF EXISTS Allocated_Leaves;
-DROP TABLE IF EXISTS Leave_Application;
-DROP TABLE IF EXISTS Emergency_Contact;
-DROP TABLE IF EXISTS Employee_Dependent;
-DROP TABLE IF EXISTS Employee;
-DROP TABLE IF EXISTS Employment_Status;
-DROP TABLE IF EXISTS Pay_Grade;
-DROP TABLE IF EXISTS Job_Title;
-DROP TABLE IF EXISTS Department;
-DROP TABLE IF EXISTS Branch;
-DROP TABLE IF EXISTS Organization;
-CREATE TABLE Organization (
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS allocated_leaves;
+DROP TABLE IF EXISTS leave_applications;
+DROP TABLE IF EXISTS emergency_contacts;
+DROP TABLE IF EXISTS employee_dependents;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS employment_statuses;
+DROP TABLE IF EXISTS pay_grades;
+DROP TABLE IF EXISTS job_titles;
+DROP TABLE IF EXISTS departments;
+DROP TABLE IF EXISTS branches;
+DROP TABLE IF EXISTS organizations;
+CREATE TABLE organizations (
     organization_id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(80),
     address VARCHAR(255),
     reg_no INT
 );
-CREATE TABLE Department (
+CREATE TABLE departments (
     department_id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(80)
 );
-CREATE TABLE Pay_Grade (
+CREATE TABLE pay_grades (
     pay_grade_id VARCHAR(36) PRIMARY KEY,
     paygrade INT,
     grade_name VARCHAR(36)
 );
-CREATE TABLE Job_Title (
+CREATE TABLE job_titles (
     job_title_id VARCHAR(36) PRIMARY KEY,
     title VARCHAR(80)
 );
-CREATE TABLE Employment_Status (
+CREATE TABLE employment_statuses (
     employment_status_id VARCHAR(36) PRIMARY KEY,
     status ENUM(
         'Intern-Fulltime',
@@ -40,14 +40,14 @@ CREATE TABLE Employment_Status (
         'Freelance'
     )
 );
-CREATE TABLE Branch (
+CREATE TABLE branches (
     branch_id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(80),
     address VARCHAR(255),
     contact_number VARCHAR(10) -- manager_id VARCHAR(36)
     -- FOREIGN KEY (manager_id) REFERENCES Employee(employee_id)
 );
-CREATE TABLE Employee (
+CREATE TABLE employees (
     employee_id VARCHAR(36) PRIMARY KEY,
     department_id VARCHAR(36),
     branch_id VARCHAR(36),
@@ -64,11 +64,8 @@ CREATE TABLE Employee (
     pay_grade_id VARCHAR(36),
     employment_status_id VARCHAR(36),
     contact_number VARCHAR(10),
-    cust_attr_1_key VARCHAR(80),
     cust_attr_1_value VARCHAR(255),
-    cust_attr_2_key VARCHAR(80),
     cust_attr_2_value VARCHAR(255),
-    cust_attr_3_key VARCHAR(80),
     cust_attr_3_value VARCHAR(255),
     FOREIGN KEY (department_id) REFERENCES Department(department_id),
     FOREIGN KEY (branch_id) REFERENCES Branch(branch_id),
@@ -77,7 +74,11 @@ CREATE TABLE Employee (
     FOREIGN KEY (pay_grade_id) REFERENCES Pay_Grade(pay_grade_id),
     FOREIGN KEY (employment_status_id) REFERENCES Employment_Status(employment_status_id)
 );
-CREATE TABLE Allocated_Leaves (
+CREATE TABLE custom_attribute_keys (
+    custom_attribute_key_id INT,
+    key VARCHAR(80),
+);
+CREATE TABLE allocated_leaves (
     pay_grade_id VARCHAR(36),
     annual_leaves INT,
     casual_leaves INT,
@@ -86,7 +87,7 @@ CREATE TABLE Allocated_Leaves (
     PRIMARY KEY (pay_grade_id),
     FOREIGN KEY (pay_grade_id) REFERENCES Pay_Grade(pay_grade_id)
 );
-CREATE TABLE Employee_Dependent (
+CREATE TABLE employee_dependents (
     dependent_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
     name VARCHAR(80),
@@ -94,7 +95,7 @@ CREATE TABLE Employee_Dependent (
     birth_date DATE,
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
 );
-CREATE TABLE Emergency_Contact (
+CREATE TABLE emergency_contacts (
     emergency_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
     name VARCHAR(80),
@@ -103,7 +104,7 @@ CREATE TABLE Emergency_Contact (
     address VARCHAR(255),
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
 );
-CREATE TABLE Leave_Application (
+CREATE TABLE leave_applications (
     application_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
     leave_type ENUM('Annual', 'Casual', 'Maternity', 'Nopay') NOT NULL,
@@ -115,7 +116,7 @@ CREATE TABLE Leave_Application (
     response_date DATE,
     FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
 );
-CREATE TABLE User (
+CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
     role ENUM('Admin', 'Supervisor', 'Employee', 'HR manager'),

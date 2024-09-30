@@ -14,7 +14,7 @@ export const createEmployeeDependent = async (req:Request, res:Response) => {
         await db
         .promise()
         .query(
-            "INSERT INTO Employee_Dependent (dependent_id,employee_id, name, relationship_to_employee, birth_date) VALUES (UUID(),?,?,?,?)",
+            "INSERT INTO employee_dependents (dependent_id,employee_id, name, relationship_to_employee, birth_date) VALUES (UUID(),?,?,?,?)",
             [employee_id, name, relationship_to_employee, birth_date]
         );
         res.status(201).json({message: "Employee Dependent created successfully"});
@@ -27,7 +27,7 @@ export const getEmployeeDependents = async (req: Request, res: Response) => {
     try {
         const [employeeDependents] = await db
         .promise()
-        .query<EmployeeDependent[]>("SELECT * FROM Employee_Dependent");
+        .query<EmployeeDependent[]>("SELECT * FROM employee_dependents");
         
         res.status(200).send(employeeDependents);
         
@@ -42,7 +42,7 @@ export const getEmployeeDependentByID = async (req:Request, res:Response) => {
     try {
         const [employeeDependents] = await db
         .promise()
-        .query<EmployeeDependent[]>("SELECT * FROM Employee_Dependent WHERE dependent_id = ?", [id]);
+        .query<EmployeeDependent[]>("SELECT * FROM employee_dependents WHERE dependent_id = ?", [id]);
         if (employeeDependents.length === 0) {
             res.status(404).json({ message: `Employee Dependent with id: ${id} not found` });
         } else {
@@ -60,7 +60,7 @@ export const updateEmployeeDependent = async (req: Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "UPDATE Employee_Dependent SET name=?, relationship_to_employee=?, birth_date=? WHERE dependent_id = ?",
+            "UPDATE employee_dependents SET name=?, relationship_to_employee=?, birth_date=? WHERE dependent_id = ?",
             [name, relationship_to_employee, birth_date, id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
@@ -79,7 +79,7 @@ export const deleteEmployeeDependent = async (req:Request, res:Response) => {
         const [result] = await db
         .promise()
         .query(
-            "DELETE FROM Employee_Dependent where dependent_id = ?", [id]
+            "DELETE FROM employee_dependents where dependent_id = ?", [id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
             res.status(200).json({
@@ -101,7 +101,7 @@ export const getEmployeeDependentByEmployeeID = async (req:Request, res:Response
     try {
         const [employeeDependents] = await db
         .promise()
-        .query<EmployeeDependent[]>("SELECT * FROM Employee_Dependent WHERE employee_id = ?", [id]);
+        .query<EmployeeDependent[]>("SELECT * FROM employee_dependents WHERE employee_id = ?", [id]);
         res.status(200).json(employeeDependents);
     } catch (error) {
         res.status(500).json({error: "Database query failed", message: error});
