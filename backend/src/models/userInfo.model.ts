@@ -17,4 +17,5 @@ export interface UserInfo extends RowDataPacket {
     branch_name: string,
     job_title: string,
     employment_status: string,
+    contact_number: string,
 }

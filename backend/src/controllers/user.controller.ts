@@ -145,7 +145,8 @@ export const getUserInfo = async (req: Request, res: Response) => {
                 d.name AS department_name, 
                 b.name AS branch_name, 
                 es.status AS employment_status, 
-                j.title AS job_title
+                j.title AS job_title,
+                e.contact_number AS contact_number
             FROM User u
             INNER JOIN Employee e ON e.employee_id = u.employee_id
             INNER JOIN Department d ON d.department_id = e.department_id
@@ -182,7 +183,8 @@ export const getUserInfoByID = async (req:Request,res:Response) => {
                 d.name AS department_name, 
                 b.name AS branch_name, 
                 es.status AS employment_status, 
-                j.title AS job_title
+                j.title AS job_title,
+                e.contact_number AS contact_number
             FROM User u
             INNER JOIN Employee e ON e.employee_id = u.employee_id
             INNER JOIN Department d ON d.department_id = e.department_id
