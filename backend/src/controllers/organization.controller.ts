@@ -10,7 +10,7 @@ export const createOrganization = async (req: Request, res: Response) => {
         const [result] = await db
           .promise()
           .query(
-            "INSERT INTO organizations (name, address, reg_no) VALUES (?, ?, ?)",
+            "INSERT INTO organizations (organization_id,name, address, reg_no) VALUES (UUID(),?, ?, ?)",
             [name, address, reg_no]
           );
         res.status(201).json({ id: (result as ResultSetHeader).insertId, message: "Organization created" });
