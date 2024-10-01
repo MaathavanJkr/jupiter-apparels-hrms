@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS organizations;
 DROP TABLE IF EXISTS branches;
 DROP TABLE IF EXISTS departments;
 DROP TABLE IF EXISTS custom_attribute_keys;
+
 CREATE TABLE organizations (
     organization_id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(80),
@@ -112,16 +113,138 @@ CREATE TABLE leave_applications (
     start_date DATE,
     end_date DATE,
     reason VARCHAR(255),
-    submission_date DATE,
-    status ENUM('Pending', 'Approved', 'Rejected') NOT NULL,
+    submission_date DATE DEFAULT CURRENT_DATE(),
+    status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
     response_date DATE,
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
-    role ENUM('Admin', 'Supervisor', 'Employee', 'HR manager'),
+    role ENUM('Admin', 'Supervisor', 'Employee', 'HR manager') DEFAULT 'Employee',
     username VARCHAR(80) NOT NULL UNIQUE,
-    password VARCHAR(80) NOT NULL UNIQUE,
+    password VARCHAR(80) NOT NULL DEFAULT '123', -- Default password for new users added by the HR Manager.
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
+
+---------------------------------- Triggers----------------------------------
+
+-- Ensures that an employee cannot have themselves as the supervisor.
+CREATE TRIGGER check_supervisor BEFORE INSERT OR UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF NEW.supervisor_id = NEW.employee_id THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
+    END IF;
+END;
+
+
+-- Prevents duplicate emails in the employees table.
+CREATE TRIGGER prevent_duplicate_email BEFORE INSERT OR UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
+    END IF;
+END;
+
+
+-- Prevents duplicate NICs  in the employees table.
+CREATE TRIGGER prevent_duplicate_nic BEFORE INSERT OR UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
+    END IF;
+END;
+
+
+-- Automatically allocates leaves to a new employee based on their pay grade.
+CREATE TRIGGER assign_default_leaves AFTER INSERT ON employees
+FOR EACH ROW
+BEGIN
+    DECLARE annual_leaves INT;
+    DECLARE casual_leaves INT;
+    DECLARE maternity_leaves INT;
+    DECLARE no_pay_leaves INT;
+
+    CASE NEW.pay_grade_id
+        WHEN '1' THEN
+            SET annual_leaves = 20, casual_leaves = 5, maternity_leaves = 30, no_pay_leaves = 15;
+        WHEN '2' THEN
+            SET annual_leaves = 25, casual_leaves = 7, maternity_leaves = 45, no_pay_leaves = 20;
+        WHEN '3' THEN
+            SET annual_leaves = 30, casual_leaves = 10, maternity_leaves = 60, no_pay_leaves = 25;
+        WHEN '4' THEN
+            SET annual_leaves = 35, casual_leaves = 12, maternity_leaves = 75, no_pay_leaves = 30;
+        WHEN '5' THEN
+            SET annual_leaves = 40, casual_leaves = 15, maternity_leaves = 90, no_pay_leaves = 40;
+        ELSE
+            SET annual_leaves = 0, casual_leaves = 0, maternity_leaves = 0, no_pay_leaves = 0;
+    END CASE;
+
+    INSERT INTO allocated_leaves (pay_grade_id, annual_leaves, casual_leaves, maternity_leaves, no_pay_leaves)
+    VALUES (NEW.pay_grade_id, annual_leaves, casual_leaves, maternity_leaves, no_pay_leaves);
+END;
+
+
+-- Ensures that employees can only be assigned to active(valid) job titles
+CREATE TRIGGER check_active_job_title BEFORE INSERT OR UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM job_titles WHERE job_title_id = NEW.job_title_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
+    END IF;
+END;
+
+
+-- Deducts the number of leave days from employee's allocated leaves after a leave application is approved.
+CREATE TRIGGER update_leave_balance AFTER UPDATE ON leave_applications
+FOR EACH ROW
+BEGIN
+    IF NEW.status = 'Approved' THEN
+        DECLARE leave_days INT;
+        SET leave_days = DATEDIFF(NEW.end_date, NEW.start_date) + 1; -- Calculates the approved no. of leave days.
+
+        CASE NEW.leave_type
+            WHEN 'Annual' THEN
+                UPDATE allocated_leaves SET annual_leaves = annual_leaves - leave_days
+                WHERE pay_grade_id = (SELECT pay_grade_id FROM employees WHERE employee_id = NEW.employee_id);
+            WHEN 'Casual' THEN
+                UPDATE allocated_leaves SET casual_leaves = casual_leaves - leave_days
+                WHERE pay_grade_id = (SELECT pay_grade_id FROM employees WHERE employee_id = NEW.employee_id);
+            WHEN 'Maternity' THEN
+                UPDATE allocated_leaves SET maternity_leaves = maternity_leaves - leave_days
+                WHERE pay_grade_id = (SELECT pay_grade_id FROM employees WHERE employee_id = NEW.employee_id);
+            WHEN 'Nopay' THEN
+                UPDATE allocated_leaves SET no_pay_leaves = no_pay_leaves - leave_days
+                WHERE pay_grade_id = (SELECT pay_grade_id FROM employees WHERE employee_id = NEW.employee_id);
+        END CASE;
+    END IF;
+END;
+
+
+-- Ensures that the leave start date is before the end date.
+CREATE TRIGGER validate_leave_dates BEFORE INSERT OR UPDATE ON leave_applications
+FOR EACH ROW
+BEGIN
+    IF NEW.start_date > NEW.end_date THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
+    END IF;
+END;
+
+
+-- Ensures that employees cannot submit overlapping leave applications.
+CREATE TRIGGER prevent_overlapping_leaves BEFORE INSERT ON leave_applications
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM leave_applications
+               WHERE employee_id = NEW.employee_id
+                 AND ((NEW.start_date BETWEEN start_date AND end_date)
+                 OR (NEW.end_date BETWEEN start_date AND end_date))) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave applications are overlapping.';
+    END IF;
+END;
+
+
+
