@@ -1,15 +1,16 @@
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS allocated_leaves;
 DROP TABLE IF EXISTS leave_applications;
 DROP TABLE IF EXISTS emergency_contacts;
 DROP TABLE IF EXISTS employee_dependents;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS allocated_leaves;
 DROP TABLE IF EXISTS employees;
 DROP TABLE IF EXISTS employment_statuses;
 DROP TABLE IF EXISTS pay_grades;
 DROP TABLE IF EXISTS job_titles;
-DROP TABLE IF EXISTS departments;
-DROP TABLE IF EXISTS branches;
 DROP TABLE IF EXISTS organizations;
+DROP TABLE IF EXISTS branches;
+DROP TABLE IF EXISTS departments;
+DROP TABLE IF EXISTS custom_attribute_keys;
 CREATE TABLE organizations (
     organization_id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(80),
@@ -67,16 +68,16 @@ CREATE TABLE employees (
     cust_attr_1_value VARCHAR(255),
     cust_attr_2_value VARCHAR(255),
     cust_attr_3_value VARCHAR(255),
-    FOREIGN KEY (department_id) REFERENCES Department(department_id),
-    FOREIGN KEY (branch_id) REFERENCES Branch(branch_id),
-    FOREIGN KEY (supervisor_id) REFERENCES Employee(employee_id),
-    FOREIGN KEY (job_title_id) REFERENCES Job_Title(job_title_id),
-    FOREIGN KEY (pay_grade_id) REFERENCES Pay_Grade(pay_grade_id),
-    FOREIGN KEY (employment_status_id) REFERENCES Employment_Status(employment_status_id)
+    FOREIGN KEY (department_id) REFERENCES departments(department_id),
+    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
+    FOREIGN KEY (supervisor_id) REFERENCES employees(employee_id),
+    FOREIGN KEY (job_title_id) REFERENCES job_titles(job_title_id),
+    FOREIGN KEY (pay_grade_id) REFERENCES pay_grades(pay_grade_id),
+    FOREIGN KEY (employment_status_id) REFERENCES employment_statuses(employment_status_id)
 );
 CREATE TABLE custom_attribute_keys (
-    custom_attribute_key_id INT,
-    key VARCHAR(80),
+    custom_attribute_key_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(80) NOT NULL
 );
 CREATE TABLE allocated_leaves (
     pay_grade_id VARCHAR(36),
@@ -85,7 +86,7 @@ CREATE TABLE allocated_leaves (
     maternity_leaves INT,
     no_pay_leaves INT,
     PRIMARY KEY (pay_grade_id),
-    FOREIGN KEY (pay_grade_id) REFERENCES Pay_Grade(pay_grade_id)
+    FOREIGN KEY (pay_grade_id) REFERENCES pay_grades(pay_grade_id)
 );
 CREATE TABLE employee_dependents (
     dependent_id VARCHAR(36) PRIMARY KEY,
@@ -93,7 +94,7 @@ CREATE TABLE employee_dependents (
     name VARCHAR(80),
     relationship_to_employee VARCHAR(80),
     birth_date DATE,
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 CREATE TABLE emergency_contacts (
     emergency_id VARCHAR(36) PRIMARY KEY,
@@ -102,7 +103,7 @@ CREATE TABLE emergency_contacts (
     relationship VARCHAR(80),
     contact_number VARCHAR(10),
     address VARCHAR(255),
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 CREATE TABLE leave_applications (
     application_id VARCHAR(36) PRIMARY KEY,
@@ -112,9 +113,9 @@ CREATE TABLE leave_applications (
     end_date DATE,
     reason VARCHAR(255),
     submission_date DATE,
-    status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT "Pending",
+    status ENUM('Pending', 'Approved', 'Rejected') NOT NULL,
     response_date DATE,
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
@@ -122,5 +123,5 @@ CREATE TABLE users (
     role ENUM('Admin', 'Supervisor', 'Employee', 'HR manager'),
     username VARCHAR(80) NOT NULL UNIQUE,
     password VARCHAR(80) NOT NULL UNIQUE,
-    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
