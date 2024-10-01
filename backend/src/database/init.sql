@@ -46,8 +46,8 @@ CREATE TABLE branches (
     branch_id VARCHAR(36) PRIMARY KEY,
     name VARCHAR(80),
     address VARCHAR(255),
-    contact_number VARCHAR(10) -- manager_id VARCHAR(36)
-    -- FOREIGN KEY (manager_id) REFERENCES Employee(employee_id)
+    contact_number VARCHAR(10),
+    manager_id VARCHAR(36) NULL -- FOREIGN KEY (manager_id) REFERENCES Employee(employee_id)
 );
 CREATE TABLE employees (
     employee_id VARCHAR(36) PRIMARY KEY,
@@ -127,6 +127,8 @@ CREATE TABLE users (
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 
+ALTER TABLE branches
+ADD CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employees(employee_id);
 ---------------------------------- Triggers----------------------------------
 
 -- Ensures that an employee cannot have themselves as the supervisor.
