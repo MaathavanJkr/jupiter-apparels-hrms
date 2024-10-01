@@ -65,7 +65,7 @@ CREATE TABLE branches (
     name VARCHAR(80),
     address VARCHAR(255),
     contact_number VARCHAR(10),
-    manager_id VARCHAR(36) NULL 
+    manager_id VARCHAR(36) NULL -- FOREIGN KEY (manager_id) REFERENCES Employee(employee_id)
 );
 CREATE TABLE employees (
     employee_id VARCHAR(36) PRIMARY KEY,
@@ -105,7 +105,7 @@ CREATE TABLE allocated_leaves (
     maternity_leaves INT,
     no_pay_leaves INT,
     PRIMARY KEY (pay_grade_id),
-    FOREIGN KEY (pay_grade_id) REFERENCES pay_grades(pay_grade_id)
+    FOREIGN KEY (pay_grade_id) REFERENCES pay_grades(pay_grade_id) 
 );
 CREATE TABLE employee_dependents (
     dependent_id VARCHAR(36) PRIMARY KEY,
@@ -113,7 +113,7 @@ CREATE TABLE employee_dependents (
     name VARCHAR(80),
     relationship_to_employee VARCHAR(80),
     birth_date DATE,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
 CREATE TABLE emergency_contacts (
     emergency_id VARCHAR(36) PRIMARY KEY,
@@ -122,7 +122,7 @@ CREATE TABLE emergency_contacts (
     relationship VARCHAR(80),
     contact_number VARCHAR(10),
     address VARCHAR(255),
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
 CREATE TABLE leave_applications (
     application_id VARCHAR(36) PRIMARY KEY,
@@ -142,7 +142,7 @@ CREATE TABLE users (
     role ENUM('Admin', 'Supervisor', 'Employee', 'HR manager') DEFAULT 'Employee',
     username VARCHAR(80) NOT NULL UNIQUE,
     password VARCHAR(80) NOT NULL DEFAULT '123', -- Default password for new users added by the HR Manager.
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
 
 ALTER TABLE branches
@@ -154,120 +154,108 @@ ADD CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employees(employee
 
 
 -- Ensures that an employee cannot have themselves as the supervisor.
-DELIMITER $$
+
 CREATE TRIGGER check_supervisor_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF NEW.supervisor_id = NEW.employee_id THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
     END IF;
-END $$
-DELIMITER ;
+END;
 
-DELIMITER $$
+
 CREATE TRIGGER check_supervisor_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF NEW.supervisor_id = NEW.employee_id THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
     END IF;
-END $$
-DELIMITER ;
+END ;
 
 
 
 -- Prevents duplicate emails in the employees table.
-DELIMITER $$
+
 CREATE TRIGGER prevent_duplicate_email_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
     END IF;
-END $$
-DELIMITER ;
+END ;
 
-DELIMITER $$
+
 CREATE TRIGGER prevent_duplicate_email_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
     END IF;
-END $$
-DELIMITER ;
+END;
 
 
 
 -- Prevents duplicate NICs  in the employees table.
-DELIMITER $$
+
 CREATE TRIGGER prevent_duplicate_nic_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
     END IF;
-END $$
-DELIMITER ;
+END;
 
-DELIMITER $$
+
 CREATE TRIGGER prevent_duplicate_nic_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
     END IF;
-END $$
-DELIMITER ;
+END ;
 
 
 
 -- Ensures that employees can only be assigned to active(valid) job titles
-DELIMITER $$
+
 CREATE TRIGGER check_active_job_title_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM job_titles WHERE job_title_id = NEW.job_title_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
     END IF;
-END $$
-DELIMITER ;
+END ;
 
-DELIMITER $$
+
 CREATE TRIGGER check_active_job_title_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM job_titles WHERE job_title_id = NEW.job_title_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
     END IF;
-END $$
-DELIMITER ;
+END;
 
 
 
 -- Ensures that the leave start date is before the end date.
-DELIMITER $$
+
 CREATE TRIGGER validate_leave_dates_before_insert BEFORE INSERT ON leave_applications
 FOR EACH ROW
 BEGIN
     IF NEW.start_date > NEW.end_date THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
     END IF;
-END $$
-DELIMITER ;
-
-DELIMITER $$
+END ;
 CREATE TRIGGER validate_leave_dates_before_update BEFORE UPDATE ON leave_applications
 FOR EACH ROW
 BEGIN
     IF NEW.start_date > NEW.end_date THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
     END IF;
-END $$
-DELIMITER ;
+END ;
 
 -- Ensures that employees cannot submit overlapping leave applications.
-DELIMITER $$
+
 CREATE TRIGGER prevent_overlapping_leaves BEFORE INSERT ON leave_applications
 FOR EACH ROW
 BEGIN
@@ -277,8 +265,7 @@ BEGIN
                  OR (NEW.end_date BETWEEN start_date AND end_date))) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave applications are overlapping.';
     END IF;
-END $$
-DELIMITER ;
+END ;
 
 
 
