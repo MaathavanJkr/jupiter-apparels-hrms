@@ -51,7 +51,7 @@ export const updateAllocatedLeaves = async (req: Request, res: Response) => {
           .promise()
           .query(
             "UPDATE allocated_leaves SET pay_grade_id = ? ,annual_leaves = ? ,casual_leaves = ? ,maternity_leaves = ? ,no_pay_leaves = ? WHERE id = ?",
-            [pay_grade_id,annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves]
+            [pay_grade_id,annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves,id]
           );
         res.status(200).json({ message: "Allocated leave record updated" });
       } catch (error) {
@@ -66,7 +66,7 @@ export const deleteAllocaedLeaves = async (req: Request, res: Response) => {
         const [result] = await db
           .promise()
           .query("DELETE FROM allocated_leaves WHERE id = ?", id);
-        res.status(200).json({ id: id, message: `Allocated leave record with id: ${id} deleted` });
+        res.status(200).json({ id: result, message: `Allocated leave record with id: ${id} deleted` });
       } catch (error) {
         res.status(500).json({ error: "Database query failed", message: error });
       }
