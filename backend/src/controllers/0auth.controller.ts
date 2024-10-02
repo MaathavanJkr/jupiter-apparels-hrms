@@ -14,7 +14,8 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(400).send({ error: "All fields are required" });
   }
 
-  const { user, error } = await getUserByUsernameModel(username);
+  const { data, error } = await getUserByUsernameModel(username);
+  const user = data;
   if (error) {
     return res.status(400).send({ error });
   }
@@ -27,7 +28,9 @@ export const loginUser = async (req: Request, res: Response) => {
   console.log(hashedPassword);
 
   //need to use hashed password when checking
+  //NEED TO UPDATE BELOW LINE
   const isvalid = user.password === password;
+  //NEED TO UPDATE ABOVE LINE
 
   if (isvalid) {
     return res.status(200).send({
@@ -38,12 +41,12 @@ export const loginUser = async (req: Request, res: Response) => {
         user_id: user.user_id,
         role: user.role,
       }),
+      user,
     });
   } else {
-    console.log(user);
     return res
       .status(400)
-      .send({ error: "Incorrect password. Try again!", data: user });
+      .send({ error: "Incorrect password. Try again!" });
   }
 
   //   const CheckUser = "SELECT * FROM users WHERE username = ?";
