@@ -286,7 +286,9 @@ INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, 
 
 INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Punjab', '789 Main Street, Punjab, Pakistan', '+924567890');
 INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B002', 'Rangpur', '456 West Blvd, Rangpur, Bangladesh', '+880765431');
+
 INSERT INTO branches (branch_id,name,address,contact_number) VALUES  ('B003', 'Bandaragama', '242 Aluthgama, Bandaragama, Sri Lanka','+942938476');
+
 
 INSERT INTO departments VALUES ('D001', 'HR');
 INSERT INTO departments VALUES ('D002', 'Finance');
@@ -409,6 +411,7 @@ UPDATE branches SET manager_id = 'E0011'  WHERE branch_id = 'B002';
 UPDATE branches SET manager_id = 'E0021' WHERE branch_id = 'B003';
 
 
+
 -- view to get employee details from user accout
 
 CREATE VIEW user_employee AS
@@ -436,3 +439,4 @@ INNER JOIN departments d ON d.department_id = e.department_id
 INNER JOIN branches b ON b.branch_id = e.branch_id
 INNER JOIN employment_statuses es ON es.employment_status_id = e.employment_status_id
 INNER JOIN job_titles j ON j.job_title_id = e.job_title_id;
+

@@ -15,7 +15,9 @@ app.use(express.urlencoded({ extended: true }));
 //Settiing up Routes
 app.use('/organization', organizationRoutes);
 app.use('/user',userRoutes);
-
+app.use('/branch', branchRoutes);
+app.use('/department', departmentRoutes);
+app.use('/employee', employeeRoutes);
 app.use('/emergencycontact',emergencyContactRoutes);
 app.use('/dependent',employeeDependentRoutes);
 app.use('/employmentstatus',employmentStatusRoutes);
