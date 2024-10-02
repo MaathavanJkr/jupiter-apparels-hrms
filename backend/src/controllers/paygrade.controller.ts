@@ -66,7 +66,7 @@ export const deletePayGrade = async (req: Request, res: Response) => {
         const [result] = await db
           .promise()
           .query("DELETE FROM pay_grades WHERE id = ?", id);
-        res.status(200).json({ id: id, message: `Pay grade with id: ${id} deleted` });
+        res.status(200).json({ id: result, message: `Pay grade with id: ${id} deleted` });
       } catch (error) {
         res.status(500).json({ error: "Database query failed", message: error });
       }
