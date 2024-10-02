@@ -28,7 +28,7 @@ DROP TRIGGER IF EXISTS validate_leave_dates_before_insert;
 DROP TRIGGER IF EXISTS validate_leave_dates_before_update;
 DROP TRIGGER IF EXISTS prevent_overlapping_leaves;
 
-
+DROP VIEW IF EXISTS user_employee;
 
 CREATE TABLE organizations (
     organization_id VARCHAR(36) PRIMARY KEY,
@@ -407,3 +407,32 @@ UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
 UPDATE branches SET manager_id = 'E0011'  WHERE branch_id = 'B002';
 
 UPDATE branches SET manager_id = 'E0021' WHERE branch_id = 'B003';
+
+
+-- view to get employee details from user accout
+
+CREATE VIEW user_employee AS
+SELECT 
+    u.user_id AS user_id,
+    e.employee_id AS employee_id,
+    e.first_name AS first_name, 
+    e.last_name AS last_name, 
+    u.username AS username, 
+    u.role AS role, 
+    e.birth_date AS birth_date, 
+    e.gender AS gender, 
+    e.marital_status AS marital_status, 
+    e.address AS address, 
+    e.email AS email,
+    e.NIC AS nic,
+    d.name AS department_name, 
+    b.name AS branch_name, 
+    es.status AS employment_status, 
+    j.title AS job_title,
+    e.contact_number AS contact_number
+FROM users u
+INNER JOIN employees e ON e.employee_id = u.employee_id
+INNER JOIN departments d ON d.department_id = e.department_id
+INNER JOIN branches b ON b.branch_id = e.branch_id
+INNER JOIN employment_statuses es ON es.employment_status_id = e.employment_status_id
+INNER JOIN job_titles j ON j.job_title_id = e.job_title_id;
