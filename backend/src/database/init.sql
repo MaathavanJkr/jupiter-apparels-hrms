@@ -149,6 +149,198 @@ ALTER TABLE branches
 ADD CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employees(employee_id);
 
 -- ---------------------------------------------------------------------------
+-- -------------------------------- Views----------------------------------
+-- ---------------------------------------------------------------------------
+
+
+-- View for basic employee information.
+CREATE VIEW employee_basic_info AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS full_name,
+    e.email,
+    e.contact_number,
+    e.address,
+    d.name AS department_name,
+    b.name AS branch_name,
+    jt.title AS job_title,
+    pg.grade_name AS pay_grade
+FROM
+    employees e
+JOIN
+    departments d ON e.department_id = d.department_id
+JOIN
+    branches b ON e.branch_id = b.branch_id
+JOIN
+    job_titles jt ON e.job_title_id = jt.job_title_id
+JOIN
+    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id;
+
+
+-- View for pending leave applications.
+-- Can be used when creating a list of pending applications for the supervisor to handle.
+CREATE VIEW leave_applications_by_status AS
+SELECT
+    la.application_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    la.leave_type,
+    la.start_date,
+    la.end_date,
+    la.reason,
+    la.status,
+    la.submission_date,
+    la.response_date
+FROM
+    leave_applications la
+JOIN
+    employees e ON la.employee_id = e.employee_id
+WHERE
+    la.status = 'Pending';
+
+-- Employees group by department
+CREATE VIEW employees_grouped_by_department AS
+SELECT
+    d.department_id,
+    d.name AS department_name,
+    COUNT(e.employee_id) AS employee_count
+FROM
+    departments d
+LEFT JOIN
+    employees e ON d.department_id = e.department_id
+GROUP BY
+    d.department_id, d.name
+ORDER BY
+    d.name;  -- Sort by department name
+
+
+
+-- View to display the total number of employees in each department.
+CREATE VIEW department_employee_count AS
+SELECT
+    d.name AS department_name,
+    COUNT(e.employee_id) AS employee_count
+FROM
+    employees e
+JOIN
+    departments d ON e.department_id = d.department_id
+GROUP BY
+    d.name;
+
+
+
+-- View to display employee dependents, including their relationship and birth date.
+CREATE VIEW employee_dependents_info AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    d.name AS dependent_name,
+    d.relationship_to_employee,
+    d.birth_date
+FROM
+    employee_dependents d
+JOIN
+    employees e ON d.employee_id = e.employee_id;
+
+
+
+-- View to display emergency contact details for each employee, including contact number and address.
+CREATE VIEW employee_emergency_contacts AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    ec.name AS emergency_contact_name,
+    ec.relationship AS relationship,
+    ec.contact_number,
+    ec.address AS emergency_contact_address
+FROM
+    emergency_contacts ec
+JOIN
+    employees e ON ec.employee_id = e.employee_id;
+
+
+
+-- View to display remaining leave balance for employees, grouped by pay grade and leave type.
+CREATE VIEW leave_balance AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    al.annual_leaves,
+    al.casual_leaves,
+    al.maternity_leaves,
+    al.no_pay_leaves
+FROM
+    employees e
+JOIN
+    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
+JOIN
+    allocated_leaves al ON pg.pay_grade_id = al.pay_grade_id;
+
+
+
+-- View to display the supervisor for each employee, showing the employee-supervisor relationship.
+CREATE VIEW employee_supervisors AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name
+FROM
+    employees e
+JOIN
+    employees s ON e.supervisor_id = s.employee_id;
+
+
+
+-- View to display custom attributes (e.g., Nationality) for each employee.
+CREATE VIEW employee_custom_attributes AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    e.cust_attr_1_value,
+    e.cust_attr_2_value,
+    e.cust_attr_3_value
+FROM
+    employees e;
+
+
+-- View to display payroll-related information, including job title, pay grade, and number of dependents per employee.
+CREATE VIEW payroll_info AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    jt.title AS job_title,
+    pg.grade_name AS pay_grade,
+    COUNT(ed.dependent_id) AS number_of_dependents
+FROM
+    employees e
+JOIN
+    job_titles jt ON e.job_title_id = jt.job_title_id
+JOIN
+    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
+LEFT JOIN
+    employee_dependents ed ON e.employee_id = ed.employee_id
+GROUP BY
+    e.employee_id, jt.title, pg.grade_name;
+
+
+-- View to display employee absences, including leave type and status, limited to approved leaves.
+CREATE VIEW absence_reports AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    la.leave_type,
+    la.start_date,
+    la.end_date,
+    la.reason,
+    la.status
+FROM
+    leave_applications la
+JOIN
+    employees e ON la.employee_id = e.employee_id
+WHERE
+    la.status = 'Approved';
+
+
+-- ---------------------------------------------------------------------------
 -- -------------------------------- Triggers----------------------------------
 -- ---------------------------------------------------------------------------
 
@@ -284,9 +476,9 @@ DELETE FROM users;
 
 INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, Punjab, Pakistan', 19781001);
 
-INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Jupiter Apparels', '789 Main Street, Punjab, Pakistan', '+924567890');
-INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B002', 'Jupiter Apparels', '456 West Blvd, Rangpur, Bangladesh', '+880765431');
-INSERT INTO branches (branch_id,name,address,contact_number) VALUES  ('B003', 'Jupiter Apparels', '242 Aluthgama, Bandaragama, Sri Lanka', '+942938476');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Punjab', '789 Main Street, Punjab, Pakistan', '+924567890');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B002', 'Rangpur', '456 West Blvd, Rangpur, Bangladesh', '+880765431');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES  ('B003', 'Bandaragama', '242 Aluthgama, Bandaragama, Sri Lanka', '+942938476');
 
 INSERT INTO departments VALUES ('D001', 'HR');
 INSERT INTO departments VALUES ('D002', 'Finance');

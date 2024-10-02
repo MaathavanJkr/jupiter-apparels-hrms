@@ -66,7 +66,7 @@ export const deleteJobTitle = async (req: Request, res: Response) => {
         const [result] = await db
           .promise()
           .query("DELETE FROM job_titles WHERE id = ?", id);
-        res.status(200).json({ id: id, message: `Organization with id: ${id} deleted` });
+        res.status(200).json({ id: result, message: `Organization with id: ${id} deleted` });
       } catch (error) {
         res.status(500).json({ error: "Database query failed", message: error });
       }
