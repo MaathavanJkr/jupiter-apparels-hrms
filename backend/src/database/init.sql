@@ -593,14 +593,13 @@ INSERT INTO leave_applications VALUES ('LA0005', 'E0005', 'Casual', '2023-05-05'
 INSERT INTO leave_applications VALUES ('LA0006', 'E0026', 'Annual', '2023-06-12', '2023-06-18', 'Vacation', '2023-06-01', 'Approved', '2023-06-02');
 
 
-INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'emily.brown', 'password101');
+INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'admin', '123456');
 INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'John.Doe', 'password303');
 INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'Ella.Lee', 'password404');
 INSERT INTO users VALUES ('U004', 'E0007', 'Supervisor', 'james.Wilson', 'password505');
 INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'Aria.Scott', 'password606');
 INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
 INSERT INTO users VALUES ('U007', 'E0005', 'Supervisor', 'David.Jones', 'password555');
-INSERT INTO users VALUES ('U008', 'E0100', 'Admin', 'maathavan', '123456');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
