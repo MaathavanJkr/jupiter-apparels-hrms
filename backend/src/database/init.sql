@@ -284,9 +284,9 @@ DELETE FROM users;
 
 INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, Punjab, Pakistan', 19781001);
 
-INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Jupiter Apparels', '789 Main Street, Punjab, Pakistan', '+924567890');
-INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B002', 'Jupiter Apparels', '456 West Blvd, Rangpur, Bangladesh', '+880765431');
-INSERT INTO branches (branch_id,name,address,contact_number) VALUES  ('B003', 'Jupiter Apparels', '242 Aluthgama, Bandaragama, Sri Lanka', '+942938476');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Punjab', '789 Main Street, Punjab, Pakistan', '+924567890');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B002', 'Rangpur', '456 West Blvd, Rangpur, Bangladesh', '+880765431');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES  ('B003', 'Bandaragama', '242 Aluthgama, Bandaragama, Sri Lanka','+942938476');
 
 INSERT INTO departments VALUES ('D001', 'HR');
 INSERT INTO departments VALUES ('D002', 'Finance');
