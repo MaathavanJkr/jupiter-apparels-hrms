@@ -1,73 +1,102 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
-import db from "../database/database";
-import { Organization } from "../models/organization.model";
-import { ResultSetHeader } from "mysql2";
+import {
+  Organization,
+  createOrganizationModel,
+  deleteOrganizationModel,
+  getAllOrganizationsModel,
+  getOrganizationByIDModel,
+  updateOrganizationModel,
+} from "../models/organization.model";
 
 export const createOrganization = async (req: Request, res: Response) => {
-    const { name, address, reg_no } = req.body;
-    try {
-        const [result] = await db
-          .promise()
-          .query(
-            "INSERT INTO organizations (organization_id,name, address, reg_no) VALUES (UUID(),?, ?, ?)",
-            [name, address, reg_no]
-          );
-        res.status(201).json({ id: (result as ResultSetHeader).insertId, message: "Organization created" });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-      }
-}
+  const { name, address, reg_no } = req.body;
 
-export const getOrganizations = async (req: Request, res: Response) => {
-  try {
-    const [organizations] = await db
-      .promise()
-      .query<Organization[]>("SELECT * FROM organizations");
-    res.status(200).json(organizations);
-  } catch (error) {
-    res.status(500).json({ error: "Database query failed", message: error });
+  if (!name || !address || !reg_no) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
+
+  const organization: Organization = {
+    name: name as string,
+    address: address as string,
+    reg_no: reg_no as number,
+  } as Organization;
+
+  await createOrganizationModel(organization)
+    .then((result) => {
+      return res.status(201).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
 };
 
 export const getOrganizationByID = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [organizations] = await db
-          .promise()
-          .query<Organization[]>("SELECT * FROM organizations WHERE id = ?", id);
+  const { id } = req.params;
 
-        res.status(200).json(organizations[0]);
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-      }
-}
+  await getOrganizationByIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+
+export const getAllOrganizations = async (req: Request, res: Response) => {
+  await getAllOrganizationsModel()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const updateOrganization = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const { name, address, reg_no } = req.body;
-    try {
-        await db
-          .promise()
-          .query(
-            "UPDATE organizations SET name = ?, address = ?, reg_no = ? WHERE id = ?",
-            [name, address, reg_no, id]
-          );
-        res.status(200).json({ message: "Organization updated" });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-      }
-}
+  const { id } = req.params;
+  const { name, address, reg_no } = req.body;
 
+  await getOrganizationByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      const organization = result.data;
+      if (name) organization.name = name;
+      if (address) organization.address = address;
+      if (reg_no) organization.reg_no = reg_no;
+
+      await updateOrganizationModel(organization)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const deleteOrganization = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [result] = await db
-          .promise()
-          .query("DELETE FROM organizations WHERE id = ?", id);
-        res.status(200).json({ id: result, message: `Organization with id: ${id} deleted` });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
+  const { id } = req.params;
+
+  await getOrganizationByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
       }
-}
+      await deleteOrganizationModel(id)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
