@@ -96,6 +96,8 @@ export const changePassword = async (req: Request, res: Response) => {
                 if ((result as ResultSetHeader).affectedRows > 0) {
                     res.status(200).json({ message: "Password changed successfully" });
                 }
+            } else {
+                return res.status(401).json({ message: "Old password is incorrect" });
             }
         }
     } catch (error) {
