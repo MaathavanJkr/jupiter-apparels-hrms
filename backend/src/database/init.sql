@@ -1,3 +1,6 @@
+ALTER TABLE branches
+DROP FOREIGN KEY fk_manager;
+
 DROP TABLE IF EXISTS leave_applications;
 DROP TABLE IF EXISTS emergency_contacts;
 DROP TABLE IF EXISTS employee_dependents;
@@ -404,6 +407,3 @@ UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
 UPDATE branches SET manager_id = 'E0011'  WHERE branch_id = 'B002';
 
 UPDATE branches SET manager_id = 'E0021' WHERE branch_id = 'B003';
-
-
-
