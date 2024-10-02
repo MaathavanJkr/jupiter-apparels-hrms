@@ -25,6 +25,17 @@ DROP TRIGGER IF EXISTS validate_leave_dates_before_insert;
 DROP TRIGGER IF EXISTS validate_leave_dates_before_update;
 DROP TRIGGER IF EXISTS prevent_overlapping_leaves;
 
+DROP VIEW IF EXISTS employee_basic_info; 
+DROP VIEW IF EXISTS leave_applications_by_status; 
+DROP VIEW IF EXISTS employees_grouped_by_department; 
+DROP VIEW IF EXISTS department_employee_count; 
+DROP VIEW IF EXISTS employee_dependents_info; 
+DROP VIEW IF EXISTS employee_emergency_contacts; 
+DROP VIEW IF EXISTS leave_balance; 
+DROP VIEW IF EXISTS employee_supervisors; 
+DROP VIEW IF EXISTS employee_custom_attributes; 
+DROP VIEW IF EXISTS payroll_info; 
+DROP VIEW IF EXISTS absence_reports;
 
 
 CREATE TABLE organizations (

@@ -6,6 +6,9 @@ import userRoutes from './routes/user.route';
 import emergencyContactRoutes from './routes/emergencyContact.route';
 import employeeDependentRoutes from './routes/dependent.route';
 import employmentStatusRoutes from './routes/employmentStatus.route';
+import branchRoutes from './routes/branch.route';
+import departmentRoutes from './routes/department.route';
+import employeeRoutes from './routes/employee.route';
 
 const app = express();
 
