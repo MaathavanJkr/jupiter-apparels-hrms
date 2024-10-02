@@ -1,5 +1,7 @@
 // src/app.ts
 import express from 'express';
+import cors from 'cors';
+
 import organizationRoutes from './routes/organization.route';
 import userRoutes from './routes/user.route';
 import authRoutes from './routes/auth.route'
@@ -11,9 +13,9 @@ import departmentRoutes from './routes/department.route';
 import employeeRoutes from './routes/employee.route';
 
 const app = express();
-
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors())
 
 //Settiing up Routes
 app.use('/auth', authRoutes);
