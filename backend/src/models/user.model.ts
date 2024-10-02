@@ -1,6 +1,7 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import db from "../database/database";
 import { hashPassword } from "../utils/hashPassword";
+import { Output } from "./output.model";
 
 export interface User extends RowDataPacket {
   user_id: string;
@@ -10,11 +11,11 @@ export interface User extends RowDataPacket {
   password: string;
 }
 
-export const createUserModel = async (user: User) => {
+export const createUserModel = async (user: User): Promise<Output> => {
   const { employee_id, role, username, password } = user;
 
   if (!employee_id || !role || !username || !password) {
-    return { error: "Missing required fields" };
+    return { error: "Missing required fields", data: null, message: null };
   }
   const hashedPassword = hashPassword(password);
 
@@ -26,22 +27,32 @@ export const createUserModel = async (user: User) => {
         [employee_id, role, username, hashedPassword]
       );
     return {
-      id: (result as ResultSetHeader).insertId,
+      data: { id: (result as ResultSetHeader).insertId },
       message: "User created successfully",
       error: null,
     };
   } catch (error) {
-    return { error: "Database Query Failed", message: error };
+    return { error, message: "Database Query Failed", data: null };
   }
 };
 
-export const getUserByUsernameModel = async (username: string) => {
+export const getUserByUsernameModel = async (
+  username: string
+): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
       .query("SELECT * FROM users WHERE username = ?", [username]);
-    return { user: (result as User[])[0], error: null };
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "User not found", message: null };
+    } else {
+      return {
+        data: (result as User[])[0],
+        error: null,
+        message: null,
+      };
+    }
   } catch (error) {
-    return { user: null, error: "Database Query Failed", message: error };
+    return { data: null, error, message: "Database Query Failed" };
   }
 };
