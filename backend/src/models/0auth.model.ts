@@ -1,5 +1,5 @@
 export interface JWTToken {
-  user_id: number;
+  user_id: string;
   username: string;
   role: string;
 }

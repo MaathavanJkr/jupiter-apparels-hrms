@@ -600,6 +600,7 @@ INSERT INTO users VALUES ('U004', 'E0007', 'Supervisor', 'james.Wilson', 'passwo
 INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'Aria.Scott', 'password606');
 INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
 INSERT INTO users VALUES ('U007', 'E0005', 'Supervisor', 'David.Jones', 'password555');
+INSERT INTO users VALUES ('U008', 'E0100', 'Admin', 'maathavan', '123456');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';

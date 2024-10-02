@@ -2,7 +2,7 @@
 import express from 'express';
 import organizationRoutes from './routes/organization.route';
 import userRoutes from './routes/user.route';
-
+import authRoutes from './routes/auth.route'
 import emergencyContactRoutes from './routes/emergencyContact.route';
 import employeeDependentRoutes from './routes/dependent.route';
 import employmentStatusRoutes from './routes/employmentStatus.route';
@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Settiing up Routes
+app.use('/auth', authRoutes);
 app.use('/organization', organizationRoutes);
 app.use('/user',userRoutes);
 app.use('/branch', branchRoutes);
