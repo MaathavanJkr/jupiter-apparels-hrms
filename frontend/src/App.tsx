@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
+import Employees from './pages/Employees';
+
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import LogIn from './pages/Authentication/LogIn';
-import SignUp from './pages/Authentication/SignUp';
-import Calendar from './pages/Calendar';
+
 import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
 import FormElements from './pages/Form/FormElements';
@@ -13,7 +14,7 @@ import FormLayout from './pages/Form/FormLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Tables from './pages/Tables';
-import Alerts from './pages/UiElements/Alerts';
+
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
 
@@ -38,17 +39,8 @@ function App() {
           index
           element={
             <>
-              <PageTitle title="eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template" />
+              <PageTitle title="Dashboard | Jupiter Apparels" />
               <ECommerce />
-            </>
-          }
-        />
-        <Route
-          path="/calendar"
-          element={
-            <>
-              <PageTitle title="Calendar | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Calendar />
             </>
           }
         />
@@ -58,6 +50,15 @@ function App() {
             <>
               <PageTitle title="Profile | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <Profile />
+            </>
+          }
+        />
+        <Route
+          path="/employees"
+          element={
+            <>
+              <PageTitle title="Employees | Jupiter Apparels" />
+              <Employees />
             </>
           }
         />
@@ -107,15 +108,6 @@ function App() {
           }
         />
         <Route
-          path="/ui/alerts"
-          element={
-            <>
-              <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Alerts />
-            </>
-          }
-        />
-        <Route
           path="/ui/buttons"
           element={
             <>
@@ -130,15 +122,6 @@ function App() {
             <>
               <PageTitle title="Log in | Jupiter Apparels" />
               <LogIn />
-            </>
-          }
-        />
-        <Route
-          path="/auth/signup"
-          element={
-            <>
-              <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <SignUp />
             </>
           }
         />

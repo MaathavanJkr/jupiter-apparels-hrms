@@ -7,10 +7,10 @@ export interface User {
 }
 
 export interface Employee {
-    employee_id: number;
-    department_id: number;
-    branch_id: number;
-    supervisor_id: number;
+    employee_id: string;
+    department_id: string;
+    branch_id: string;
+    supervisor_id: string;
     first_name : string;
     last_name : string;
     birthday: Date;
@@ -19,9 +19,9 @@ export interface Employee {
     address: string;
     email: string;
     NIC: string;
-    job_title_id: number;
-    pay_grade_id: number;
-    employee_status_id: number;
+    job_title_id: string;
+    pay_grade_id: string;
+    employee_status_id: string;
     contact_number: string;
 }
 
@@ -44,5 +44,31 @@ export interface UserInfo {
     contact_number: string,
 }
 
+export interface Branch {
+    branch_id: string,
+    name: string,
+    address: string,
+    contact_number: string,
+    manager_id : string,
+}
 
+export interface Department {
+    department_id: string,
+    name: string,
+}
 
+export interface JobTitle {
+    job_title_id: string,
+    title: string,
+}
+
+export interface EmploymentStatus {
+    employment_status_id: string,
+    status: string,
+}
+
+export interface PayGrade {
+    pay_grade_id: string,
+    paygrade:number,
+    grade_name: string,
+}

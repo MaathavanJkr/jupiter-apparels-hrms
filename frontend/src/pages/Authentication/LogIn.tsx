@@ -1,35 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import LogoDark from '../../images/logo/logo-dark.svg';
-import Logo from '../../images/logo/logo.svg';
 import { login } from '../../services/authServices';
- 
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+  
+
 
 const LogIn: React.FC = () => {
-const navigate = useNavigate();
-const token = localStorage.getItem('token');
-const [username, setUsername] = useState<string>('');
-const [password, setPassword] = useState<string>('');
-const [error, setError] = useState<string | null>(null);
 
+  
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
-const handleSignin = async (e: {preventDefault: () => void;}) => {
-  e.preventDefault();
+  const notifyError = (error:any) => {
+    toast.error(error, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+      });
+  }
 
-  if (username!= '' && password != '') {
-    await login(username, password).then(()=> {
+  const notifyField = () => {
+    toast.error("Fill all fields", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+      });
+  }
+
+ 
+
+  const handleSignin = async (e: {preventDefault: () => void;}) => {
+    e.preventDefault();
+
+    if (username!= '' && password != '') {
+      await login(username, password).then(()=> {
+        navigate('/');
+      }).catch((err)=> {
+        notifyError(err);
+      });
+    } else {
+      notifyField();
+    }
+  }
+  useEffect(() => {
+    if (token) {
       navigate('/');
-    }).catch((error)=> {
-      setError(error);
-    });
-  }
-}
-useEffect(() => {
-  if (token) {
-    navigate('/');
-  }
-}, []);
+    }
+  }, []);
 
 
   return (
@@ -41,8 +74,7 @@ useEffect(() => {
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
               <Link className="mb-5.5 inline-block" to="/">
-                <img className="hidden dark:block" src={Logo} alt="Logo" />
-                <img className="dark:hidden" src={LogoDark} alt="Logo" />
+                <h1 className='text-2xl font-bold' >Jupiter Apparels</h1>
               </Link>
 
               <p className="2xl:px-20">
@@ -123,17 +155,14 @@ useEffect(() => {
                   >
                     Log In
                   </button>
+                  
                 </div>
               </form>
-              { error && (
-                <div className='text-red-500 text-center'>
-                  {JSON.stringify(error)}
-                </div>
-              )}
             </div>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };
