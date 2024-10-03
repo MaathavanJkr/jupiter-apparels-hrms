@@ -126,7 +126,7 @@ useEffect(() => {
                 </div>
               </form>
               { error && (
-                <div color='red'>
+                <div className='text-red-500 text-center'>
                   {JSON.stringify(error)}
                 </div>
               )}
