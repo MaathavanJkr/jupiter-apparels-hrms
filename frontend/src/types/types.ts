@@ -21,7 +21,7 @@ export interface Employee {
     NIC: string;
     job_title_id: string;
     pay_grade_id: string;
-    employee_status_id: string;
+    employment_status_id: string;
     contact_number: string;
 }
 

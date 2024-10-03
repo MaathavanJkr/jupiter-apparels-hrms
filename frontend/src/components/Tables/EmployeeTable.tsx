@@ -188,7 +188,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
             setNic(currEmployee.NIC);
             setJobTitleId(currEmployee.job_title_id);
             setPayGradeId(currEmployee.pay_grade_id);
-            setEmployeeStatusId(currEmployee.employee_status_id);
+            setEmployeeStatusId(currEmployee.employment_status_id);
             setContactNumber(currEmployee.contact_number);
             setModalOpen(true);
         }
@@ -216,7 +216,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
             setNic(currEmployee.NIC);
             setJobTitleId(currEmployee.job_title_id);
             setPayGradeId(currEmployee.pay_grade_id);
-            setEmployeeStatusId(currEmployee.employee_status_id);
+            setEmployeeStatusId(currEmployee.employment_status_id);
             setContactNumber(currEmployee.contact_number);
             setModalOpen(true);
         }
@@ -285,22 +285,22 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
                                 </td>
                                 <td rowSpan={1} className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                    {employee.branch_id}
+                                        {branches?.find(branch => branch.branch_id === employee.branch_id)?.name}
                                     </p>
                                 </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                    {employee.department_id}
+                                        {departments?.find(dept => dept.department_id === employee.department_id)?.name}
                                     </p>
                                 </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {employee.job_title_id}
+                                        {jobTitles?.find(title => title.job_title_id === employee.job_title_id)?.title}
                                     </p>
                                 </td>
                                 <td>
                                     <div className="flex items-center justify-center">
-                                        {employee.employee_status_id}
+                                        {employmentStatuses?.find(status => status.employment_status_id === employee.employment_status_id)?.status}
                                     </div>
                                 </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

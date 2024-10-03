@@ -9,7 +9,7 @@ const Employees = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string|null>(null);
-    const [itemsPerPage, setItemsPerPage] = useState<number>(0);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(5);
     const [searchKey, setSearchKey] = useState<string>('');
 
     useEffect(()=>{
@@ -65,7 +65,7 @@ const Employees = () => {
                 </div>
             </div>
             <div className="flex flex-col gap-10">
-                <EmployeeTable employeeData={employees} nameSearchKey={searchKey} itemsPerPage={itemsPerPage} />
+                {loading ? <div> Loading</div>:<EmployeeTable employeeData={employees} nameSearchKey={searchKey} itemsPerPage={itemsPerPage} /> }
             </div>
 
             </>
