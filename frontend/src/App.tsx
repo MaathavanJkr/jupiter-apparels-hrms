@@ -3,7 +3,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
-import SignIn from './pages/Authentication/SignIn';
+import LogIn from './pages/Authentication/LogIn';
 import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
 import Chart from './pages/Chart';
@@ -125,11 +125,11 @@ function App() {
           }
         />
         <Route
-          path="/auth/signin"
+          path="/auth/login"
           element={
             <>
-              <PageTitle title="Signin | Jupiter Apparels" />
-              <SignIn />
+              <PageTitle title="Log in | Jupiter Apparels" />
+              <LogIn />
             </>
           }
         />

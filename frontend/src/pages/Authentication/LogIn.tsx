@@ -6,7 +6,7 @@ import Logo from '../../images/logo/logo.svg';
 import { login } from '../../services/authServices';
  
 
-const SignIn: React.FC = () => {
+const LogIn: React.FC = () => {
 const navigate = useNavigate();
 const token = localStorage.getItem('token');
 const [username, setUsername] = useState<string>('');
@@ -34,7 +34,7 @@ useEffect(() => {
 
   return (
     <>
-      <Breadcrumb pageName="Sign In" />
+      <Breadcrumb pageName="Log In" />
 
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
@@ -55,7 +55,7 @@ useEffect(() => {
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Sign In to Jupiter Apparels
+                Log In to Jupiter Apparels
               </h2>
 
               <form>
@@ -121,7 +121,7 @@ useEffect(() => {
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-primary-dark"
                     onClick={handleSignin}
                   >
-                    Sign In
+                    Log In
                   </button>
                 </div>
               </form>
@@ -138,4 +138,4 @@ useEffect(() => {
   );
 };
 
-export default SignIn;
+export default LogIn;
