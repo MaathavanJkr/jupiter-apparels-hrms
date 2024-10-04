@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Employee,Branch,Department,JobTitle,EmploymentStatus,PayGrade } from "../../types/types";
+import { Employee,Branch,Department,JobTitle,EmploymentStatus,PayGrade, Supervisor } from "../../types/types";
 import ReactPaginate from "react-paginate";
 import {updateEmployee, deleteEmployee, getEmployeeByID } from "../../services/employeeServices";
 import { filterIt } from "../../services/filter";
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, departmentData, payGradeData, jobTitleData, statusData}:{employeeData: Employee[], itemsPerPage: number, nameSearchKey: string, branchData:Branch[],departmentData:Department[], payGradeData:PayGrade[], jobTitleData:JobTitle[], statusData:EmploymentStatus[]}) => {
+const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, departmentData, payGradeData, jobTitleData, statusData, supervisorData}:{employeeData: Employee[], itemsPerPage: number, nameSearchKey: string, branchData:Branch[],departmentData:Department[], payGradeData:PayGrade[], jobTitleData:JobTitle[], statusData:EmploymentStatus[], supervisorData:Supervisor[]}) => {
     const items: Employee[] = Array.isArray(employeeData) ? (nameSearchKey !== "" ? filterIt(employeeData,nameSearchKey): employeeData) : [];
 
     const itemsLength = items.length;
@@ -49,7 +49,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
             theme: "colored",
             transition: Bounce,
             });
-    }
+    };
 
     const [employeeId, setEmployeeId] = useState<string>("");
     const [departmentId, setDepartmentId] = useState<string>('');
@@ -79,6 +79,8 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
     const jobTitles: JobTitle[] = Array.isArray(jobTitleData) ? jobTitleData : [];
     const employmentStatuses: EmploymentStatus[] = Array.isArray(statusData) ? statusData :[];
     const payGrades: PayGrade[] = Array.isArray(payGradeData) ? payGradeData : [];
+    const supervisors : Supervisor[] = Array.isArray(supervisorData) ? supervisorData : [];
+   
 
 
     const fetchEmployee = async (employee_id:string) => {
@@ -104,8 +106,8 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                 notifySuccess("Employee Deleted");
                 setModalOpen(false);
             }).catch((error) => {
-                
-                notifyError(`Failed to delete: Cannot Delete a supervisor without assigning a new Supervisor to employees`);
+                notifyError(`Failed to delete: ${error}`);
+                setModalOpen(false);
             })
         } else {
             notifyError("No Employee Selected");
@@ -365,19 +367,19 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
             <>
               <div className="flex justify-around pb-8">
                 <div className="flex flex-wrap items-center rounded-lg">
-                  <button onClick={() => setViewSection("Personal")} className={`inline-flex items-center gap-2.5 rounded-l-lg border border-primary text-primary px-2 py-1 font-medium hover:border-primary hover:bg-primary hover:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'personal' && 'border-primary bg-primary text-white'}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                    </svg>
+                  <button onClick={() => setViewSection("Personal")} className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'Personal' && 'border-primary bg-primary text-white'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                  </svg>
                     Personal
                   </button>
-                  <button onClick={() => setViewSection("Work")} className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'exam' && 'border-primary bg-primary text-white'}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-                    </svg>
+                  <button onClick={() => setViewSection("Work")} className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'Work' && 'border-primary bg-primary text-white'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                  </svg>
                     Work
                   </button>
-                  <button onClick={() => setViewSection("Contact")} className={`inline-flex items-center gap-2.5 rounded-r-lg border border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'contact' && 'border-primary bg-primary text-white'}`}>
+                  <button onClick={() => setViewSection("Contact")} className={`inline-flex items-center gap-2.5 rounded-r-lg border border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'Contact' && 'border-primary bg-primary text-white'}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
                     </svg>
@@ -390,7 +392,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                   <div className="space-y-2">
                     <div>Name : {firstName+" "+lastName}</div>
                     <div>NIC : {nic}</div>
-                    <div>Birthday : {JSON.stringify(birthday)}</div>
+                    <div>Birthday : {birthday?JSON.stringify(birthday):"error"}</div>
                     <div>Gender : {gender}</div>
                     <div>Marital Status: {maritalStatus}</div>
                   </div>
@@ -441,7 +443,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                   </button>
                 </div>
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={handleModalSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-opacity-90">
+                  <button onClick={handleModalSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
                     {action} Employee
                   </button>
                 </div>
@@ -571,20 +573,6 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
-                  <div className="mb-4.5">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Phone <span className="text-meta-1">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={contactNumber}
-                      onChange={(e) =>
-                        setContactNumber(e.target.value)
-                      }
-                      placeholder="Enter Contact Number"
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
                 </div>
                 <div>
                   <div className="mb-4.5">
@@ -614,6 +602,21 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                       <option value="" disabled>Select Department</option>
                       {departments?.map(department => (
                         <option key={department.department_id} value={department.department_id}>{department.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-5.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      Supervisor <span className="text-meta-1">*</span>
+                    </label>
+                    <select
+                      value={supervisorId}
+                      onChange={(e) => setSupervisorId(e.target.value)}
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    >
+                      <option value="" disabled>Select Supervisor</option>
+                      {supervisors?.map(supervisor => (
+                        <option key={supervisor.supervisor_id} value={supervisor.supervisor_id}>{supervisor.name}</option>
                       ))}
                     </select>
                   </div>
@@ -672,6 +675,20 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                       }
                     </select>
                   </div>
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      Phone <span className="text-meta-1">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={contactNumber}
+                      onChange={(e) =>
+                        setContactNumber(e.target.value)
+                      }
+                      placeholder="Enter Contact Number"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="-mx-3 flex flex-wrap gap-y-4">
@@ -681,7 +698,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                   </button>
                 </div>
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={handleModalSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-opacity-90">
+                  <button onClick={handleModalSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
                     {action} Employee
                   </button>
                 </div>

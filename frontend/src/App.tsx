@@ -17,6 +17,7 @@ import Tables from './pages/Tables';
 
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
+import AddEmployee from './pages/AddEmployee';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,6 +60,15 @@ function App() {
             <>
               <PageTitle title="Employees | Jupiter Apparels" />
               <Employees />
+            </>
+          }
+        />
+        <Route
+          path="/addEmployee"
+          element={
+            <>
+              <PageTitle title="Add Employee | Jupiter Apparels" />
+              <AddEmployee />
             </>
           }
         />

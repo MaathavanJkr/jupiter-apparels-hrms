@@ -72,3 +72,8 @@ export interface PayGrade {
     paygrade:number,
     grade_name: string,
 }
+
+export interface Supervisor {
+    supervisor_id: string,
+    name: string,
+}
