@@ -2,8 +2,13 @@ import { useState, useEffect } from "react";
 import { getEmployees } from "../services/employeeServices";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "../layout/DefaultLayout";
-import { Employee } from "../types/types";
+import { Branch, Department, Employee, EmploymentStatus, JobTitle, PayGrade } from "../types/types";
 import EmployeeTable from "../components/Tables/EmployeeTable";
+import { getBranches } from "../services/branchService";
+import { getDepartments } from "../services/departmentServices";
+import { getEmploymentStatuses } from "../services/employmentStatusServices";
+import { getJobTitles } from "../services/jobTitleServices";
+import { getPayGrades } from "../services/payGradeServices";
 
 const Employees = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -11,6 +16,33 @@ const Employees = () => {
     const [error, setError] = useState<string|null>(null);
     const [itemsPerPage, setItemsPerPage] = useState<number>(5);
     const [searchKey, setSearchKey] = useState<string>('');
+
+    const [branches, setBranches] = useState<Branch[]>([]);
+    const [departments, setDepartments] = useState<Department[]>([]);
+    const [jobTitles, setJobTitles] = useState<JobTitle[]>([]);
+    const [employmentStatuses, setEmploymentStatuses] = useState<EmploymentStatus[]>([]);
+    const [payGrades, setPayGardes] = useState<PayGrade[]>([]);
+
+    useEffect(()=>{
+        const fetchData = async () => {
+            try {
+                const branches = await getBranches();
+                const departments = await getDepartments();
+                const jobTitles = await getJobTitles();
+                const employmentStatuses = await getEmploymentStatuses();
+                const payGrades = await getPayGrades();
+                setJobTitles(jobTitles);
+                setBranches(branches);
+                setDepartments(departments);
+                setEmploymentStatuses(employmentStatuses);
+                setPayGardes(payGrades);
+            } catch (error) {
+                console.error("Failed to fetch Data",error);
+            }
+        }
+
+        fetchData();
+    },[])
 
     useEffect(()=>{
         const fetchEmployees = async () => {
@@ -37,36 +69,36 @@ const Employees = () => {
 
             <>
                 <Breadcrumb pageName="Employees" />
-            <div className="flex gap-4">
-                <div className="mb-5.5">
-                <select
-                    className="rounded border border-stroke bg-white py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    name="selectItemsPerPage"
-                    id="selectItemsPerPage"
-                    value={itemsPerPage}
-                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="100">100</option>
-                    <option value="500">500</option>
-                </select>
-                </div>
-                <div className="mb-4.5">
-                <input
-                    type="text"
-                    value={searchKey}
-                    onChange={(e) =>
-                    setSearchKey(e.target.value)
-                    }
-                    placeholder="Search..."
-                    className="w-full rounded border-[1.5px] border-stroke bg-white py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-                </div>
-            </div>
-            <div className="flex flex-col gap-10">
-                {loading ? <div> Loading</div>:<EmployeeTable employeeData={employees} nameSearchKey={searchKey} itemsPerPage={itemsPerPage} /> }
-            </div>
+                    <div className="flex gap-4">
+                        <div className="mb-5.5">
+                        <select
+                            className="rounded border border-stroke bg-white py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                            name="selectItemsPerPage"
+                            id="selectItemsPerPage"
+                            value={itemsPerPage}
+                            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                        >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="100">100</option>
+                            <option value="500">500</option>
+                        </select>
+                        </div>
+                        <div className="mb-4.5">
+                        <input
+                            type="text"
+                            value={searchKey}
+                            onChange={(e) =>
+                            setSearchKey(e.target.value)
+                            }
+                            placeholder="Search..."
+                            className="w-full rounded border-[1.5px] border-stroke bg-white py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        />
+                        </div>
+                    </div>
+                    <div className="flex flex-col gap-10">
+                        {loading ? <div> Loading</div>:<EmployeeTable employeeData={employees} nameSearchKey={searchKey} itemsPerPage={itemsPerPage} branchData={branches} departmentData={departments} payGradeData={payGrades} jobTitleData={jobTitles} statusData={employmentStatuses}/> }
+                    </div>
 
             </>
     )

@@ -1,18 +1,12 @@
-import { useEffect,useState } from "react";
+import { useState } from "react";
 import { Employee,Branch,Department,JobTitle,EmploymentStatus,PayGrade } from "../../types/types";
 import ReactPaginate from "react-paginate";
 import {updateEmployee, deleteEmployee, getEmployeeByID } from "../../services/employeeServices";
-import { getBranches } from "../../services/branchService";
-import { getDepartments } from "../../services/departmentServices";
-import { getJobTitles } from "../../services/jobTitleServices";
-import { getEmploymentStatuses } from "../../services/employmentStatusServices";
-import { getPayGrades } from "../../services/payGradeServices";
 import { filterIt } from "../../services/filter";
-import { Bounce, toast } from 'react-toastify';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
-const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: Employee[], itemsPerPage: number, nameSearchKey: string}) => {
+const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, departmentData, payGradeData, jobTitleData, statusData}:{employeeData: Employee[], itemsPerPage: number, nameSearchKey: string, branchData:Branch[],departmentData:Department[], payGradeData:PayGrade[], jobTitleData:JobTitle[], statusData:EmploymentStatus[]}) => {
     const items: Employee[] = Array.isArray(employeeData) ? (nameSearchKey !== "" ? filterIt(employeeData,nameSearchKey): employeeData) : [];
 
     const itemsLength = items.length;
@@ -74,56 +68,34 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
     const [employeeStatusId, setEmployeeStatusId] = useState<string>('');
     const [contactNumber, setContactNumber] = useState<string>("");
 
-    const [currEmployee, setCurrEmployee] = useState<Employee>();
     const [CurrSupervisor, setCurrSupervisor] = useState<Employee>();
 
     const [action, setAction] = useState<string>("View");
     const [modalOpen, setModalOpen] = useState<boolean>(false);
-    const [viewSection, setViewSection] = useState<string>("");
+    const [viewSection, setViewSection] = useState<string>("Personal");
 
-    const [branches, setBranches] = useState<Branch[]>([]);
-    const [departments, setDepartments] = useState<Department[]>([]);
-    const [jobTitles, setJobTitles] = useState<JobTitle[]>([]);
-    const [employmentStatuses, setEmploymentStatuses] = useState<EmploymentStatus[]>([]);
-    const [payGrades, setPayGardes] = useState<PayGrade[]>([]);
-    
+    const branches: Branch[] = Array.isArray(branchData) ? branchData : [];
+    const departments : Department[] = Array.isArray(departmentData) ? departmentData : [];
+    const jobTitles: JobTitle[] = Array.isArray(jobTitleData) ? jobTitleData : [];
+    const employmentStatuses: EmploymentStatus[] = Array.isArray(statusData) ? statusData :[];
+    const payGrades: PayGrade[] = Array.isArray(payGradeData) ? payGradeData : [];
+
 
     const fetchEmployee = async (employee_id:string) => {
         try {
             const currEmployee: Employee = await getEmployeeByID(employee_id);
-            setCurrEmployee(currEmployee);
+            //setCurrEmployee(currEmployee);
             if (currEmployee && currEmployee.supervisor_id) {
                 const CurrSupervisor = await getEmployeeByID(currEmployee.supervisor_id);
                 setCurrSupervisor(CurrSupervisor);
             } else {
                 console.log ("no supervisor"); 
             }
-            
+            return currEmployee;
         } catch (error) {
             console.error("Failed to fetch Employee",error);
         }
     }
-
-    useEffect(()=>{
-        const fetchData = async () => {
-            try {
-                const branches = await getBranches();
-                const departments = await getDepartments();
-                const jobTitles = await getJobTitles();
-                const employmentStatuses = await getEmploymentStatuses();
-                const payGrades = await getPayGrades();
-                setJobTitles(jobTitles);
-                setBranches(branches);
-                setDepartments(departments);
-                setEmploymentStatuses(employmentStatuses);
-                setPayGardes(payGrades);
-            } catch (error) {
-                console.error("Failed to fetch Data",error);
-            }
-        }
-
-        fetchData();
-    },[])
 
     const handleDeleteEmployee = () => {
         if (employeeId !== '') {
@@ -132,7 +104,8 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
                 notifySuccess("Employee Deleted");
                 setModalOpen(false);
             }).catch((error) => {
-                notifyError(`Failed to delete: ${error}`);
+                
+                notifyError(`Failed to delete: Cannot Delete a supervisor without assigning a new Supervisor to employees`);
             })
         } else {
             notifyError("No Employee Selected");
@@ -154,7 +127,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
             notifyError("Please fill all fields");
          }
     }
-   
+
     const handleModalSubmit = () => {
         switch (action) {
             case "Edit":
@@ -169,27 +142,27 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
         }
 
     }
-    const handleViewModalOpen = (employee_id:string) => {
-        fetchEmployee(employee_id);
+    const handleViewModalOpen = async (employee_id:string) => {
+        const employee = await fetchEmployee(employee_id);
         setAction("View");
 
-        if (currEmployee && currEmployee.employee_id) {
-            setEmployeeId(currEmployee.employee_id);
-            setDepartmentId(currEmployee.department_id);
-            setBranchId(currEmployee.branch_id);
-            setSupervisorId(currEmployee.supervisor_id);
-            setFirstName(currEmployee.first_name);
-            setLastName(currEmployee.last_name);
-            setBirthday(currEmployee.birthday);
-            setGender(currEmployee.gender);
-            setMaritalStatus(currEmployee.marital_status);
-            setAddress(currEmployee.address);
-            setEmail(currEmployee.email);
-            setNic(currEmployee.NIC);
-            setJobTitleId(currEmployee.job_title_id);
-            setPayGradeId(currEmployee.pay_grade_id);
-            setEmployeeStatusId(currEmployee.employment_status_id);
-            setContactNumber(currEmployee.contact_number);
+        if (employee && employee.employee_id) {
+            setEmployeeId(employee.employee_id);
+            setDepartmentId(employee.department_id);
+            setBranchId(employee.branch_id);
+            setSupervisorId(employee.supervisor_id);
+            setFirstName(employee.first_name);
+            setLastName(employee.last_name);
+            setBirthday(employee.birthday);
+            setGender(employee.gender);
+            setMaritalStatus(employee.marital_status);
+            setAddress(employee.address);
+            setEmail(employee.email);
+            setNic(employee.NIC);
+            setJobTitleId(employee.job_title_id);
+            setPayGradeId(employee.pay_grade_id);
+            setEmployeeStatusId(employee.employment_status_id);
+            setContactNumber(employee.contact_number);
             setModalOpen(true);
         }
         else {
@@ -197,41 +170,42 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
         }
     }
 
-    const handleEditModalOpen = (employee_id: string) => {
+    const handleEditModalOpen = async (employee_id: string) => {
         setAction("Edit");
-        fetchEmployee(employee_id);
+        const employee =  await fetchEmployee(employee_id);
 
-        if (currEmployee && currEmployee.employee_id) {
-            setEmployeeId(currEmployee.employee_id);
-            setDepartmentId(currEmployee.department_id);
-            setBranchId(currEmployee.branch_id);
-            setSupervisorId(currEmployee.supervisor_id);
-            setFirstName(currEmployee.first_name);
-            setLastName(currEmployee.last_name);
-            setBirthday(currEmployee.birthday);
-            setGender(currEmployee.gender);
-            setMaritalStatus(currEmployee.marital_status);
-            setAddress(currEmployee.address);
-            setEmail(currEmployee.email);
-            setNic(currEmployee.NIC);
-            setJobTitleId(currEmployee.job_title_id);
-            setPayGradeId(currEmployee.pay_grade_id);
-            setEmployeeStatusId(currEmployee.employment_status_id);
-            setContactNumber(currEmployee.contact_number);
-            setModalOpen(true);
+        if (employee && employee.employee_id) {
+          setEmployeeId(employee.employee_id);
+          setDepartmentId(employee.department_id);
+          setBranchId(employee.branch_id);
+          setSupervisorId(employee.supervisor_id);
+          setFirstName(employee.first_name);
+          setLastName(employee.last_name);
+          setBirthday(employee.birthday);
+          setGender(employee.gender);
+          setMaritalStatus(employee.marital_status);
+          setAddress(employee.address);
+          setEmail(employee.email);
+          setNic(employee.NIC);
+          setJobTitleId(employee.job_title_id);
+          setPayGradeId(employee.pay_grade_id);
+          setEmployeeStatusId(employee.employment_status_id);
+          setContactNumber(employee.contact_number);
+          setModalOpen(true);
         }
         else {
             notifyError("Employee Not Found");
         }
     }
 
-    const handleDeleteModalOpen = (employee_id: string) => {
+    const handleDeleteModalOpen =async (employee_id: string) => {
         if (employee_id !== "") {
             setAction("Delete");
-            fetchEmployee(employee_id);
-            if (currEmployee && currEmployee.employee_id) {
-                setFirstName(currEmployee.first_name);
-                setLastName(currEmployee.last_name);
+            const employee = await fetchEmployee(employee_id);
+            if (employee && employee.employee_id) {
+                setEmployeeId(employee.employee_id);
+                setFirstName(employee.first_name);
+                setLastName(employee.last_name);
                 setModalOpen(true);
             } else {
                 notifyError("Employee Not Found");
@@ -381,7 +355,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
         <div className="w-full max-w-142.5 rounded-lg bg-white px-8 py-12 dark:bg-boxdark md:px-17.5 md:py-15 max-h-screen overflow-y-auto">
           <h3 className="pb-2 text-xl font-bold text-black dark:text-white sm:text-2xl">
             {{
-              'Update': `Update Employee`,
+              'Edit': `Edit Employee`,
               'Delete': 'Delete Employee',
               'View': 'View Employee'
             }[action]}
@@ -391,19 +365,19 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
             <>
               <div className="flex justify-around pb-8">
                 <div className="flex flex-wrap items-center rounded-lg">
-                  <button onClick={() => setViewSection("personal")} className={`inline-flex items-center gap-2.5 rounded-l-lg border border-primary text-primary px-2 py-1 font-medium hover:border-primary hover:bg-primary hover:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'personal' && 'border-primary bg-primary text-white'}`}>
+                  <button onClick={() => setViewSection("Personal")} className={`inline-flex items-center gap-2.5 rounded-l-lg border border-primary text-primary px-2 py-1 font-medium hover:border-primary hover:bg-primary hover:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'personal' && 'border-primary bg-primary text-white'}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                     </svg>
                     Personal
                   </button>
-                  <button onClick={() => setViewSection("exam")} className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'exam' && 'border-primary bg-primary text-white'}`}>
+                  <button onClick={() => setViewSection("Work")} className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'exam' && 'border-primary bg-primary text-white'}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                     </svg>
-                    Exam
+                    Work
                   </button>
-                  <button onClick={() => setViewSection("contact")} className={`inline-flex items-center gap-2.5 rounded-r-lg border border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'contact' && 'border-primary bg-primary text-white'}`}>
+                  <button onClick={() => setViewSection("Contact")} className={`inline-flex items-center gap-2.5 rounded-r-lg border border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'contact' && 'border-primary bg-primary text-white'}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
                     </svg>
@@ -412,16 +386,16 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
                 </div>
               </div>
               <div className="mb-6">
-                {viewSection === "personal" && (
+                {viewSection === "Personal" && (
                   <div className="space-y-2">
-                    <div>Name : {firstName+lastName}</div>
+                    <div>Name : {firstName+" "+lastName}</div>
                     <div>NIC : {nic}</div>
                     <div>Birthday : {JSON.stringify(birthday)}</div>
                     <div>Gender : {gender}</div>
                     <div>Marital Status: {maritalStatus}</div>
                   </div>
                 )}
-                {viewSection === "work" && (
+                {viewSection === "Work" && (
                   <div className="space-y-2">
                     <div>Branch : {branches?.find(branch=> branch.branch_id === branchId)?.name}</div>
                     <div>Department: {departments?.find(department=> department.department_id === departmentId)?.name}</div>
@@ -432,7 +406,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
                   </div>
                 )}
 
-                {viewSection === "contact" && (
+                {viewSection === "Contact" && (
                   <div className="space-y-2">
                     <div>Phone : {contactNumber}</div>
                     <div>Email: {email}</div>
@@ -443,7 +417,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
 
               <div className="-mx-3 flex flex-wrap gap-y-4">
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={() => setModalOpen(false)} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+                  <button onClick={() => {setViewSection("Personal");setModalOpen(false);}} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
                     Close
                   </button>
                 </div>
@@ -717,7 +691,8 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey}:{employeeData: 
 
         </div>
       </div >
-        </div>
+      <ToastContainer />
+    </div>
     );
 }
 
