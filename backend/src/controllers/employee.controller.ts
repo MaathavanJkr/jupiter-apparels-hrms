@@ -69,10 +69,9 @@ export const deleteEmployee = async (req: Request, res: Response) => {
     try {
         const [result] = await db
             .promise()
-            .query(`SET @hr_manager_id = (SELECT e.employee_id 
-                    FROM employees e
-                    INNER JOIN users u ON e.employee_id = u.employee_id
-                    WHERE u.role = 'HR manager'
+            .query(`SET @hr_manager_id = (SELECT employee_id 
+                    FROM employee_basic_info 
+                    WHERE user_role = 'HR manager'
                     LIMIT 1);
                     UPDATE employees 
                     SET supervisor_id = @hr_manager_id
