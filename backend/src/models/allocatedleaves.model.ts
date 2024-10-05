@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
 
 export interface AllocatedLeaves extends RowDataPacket{
-    pay_grade_id : string;
+    pay_grade_id? : string;
     annual_leaves : number;
     casual_leaves : number;
     maternity_leaves : number;
