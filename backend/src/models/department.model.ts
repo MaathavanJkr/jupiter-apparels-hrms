@@ -5,7 +5,7 @@ import { Output } from "./output.model";
 
 
 export interface Department extends RowDataPacket{
-    department_id: string;
+    department_id?: string;
     name: string;
 }
 
