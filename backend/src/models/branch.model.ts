@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
 
 export interface Branch extends RowDataPacket{
-    branch_id: string;
+    branch_id?: string;
     name: string;
     address: string;
     contact_number: string;
