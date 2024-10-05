@@ -37,7 +37,7 @@ export const getEmployeeByID = async (req: Request, res: Response) => {
     try {
         const [employees] = await db
             .promise()
-            .query<Employee[]>("SELECT * FROM employees WHERE id = ?", id);
+            .query<Employee[]>("SELECT * FROM employees WHERE employee_id = ?", id);
 
         res.status(200).json(employees[0]);
     } catch (error) {
@@ -69,7 +69,15 @@ export const deleteEmployee = async (req: Request, res: Response) => {
     try {
         const [result] = await db
             .promise()
-            .query("DELETE FROM employees WHERE id = ?", id);
+            .query(`SET @hr_manager_id = (SELECT e.employee_id 
+                    FROM employees e
+                    INNER JOIN users u ON e.employee_id = u.employee_id
+                    WHERE u.role = 'HR manager'
+                    LIMIT 1);
+                    UPDATE employees 
+                    SET supervisor_id = @hr_manager_id
+                    WHERE supervisor_id = ?;
+                    DELETE FROM employees WHERE employee_id = ?`, [id,id]);
         res.status(200).json({ id: result, message: `Employee with id: ${id} deleted` });
     } catch (error) {
         res.status(500).json({ error: "Database query failed", message: error });
