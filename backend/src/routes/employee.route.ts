@@ -6,8 +6,8 @@ const router = Router();
 
 router.post('/', createEmployee);
 router.get('/', getEmployees);
-router.get('/:id', getEmployeeByID);
 router.get('/supervisor/',getSupervisors);
+router.get('/:id', getEmployeeByID);
 router.put('/:id', updateEmployee);
 router.delete('/:id', deleteEmployee);
 
