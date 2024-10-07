@@ -7,38 +7,12 @@ import { getJobTitles } from "../services/jobTitleServices";
 import { getPayGrades } from "../services/payGradeServices";
 import { getSupervisors } from "../services/supervisorServices";
 import { addEmployee } from "../services/employeeServices";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import {ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { notifyError,notifySuccess } from "../services/notify";
+import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 
 const AddEmployee = () => {
-
-    const notifyError = (message:string) => {
-        toast.error(message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Bounce,
-          });
-    };
-
-    const notifySuccess = (message: string) => {
-        toast.success(message, {
-            position: "top-right",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Bounce,
-            });
-    };
 
     const [departmentId, setDepartmentId] = useState<string>('');
     const [branchId, setBranchId] = useState<string>('');
@@ -79,7 +53,8 @@ const AddEmployee = () => {
                 setDepartments(departments);
                 setEmploymentStatuses(employmentStatuses);
                 setPayGardes(payGrades);
-                setSupervisors(supervisors);
+                setSupervisors(supervisors || []);
+                console.log(supervisors)
             } catch (error) {
                 console.error("Failed to fetch Data",error);
             }
@@ -104,10 +79,7 @@ const AddEmployee = () => {
     }
   return (
      <>
-        <h3 className="pb-2 text-xl font-bold text-black dark:text-white sm:text-2xl">
-            Add Employee
-        </h3>
-          <span className="mx-auto mb-6 inline-block h-1 w-25 rounded bg-primary"></span>
+        <Breadcrumb pageName="Add Employee" />
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
                   <div className="mb-4.5">
@@ -256,7 +228,7 @@ const AddEmployee = () => {
                     >
                       <option value="" disabled>Select Supervisor</option>
                       {supervisors?.map(supervisor => (
-                        <option key={supervisor.supervisor_id} value={supervisor.supervisor_id}>{supervisor.name}</option>
+                        <option key={supervisor.supervisor_id} value={supervisor.supervisor_id}>{supervisor.full_name}</option>
                       ))}
                     </select>
                   </div>

@@ -99,7 +99,7 @@ export const updateEmployee = async (
         console.log("Response:",response);
         return true;
     } catch(error:any) {
-        console.error("Error adding employee: ", error);
+        console.error("Error updating employee: ", error);
         throw error.response.data.error;
     }
 };

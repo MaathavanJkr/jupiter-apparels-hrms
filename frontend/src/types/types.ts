@@ -75,5 +75,22 @@ export interface PayGrade {
 
 export interface Supervisor {
     supervisor_id: string,
+    full_name: string,
+}
+
+export interface Dependent {
+    dependent_id: string,
+    employee_id: string,
     name: string,
+    relationship_to_employee: string,
+    birth_date: string,
+}
+
+export interface EmergencyContact {
+    emergency_id: string,
+    employee_id: string,
+    name: string,
+    relationship: string,
+    contact_number: string,
+    address: string,
 }

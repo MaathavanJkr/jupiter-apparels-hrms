@@ -3,8 +3,10 @@ import { Employee,Branch,Department,JobTitle,EmploymentStatus,PayGrade, Supervis
 import ReactPaginate from "react-paginate";
 import {updateEmployee, deleteEmployee, getEmployeeByID } from "../../services/employeeServices";
 import { filterIt } from "../../services/filter";
-import { Bounce, toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { notifyError,notifySuccess } from "../../services/notify";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, departmentData, payGradeData, jobTitleData, statusData, supervisorData}:{employeeData: Employee[], itemsPerPage: number, nameSearchKey: string, branchData:Branch[],departmentData:Department[], payGradeData:PayGrade[], jobTitleData:JobTitle[], statusData:EmploymentStatus[], supervisorData:Supervisor[]}) => {
     const items: Employee[] = Array.isArray(employeeData) ? (nameSearchKey !== "" ? filterIt(employeeData,nameSearchKey): employeeData) : [];
@@ -23,33 +25,8 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
         setItemOffset(newOffset);
     };
 
-    const notifyError = (message:string) => {
-        toast.error(message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Bounce,
-          });
-    };
+    const navigate = useNavigate();
 
-    const notifySuccess = (message: string) => {
-        toast.success(message, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Bounce,
-            });
-    };
 
     const [employeeId, setEmployeeId] = useState<string>("");
     const [departmentId, setDepartmentId] = useState<string>('');
@@ -86,7 +63,6 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
     const fetchEmployee = async (employee_id:string) => {
         try {
             const currEmployee: Employee = await getEmployeeByID(employee_id);
-            //setCurrEmployee(currEmployee);
             if (currEmployee && currEmployee.supervisor_id) {
                 const CurrSupervisor = await getEmployeeByID(currEmployee.supervisor_id);
                 setCurrSupervisor(CurrSupervisor);
@@ -419,15 +395,22 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
 
               <div className="-mx-3 flex flex-wrap gap-y-4">
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={() => {setViewSection("Personal");setModalOpen(false);}} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
-                    Close
+                  <button onClick={() => {
+                    handleEditModalOpen(employeeId)
+                  }} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+                    Edit
                   </button>
                 </div>
                 <div className="w-full px-3 2xsm:w-1/2">
                   <button onClick={() => {
-                    handleEditModalOpen(employeeId)
-                  }} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-opacity-90">
-                    Edit
+                    navigate('/employee/details/'+employeeId);
+                  }} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+                    Dependents & contacts
+                  </button>
+                </div>
+                <div className="w-full px-3 2xsm:w-1/2">
+                  <button onClick={() => {setViewSection("Personal");setModalOpen(false);}} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+                    Close
                   </button>
                 </div>
               </div>
@@ -616,7 +599,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                     >
                       <option value="" disabled>Select Supervisor</option>
                       {supervisors?.map(supervisor => (
-                        <option key={supervisor.supervisor_id} value={supervisor.supervisor_id}>{supervisor.name}</option>
+                        <option key={supervisor.supervisor_id} value={supervisor.supervisor_id}>{supervisor.full_name}</option>
                       ))}
                     </select>
                   </div>
