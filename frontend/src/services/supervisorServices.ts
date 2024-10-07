@@ -3,7 +3,7 @@ import axiosInstance from "../axiosConfig";
 export const getSupervisors = async () => {
     try {
         const token = localStorage.getItem("token");
-        const response = await axiosInstance.get('/supervisors' , {
+        const response = await axiosInstance.get('/employee/supervisors' , {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
