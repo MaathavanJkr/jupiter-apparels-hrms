@@ -11,6 +11,8 @@ import employmentStatusRoutes from './routes/employmentStatus.route';
 import branchRoutes from './routes/branch.route';
 import departmentRoutes from './routes/department.route';
 import employeeRoutes from './routes/employee.route';
+import jobtitleRoutes from './routes/jobtitle.route';
+import paygradeRoutes from './routes/paygrade.route';
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +29,8 @@ app.use('/employee', employeeRoutes);
 app.use('/emergencycontact',emergencyContactRoutes);
 app.use('/dependent',employeeDependentRoutes);
 app.use('/employmentstatus',employmentStatusRoutes);
+app.use('/jobtitle',jobtitleRoutes);
+app.use('/paygrade',paygradeRoutes);
 
 
 export default app;
