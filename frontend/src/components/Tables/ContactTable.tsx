@@ -5,6 +5,10 @@ import { notifyError, notifySuccess } from "../../services/notify";
 import { ToastContainer } from "react-toastify";
 
 const ContactTable = ({employee_id}:{employee_id:string}) => {
+
+    const role = localStorage.getItem('role');
+    const isAuthorized = (role ==="Admin" || role === "HR manager");
+
     const [contactId, setContactId] = useState<string>('');
     const [employeeId, setEmployeeId] = useState<string>('');
     const [relationship, setRelationship] = useState<string>('');
@@ -122,9 +126,11 @@ const ContactTable = ({employee_id}:{employee_id:string}) => {
                         <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                             Address
                         </th>
-                        <th className="py-4 px-4 font-medium text-black text-center dark:text-white">
+                       {isAuthorized && (
+                         <th className="py-4 px-4 font-medium text-black text-center dark:text-white">
                             Actions
                         </th>
+                       )}
                         </tr>
                     </thead>
                     <tbody>
@@ -155,7 +161,8 @@ const ContactTable = ({employee_id}:{employee_id:string}) => {
                                         {contact.address}
                                     </p>
                                 </td>
-                                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                                {isAuthorized && (
+                                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                     <div className="flex items-center justify-center space-x-3.5">
                                     <button onClick={() => handleEditModalOpen(contact.emergency_id)} className="hover:text-primary">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -191,6 +198,7 @@ const ContactTable = ({employee_id}:{employee_id:string}) => {
                                     </button>
                                     </div>
                                 </td>
+                                )}
 
                                 </tr>
                             )

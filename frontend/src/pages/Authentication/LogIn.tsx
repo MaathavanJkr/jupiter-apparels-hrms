@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../services/authServices';
-import { Bounce, ToastContainer, toast } from 'react-toastify';
+import {ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { notifyError } from '../../services/notify';
   
 
 
@@ -14,52 +15,24 @@ const LogIn: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const notifyError = (error:any) => {
-    toast.error(error, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-      });
-  }
-
-  const notifyField = () => {
-    toast.error("Fill all fields", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-      });
-  }
-
- 
 
   const handleSignin = async (e: {preventDefault: () => void;}) => {
     e.preventDefault();
 
     if (username!= '' && password != '') {
       await login(username, password).then(()=> {
-        navigate('/');
+        navigate('/employees'); //need to change to dashboard later
       }).catch((err)=> {
         notifyError(err);
       });
     } else {
-      notifyField();
+      notifyError('Fill all Fields');
     }
   }
   useEffect(() => {
     if (token) {
-      navigate('/');
+      navigate('/employees'); //need to change to dashboard later
+
     }
   }, []);
 

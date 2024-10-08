@@ -7,11 +7,12 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import LogIn from './pages/Authentication/LogIn';
 
-import DefaultLayout from './layout/DefaultLayout';
+
 import AddEmployee from './pages/AddEmployee';
 import EmployeeDetails from './pages/EmployeeDetails';
 import AddDependent from './pages/AddDependent';
 import AddContact from './pages/AddContact';
+import Profile from './pages/Profile';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -71,6 +72,15 @@ function App() {
             <>
               <PageTitle title= "Add Contact | Jupiter Apparels" />
               <AddContact />
+            </>
+          }
+        />
+        <Route
+          path="/profile/:user_id"
+          element={
+            <>
+              <PageTitle title= "Profile | Jupiter Apparels" />
+              <Profile />
             </>
           }
         />
