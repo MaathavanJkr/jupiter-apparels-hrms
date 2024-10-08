@@ -4,13 +4,13 @@ import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
 
 export interface PayGrade extends RowDataPacket {
-  pay_grade_id?: string;  
-  paygrade: number;      
-  grade_name: string;   
+  pay_grade_id?: string;
+  paygrade: number;
+  grade_name: string;
 }
 
 export const createPayGradeModel = async (
-  payGrade: PayGrade
+    payGrade: PayGrade
 ): Promise<Output> => {
   const { paygrade, grade_name } = payGrade;
 
@@ -22,11 +22,8 @@ export const createPayGradeModel = async (
 
   try {
     await db
-      .promise()
-      .query(
-        "INSERT INTO pay_grades (pay_grade_id, paygrade, grade_name) VALUES (UUID(), ?, ?)",
-        [paygrade, grade_name]
-      );
+        .promise()
+        .query("CALL CreatePayGrade(?, ?, ?)", [payGrade.pay_grade_id, paygrade, grade_name]);
     return {
       data: payGrade,
       message: "Pay grade created successfully",
@@ -37,12 +34,11 @@ export const createPayGradeModel = async (
   }
 };
 
-
 export const getPayGradeByIDModel = async (id: string): Promise<Output> => {
   try {
     const [result] = await db
-      .promise()
-      .query("SELECT * FROM pay_grades WHERE pay_grade_id = ?", [id]);
+        .promise()
+        .query("CALL GetPayGradeByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Pay grade not found", message: null };
@@ -62,10 +58,9 @@ export const getPayGradeByIDModel = async (id: string): Promise<Output> => {
   }
 };
 
-
 export const getAllPayGradesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("SELECT * FROM pay_grades");
+    const [result] = await db.promise().query("CALL GetAllPayGrades()");
     return { data: result as PayGrade[], error: null, message: null };
   } catch (error) {
     return {
@@ -76,9 +71,8 @@ export const getAllPayGradesModel = async (): Promise<Output> => {
   }
 };
 
-
 export const updatePayGradeModel = async (
-  payGrade: PayGrade
+    payGrade: PayGrade
 ): Promise<Output> => {
   const { pay_grade_id, paygrade, grade_name } = payGrade;
 
@@ -88,11 +82,8 @@ export const updatePayGradeModel = async (
 
   try {
     await db
-      .promise()
-      .query(
-        "UPDATE pay_grades SET paygrade = ?, grade_name = ? WHERE pay_grade_id = ?",
-        [paygrade, grade_name, pay_grade_id]
-      );
+        .promise()
+        .query("CALL UpdatePayGrade(?, ?, ?)", [pay_grade_id, paygrade, grade_name]);
     return {
       message: "Pay grade updated successfully",
       error: null,
@@ -103,9 +94,8 @@ export const updatePayGradeModel = async (
   }
 };
 
-
 export const deletePayGradeModel = async (
-  pay_grade_id: string
+    pay_grade_id: string
 ): Promise<Output> => {
   if (!pay_grade_id) {
     return { error: "Missing required fields", data: null, message: null };
@@ -113,10 +103,8 @@ export const deletePayGradeModel = async (
 
   try {
     await db
-      .promise()
-      .query("DELETE FROM pay_grades WHERE pay_grade_id = ?", [
-        pay_grade_id,
-      ]);
+        .promise()
+        .query("CALL DeletePayGrade(?)", [pay_grade_id]);
     return {
       message: "Pay grade deleted successfully",
       error: null,
@@ -126,6 +114,3 @@ export const deletePayGradeModel = async (
     return { error, message: "Database Query Failed", data: null };
   }
 };
-
-  
-  
