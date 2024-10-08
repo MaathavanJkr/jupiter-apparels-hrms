@@ -10,6 +10,7 @@ import { getJobTitles } from "../services/jobTitleServices";
 import { getPayGrades } from "../services/payGradeServices";
 import { Link } from "react-router-dom";
 import { getSupervisors } from "../services/supervisorServices";
+import DefaultLayout from "../layout/DefaultLayout";
 
 const Employees = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -75,6 +76,7 @@ const Employees = () => {
     return (
 
             <>
+                <DefaultLayout>
                 <Breadcrumb pageName="Employees" />
                     
                     <div className="flex gap-4">
@@ -145,6 +147,8 @@ const Employees = () => {
                     <div className="flex flex-col gap-10">
                         {loading ? <div> Loading</div>:<EmployeeTable employeeData={employees} nameSearchKey={nameSearchKey} itemsPerPage={itemsPerPage} branchData={branches} departmentData={departments} payGradeData={payGrades} jobTitleData={jobTitles} statusData={employmentStatuses} supervisorData={supervisors}/> }
                     </div>
+
+                </DefaultLayout>
 
             </>
     )

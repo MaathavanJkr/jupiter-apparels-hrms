@@ -34,7 +34,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
     const [supervisorId, setSupervisorId] = useState<string>('');
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
-    const [birthday, setBirthday] = useState<Date | null>(null);
+    const [birthday, setBirthday] = useState<string>('');
     const [gender, setGender] = useState<string>("");
     const [maritalStatus, setMaritalStatus] = useState<string>("");
     const [address, setAddress] = useState<string>("");
@@ -131,7 +131,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
             setSupervisorId(employee.supervisor_id);
             setFirstName(employee.first_name);
             setLastName(employee.last_name);
-            setBirthday(employee.birthday);
+            setBirthday(employee.birth_date);
             setGender(employee.gender);
             setMaritalStatus(employee.marital_status);
             setAddress(employee.address);
@@ -159,7 +159,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
           setSupervisorId(employee.supervisor_id);
           setFirstName(employee.first_name);
           setLastName(employee.last_name);
-          setBirthday(employee.birthday);
+          setBirthday(employee.birth_date);
           setGender(employee.gender);
           setMaritalStatus(employee.marital_status);
           setAddress(employee.address);
@@ -368,7 +368,7 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                   <div className="space-y-2">
                     <div>Name : {firstName+" "+lastName}</div>
                     <div>NIC : {nic}</div>
-                    <div>Birthday : {birthday?JSON.stringify(birthday):"error"}</div>
+                    <div>Birthday : {new Date(birthday).toLocaleDateString() }</div>
                     <div>Gender : {gender}</div>
                     <div>Marital Status: {maritalStatus}</div>
                   </div>
@@ -486,9 +486,9 @@ const EmployeeTable = ({employeeData,itemsPerPage,nameSearchKey,branchData, depa
                     </label>
                     <input
                       type="date"
-                      value={birthday?.toISOString()}
+                      value={birthday}
                       onChange={(e) =>
-                        setBirthday(new Date(e.target.value))
+                        setBirthday(e.target.value)
                       }
                       placeholder="Enter NIC"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

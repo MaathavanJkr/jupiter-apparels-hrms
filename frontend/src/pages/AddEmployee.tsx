@@ -11,6 +11,7 @@ import {ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { notifyError,notifySuccess } from "../services/notify";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
+import DefaultLayout from "../layout/DefaultLayout";
 
 const AddEmployee = () => {
 
@@ -19,7 +20,7 @@ const AddEmployee = () => {
     const [supervisorId, setSupervisorId] = useState<string>('');
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
-    const [birthday, setBirthday] = useState<Date | null>(null);
+    const [birthday, setBirthday] = useState<string>('');
     const [gender, setGender] = useState<string>("");
     const [maritalStatus, setMaritalStatus] = useState<string>("");
     const [address, setAddress] = useState<string>("");
@@ -79,6 +80,7 @@ const AddEmployee = () => {
     }
   return (
      <>
+      <DefaultLayout>
         <Breadcrumb pageName="Add Employee" />
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <div>
@@ -130,9 +132,9 @@ const AddEmployee = () => {
                     </label>
                     <input
                       type="date"
-                      value={birthday?.toISOString()}
+                      value={birthday}
                       onChange={(e) =>
-                        setBirthday(new Date(e.target.value))
+                        setBirthday(e.target.value)
                       }
                       placeholder="Enter NIC"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -331,6 +333,7 @@ const AddEmployee = () => {
                 </div>
               </div>
               <ToastContainer />
+            </DefaultLayout>
      </>
   )
 }

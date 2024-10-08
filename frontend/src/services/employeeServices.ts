@@ -6,7 +6,7 @@ export const addEmployee = async (
     supervisor_id: string,
     first_name : string,
     last_name : string,
-    birthday: Date,
+    birthday: string,
     gender: string,
     marital_status: string,
     address: string,
@@ -14,7 +14,7 @@ export const addEmployee = async (
     NIC: string,
     job_title_id: string,
     pay_grade_id: string,
-    employee_status_id: string,
+    employment_status_id: string,
     contact_number: string
 ) => {
     try {
@@ -35,7 +35,7 @@ export const addEmployee = async (
                 NIC,
                 job_title_id,
                 pay_grade_id,
-                employee_status_id,
+                employment_status_id,
                 contact_number
             },
             {
@@ -58,7 +58,7 @@ export const updateEmployee = async (
     supervisor_id: string,
     first_name : string,
     last_name : string,
-    birthday: Date,
+    birthday: string,
     gender: string,
     marital_status: string,
     address: string,

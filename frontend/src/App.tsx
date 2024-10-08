@@ -10,6 +10,8 @@ import LogIn from './pages/Authentication/LogIn';
 import DefaultLayout from './layout/DefaultLayout';
 import AddEmployee from './pages/AddEmployee';
 import EmployeeDetails from './pages/EmployeeDetails';
+import AddDependent from './pages/AddDependent';
+import AddContact from './pages/AddContact';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +28,6 @@ function App() {
   return loading ? (
     <Loader />
   ) : (
-    <DefaultLayout>
       <Routes>
         <Route
           path="/employees"
@@ -56,6 +57,24 @@ function App() {
           }
         />
         <Route
+          path="/employee/adddependent/:employee_id"
+          element={
+            <>
+              <PageTitle title= "Add Dependent | Jupiter Apparels" />
+              <AddDependent />
+            </>
+          }
+        />
+        <Route
+          path="/employee/addcontact/:employee_id"
+          element={
+            <>
+              <PageTitle title= "Add Contact | Jupiter Apparels" />
+              <AddContact />
+            </>
+          }
+        />
+        <Route
           path="/auth/login"
           element={
             <>
@@ -65,7 +84,6 @@ function App() {
           }
         />
       </Routes>
-    </DefaultLayout>
   );
 }
 

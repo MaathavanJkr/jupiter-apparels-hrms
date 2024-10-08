@@ -13,7 +13,7 @@ export interface Employee {
     supervisor_id: string;
     first_name : string;
     last_name : string;
-    birthday: Date;
+    birth_date: string;
     gender: string;
     marital_status: string;
     address: string;
