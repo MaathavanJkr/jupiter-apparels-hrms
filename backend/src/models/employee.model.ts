@@ -42,7 +42,6 @@ export interface Supervisor extends RowDataPacket {
 
 }
 
-
 export const createEmployeeModel = async (employee: Employee): Promise<Output> => {
     const {
       department_id,
