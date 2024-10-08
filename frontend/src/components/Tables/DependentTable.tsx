@@ -111,7 +111,7 @@ const DependentTable = ({employee_id}:{employee_id:string}) => {
                             Name
                         </th>
                         <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                            RelationShip
+                            Relationship
                         </th>
                         <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                             Birth Date
@@ -141,7 +141,7 @@ const DependentTable = ({employee_id}:{employee_id:string}) => {
                                 </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {dependent.birth_date}
+                                        {new Date(dependent.birth_date).toLocaleDateString()}
                                     </p>
                                 </td>
                                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

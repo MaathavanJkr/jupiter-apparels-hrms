@@ -2,12 +2,13 @@ import { Link, useParams } from "react-router-dom";
 import DependentTable from "../components/Tables/DependentTable";
 import ContactTable from "../components/Tables/ContactTable";
 import { ToastContainer } from "react-toastify";
+import DefaultLayout from "../layout/DefaultLayout";
 
 const EmployeeDetails = () => {
 
     const { employee_id } = useParams<{ employee_id: string }>();
   return (
-    <>
+    <DefaultLayout>
         <div className="flex-col gap-6">
             <h3 className="pb-2 text-xl font-bold text-black dark:text-white sm:text-2xl">
                 Dependent Details
@@ -46,7 +47,7 @@ const EmployeeDetails = () => {
         </div>
         <ToastContainer />
 
-    </>
+    </DefaultLayout>
   )
 }
 

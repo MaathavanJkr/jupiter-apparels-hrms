@@ -114,7 +114,7 @@ const ContactTable = ({employee_id}:{employee_id:string}) => {
                             Name
                         </th>
                         <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                            RelationShip
+                            Relationship
                         </th>
                         <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                             Contact

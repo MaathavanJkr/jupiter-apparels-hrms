@@ -6,6 +6,7 @@ import { useState } from "react";
 import { notifyError, notifySuccess } from "../services/notify";
 import { ToastContainer } from "react-toastify";
 import { addDependent } from "../services/dependentServices";
+import DefaultLayout from "../layout/DefaultLayout";
 
 
 const AddDependent = () => {
@@ -40,7 +41,7 @@ const AddDependent = () => {
         }
     }
   return (
-    <div>
+    <DefaultLayout>
       <Breadcrumb pageName="Add Dependent" />
       <h4>Add dependent for Employee: &nbsp;  <b className="text-primary">{currEmployee?.first_name + ' ' + currEmployee?.last_name}</b></h4>
       
@@ -102,7 +103,7 @@ const AddDependent = () => {
               </div>
         </div>
         <ToastContainer />
-    </div>
+    </DefaultLayout>
   )
 }
 
