@@ -161,6 +161,23 @@ ALTER TABLE branches
 ADD CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employees(employee_id);
 
 -- ---------------------------------------------------------------------------
+-- -------------------------------- Indexing ---------------------------------
+-- ---------------------------------------------------------------------------
+CREATE INDEX idx_department_id ON employees(department_id);
+CREATE INDEX idx_branch_id ON employees(branch_id);
+CREATE INDEX idx_supervisor_id ON employees(supervisor_id);
+CREATE INDEX idx_job_title_id ON employees(job_title_id);
+CREATE INDEX idx_pay_grade_id ON employees(pay_grade_id);
+
+
+CREATE INDEX idx_employee_id ON leave_applications(employee_id);
+CREATE INDEX idx_status ON leave_applications(status);
+CREATE INDEX idx_leave_type ON leave_applications(leave_type);
+
+CREATE INDEX idx_pay_grade_id_allocated ON allocated_leaves(pay_grade_id);
+
+
+-- ---------------------------------------------------------------------------
 -- -------------------------------- Functions ----------------------------------
 -- ---------------------------------------------------------------------------
 
@@ -195,14 +212,25 @@ CREATE VIEW employee_basic_info AS
 SELECT
     e.employee_id,
     CONCAT(e.first_name, ' ', e.last_name) AS full_name,
+    e.birth_date,
+    e.gender,
+    e.marital_status,
+    e.address,
     e.email,
     e.contact_number,
-    e.address,
+    e.NIC,
+    e.cust_attr_1_value,
+    e.cust_attr_2_value,
+    e.cust_attr_3_value,
     d.name AS department_name,
     b.name AS branch_name,
+    b.address AS branch_address,
+    b.contact_number AS branch_contact,
     jt.title AS job_title,
     pg.grade_name AS pay_grade,
-    u.role AS user_role
+    pg.paygrade AS pay_grade_level,
+    es.status AS employment_status,
+    CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name
 FROM
     employees e
 JOIN
@@ -211,10 +239,14 @@ JOIN
     branches b ON e.branch_id = b.branch_id
 JOIN
     job_titles jt ON e.job_title_id = jt.job_title_id
-JOIN 
-    users u ON u.employee_id = e.employee_id
 JOIN
-    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id;
+    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
+JOIN
+    employment_statuses es ON e.employment_status_id = es.employment_status_id
+LEFT JOIN
+    employees s ON e.supervisor_id = s.employee_id;
+
+
 
 
 -- View for pending leave applications.
@@ -345,7 +377,7 @@ JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
 
 -- Ensures that an employee cannot have themselves as the supervisor.
 
- 
+
 CREATE TRIGGER check_supervisor_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
@@ -353,7 +385,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
     END IF;
 END ;
-  
+
 
 
 
@@ -364,27 +396,27 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
     END IF;
 END  ;
-  
+
 
 -- ensures that regular employees cannot be added as supervisors
 
-CREATE TRIGGER check_supervisor_type_before_insert 
+CREATE TRIGGER check_supervisor_type_before_insert
 BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(50);
 
-    IF NEW.supervisor_id IS NOT NULL THEN 
+    IF NEW.supervisor_id IS NOT NULL THEN
         SELECT u.role INTO user_role
         FROM users u
         WHERE u.employee_id = NEW.supervisor_id;
 
         IF user_role = 'Employee' THEN
-            SIGNAL SQLSTATE '45000' 
+            SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Regular Employees cannot be Supervisors, Assign Role to supervisor';
         END IF;
         IF user_role IS NULL THEN
-            SIGNAL SQLSTATE '45000' 
+            SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Employees Without accounts cannot be Supervisors, Create Account and assign higher roles';
         END IF;
     END IF;
@@ -397,17 +429,17 @@ FOR EACH ROW
 BEGIN
     DECLARE user_role VARCHAR(50);
 
-    IF NEW.supervisor_id IS NOT NULL THEN 
+    IF NEW.supervisor_id IS NOT NULL THEN
         SELECT u.role INTO user_role
         FROM users u
         WHERE u.employee_id = NEW.supervisor_id;
 
         IF user_role = 'Employee' THEN
-            SIGNAL SQLSTATE '45000' 
+            SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Regular Employees cannot be Supervisors, Assign Role to supervisor';
         END IF;
         IF user_role IS NULL THEN
-            SIGNAL SQLSTATE '45000' 
+            SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Employees Without accounts cannot be Supervisors, Create Account and assign higher roles';
         END IF;
     END IF;
@@ -424,7 +456,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
     END IF;
 END  ;
-  
+
 
 
 
@@ -435,7 +467,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
     END IF;
 END ;
-  
+
 
 
 -- Prevents duplicate NICs  in the employees table.
@@ -447,7 +479,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
     END IF;
 END ;
-  
+
 
 
 
@@ -458,7 +490,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
     END IF;
 END  ;
-  
+
 
 
 -- Ensures that employees can only be assigned to active(valid) job titles
@@ -470,7 +502,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
     END IF;
 END  ;
-  
+
 
 
 
@@ -481,7 +513,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
     END IF;
 END ;
-  
+
 
 
 -- Ensures that the leave start date is before the end date.
@@ -493,7 +525,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
     END IF;
 END  ;
-  
+
 
 
 
@@ -504,7 +536,7 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
     END IF;
 END  ;
-  
+
 
 
 -- Ensures that employees cannot submit overlapping leave applications.
@@ -519,7 +551,8 @@ BEGIN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave applications are overlapping.';
     END IF;
 END  ;
-  
+
+
 
 
 
