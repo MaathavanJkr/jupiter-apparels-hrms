@@ -184,13 +184,17 @@ export const getUserInfoByID = async (req:Request,res:Response) => {
                 b.name AS branch_name, 
                 es.status AS employment_status, 
                 j.title AS job_title,
-                e.contact_number AS contact_number
+                e.contact_number AS contact_number,
+                p.grade_name AS pay_grade_name,
+                e.supervisor_id AS supervisor_id
             FROM users u
             INNER JOIN employees e ON e.employee_id = u.employee_id
             INNER JOIN departments d ON d.department_id = e.department_id
             INNER JOIN branches b ON b.branch_id = e.branch_id
             INNER JOIN employment_statuses es ON es.employment_status_id = e.employment_status_id
-            INNER JOIN job_titles j ON j.job_title_id = e.job_title_id`
+            INNER JOIN job_titles j ON j.job_title_id = e.job_title_id
+            INNER JOIN pay_grades p ON p.pay_grade_id = e.pay_grade_id
+            WHERE u.user_id = ?`,[id]
         );
         if (result.length === 0) {
             res.status(404).json({ message: `User with id: ${id} not found` });
