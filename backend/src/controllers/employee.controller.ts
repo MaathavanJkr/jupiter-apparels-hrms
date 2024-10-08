@@ -1,7 +1,7 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
 import db from "../database/database";
-import { Employee } from "../models/employee.model";
+import { Employee, Supervisor } from "../models/employee.model";
 import { ResultSetHeader } from "mysql2";
 
 export const createEmployee = async (req: Request, res: Response) => {
@@ -37,7 +37,7 @@ export const getEmployeeByID = async (req: Request, res: Response) => {
     try {
         const [employees] = await db
             .promise()
-            .query<Employee[]>("SELECT * FROM employees WHERE id = ?", id);
+            .query<Employee[]>("SELECT * FROM employees WHERE employee_id = ?", id);
 
         res.status(200).json(employees[0]);
     } catch (error) {
@@ -69,8 +69,29 @@ export const deleteEmployee = async (req: Request, res: Response) => {
     try {
         const [result] = await db
             .promise()
-            .query("DELETE FROM employees WHERE id = ?", id);
+            .query(`SET @hr_manager_id = (SELECT employee_id 
+                    FROM employee_basic_info 
+                    WHERE user_role = 'HR manager' AND employee_id != ?
+                    LIMIT 1);
+                    UPDATE employees 
+                    SET supervisor_id = @hr_manager_id
+                    WHERE supervisor_id = ?;
+                    DELETE FROM employees WHERE employee_id = ?`, [id,id,id]);
         res.status(200).json({ id: result, message: `Employee with id: ${id} deleted` });
+    } catch (error) {
+        res.status(500).json({ error: "Database query failed", message: error });
+    }
+}
+
+
+export const getSupervisors = async (req:Request, res:Response) => {
+    try {
+        const [supervisors] = await db
+        .promise()
+        .query<Supervisor[]>(
+            "SELECT employee_id AS supervisor_id, full_name FROM employee_basic_info WHERE user_role = 'Supervisor'"
+        );
+        res.status(200).json(supervisors);
     } catch (error) {
         res.status(500).json({ error: "Database query failed", message: error });
     }
