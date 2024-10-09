@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb"
 import { Employee } from "../types/types";
 import { getEmployeeByID } from "../services/employeeServices";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { notifyError, notifySuccess } from "../services/notify";
 import { ToastContainer } from "react-toastify";
 import { addContact } from "../services/emergencyContactServices";
@@ -12,16 +12,18 @@ import DefaultLayout from "../layout/DefaultLayout";
 const AddDependent = () => {
     const { employee_id } = useParams<{ employee_id: string }>();
     const [currEmployee, setCurrEmployee] = useState<Employee>();
-    const fetchEmployee = async (employee_id:string) => {
-        try {
-            const currEmployee: Employee = await getEmployeeByID(employee_id);
-            setCurrEmployee(currEmployee);
-        } catch (error) {
-            console.error("Failed to fetch Employee",error);
+    useEffect(()=>{
+        const fetchEmployee = async (employee_id:string) => {
+            try {
+                const currEmployee: Employee = await getEmployeeByID(employee_id);
+                setCurrEmployee(currEmployee);
+            } catch (error) {
+                console.error("Failed to fetch Employee",error);
+            }
         }
-    }
-
-    fetchEmployee(employee_id!);
+    
+        fetchEmployee(employee_id!);
+    },[])
 
     const navigate = useNavigate();
 
