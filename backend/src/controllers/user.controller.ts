@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import db from "../database/database";
 import { User } from "../models/user.model";
 import { ResultSetHeader } from "mysql2";
-import bcrypt, { compareSync } from "bcryptjs";
+import bcrypt , { compareSync }  from "bcryptjs";
 import { UserInfo } from "../models/userInfo.model";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -78,24 +78,30 @@ export const updateUser = async (req: Request, res:Response) => {
 
 export const changePassword = async (req: Request, res: Response) => {
     const id = req.params.id;
-    const {oldPassword, newPassword} = req.body;
+    const {old_password, new_password} = req.body;
     try {
         const [users] = await db
         .promise()
         .query<User[]>("SELECT password FROM users WHERE user_id = ?", [id]);
         if (users.length === 0) {
-            res.status(404).json({ message: `User with id: ${id} not found` });
+            return res.status(404).json({ message: `User with id: ${id} not found` });
         } else {
-            if(compareSync(oldPassword,users[0].password)) {
+            
+            if(compareSync(old_password,users[0].password)) {
                 //password matching
-                const hashedPassword = bcrypt.hashSync(newPassword, 10);
+                const hashedPassword = bcrypt.hashSync(new_password, 10);
                 const [result] = await db
                 .promise()
                 .query("UPDATE users SET password = ? WHERE user_id = ?" ,[hashedPassword,id]);
 
                 if ((result as ResultSetHeader).affectedRows > 0) {
-                    res.status(200).json({ message: "Password changed successfully" });
+                    return res.status(200).json({ message: "Password changed successfully" });
                 }
+                else {
+                    return res.status(400).json({ message: 'could not change password!'});
+                }
+            } else {
+               return res.status(401).json({ message: "Old password is incorrect" });
             }
         }
     } catch (error) {
@@ -111,16 +117,16 @@ export const deleteUser = async (req:Request, res:Response) => {
             "DELETE FROM users where user_id = ?", [id]
         );
         if ((result as ResultSetHeader).affectedRows > 0) {
-            res.status(200).json({
+            return res.status(200).json({
                 message: `User with id: ${id} deleted successfully`
             });
         } else {
-            res.status(404).json({
+            return res.status(404).json({
                 message: `User with id: ${id} not found`
             });
         }
     } catch (error) {
-        res.status(500).json({error: "Database query failed", message: error});
+        return res.status(500).json({error: "Database query failed", message: error});
     }
 }
 
