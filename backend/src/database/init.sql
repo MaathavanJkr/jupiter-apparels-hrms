@@ -1,7 +1,12 @@
 -- These 3 lines only needed for query submission.No need to add to the project.
-DROP DATABASE IF EXISTS jupiter_apparels;
-CREATE DATABASE jupiter_apparels;
-USE jupiter_apparels;
+
+-- DROP DATABASE IF EXISTS jupiter_apparels;
+-- CREATE DATABASE jupiter_apparels;
+-- USE jupiter_apparels;
+
+ALTER TABLE branches
+DROP FOREIGN KEY fk_manager;
+
 
 -- Drop all tables
 DROP TABLE IF EXISTS leave_applications;
