@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb"
 import DefaultLayout from "../layout/DefaultLayout"
 import { useEffect, useState } from "react";

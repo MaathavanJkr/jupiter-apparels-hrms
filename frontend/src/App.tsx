@@ -13,6 +13,7 @@ import EmployeeDetails from './pages/EmployeeDetails';
 import AddDependent from './pages/AddDependent';
 import AddContact from './pages/AddContact';
 import Profile from './pages/Profile';
+import ChangePassword from './pages/ChangePassword';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -81,6 +82,15 @@ function App() {
             <>
               <PageTitle title= "Profile | Jupiter Apparels" />
               <Profile />
+            </>
+          }
+        />
+        <Route
+          path="/auth/changepassword/:user_id"
+          element={
+            <>
+              <PageTitle title= "Change Password | Jupiter Apparels" />
+              <ChangePassword />
             </>
           }
         />

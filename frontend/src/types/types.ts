@@ -3,7 +3,6 @@ export interface User {
     employee_id: string;
     role: string;
     username: string;
-    password: string;
 }
 
 export interface Employee {
