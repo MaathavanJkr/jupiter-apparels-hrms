@@ -5,6 +5,7 @@ import { notifyError, notifySuccess } from "../services/notify"
 import { useState } from "react"
 import { changePassword } from "../services/userServices"
 import { ToastContainer } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
 
 const ChangePassword = () => {
@@ -13,6 +14,8 @@ const ChangePassword = () => {
   const [password2, setPassword2] = useState<string>('');
 
   const user_id:string = localStorage.getItem('user_id')!;
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     if (oldPassword !== '' && newPassword !== '' && password2 !== '') {
@@ -78,9 +81,22 @@ const ChangePassword = () => {
                 className="w-full sm:w-1/2 lg:w-1/3 max-w-md rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </div>
-            <button onClick={handleSubmit} className="mt-4.5 w-full sm:w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                    Change Password
-            </button>
+            <div className="flex gap-4 mt-4.5">
+              <button
+                onClick={handleSubmit}
+                className="w-full sm:w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              >
+                Change Password
+              </button>
+              
+              <button
+                onClick={() => navigate('/profile/' + user_id)}
+                className="w-full sm:w-auto flex items-center justify-center rounded-lg border border-stroke bg-gray py-2 px-4 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1"
+              >
+                Cancel
+              </button>
+            </div>
+
         </div>
         <ToastContainer />
     </DefaultLayout>

@@ -116,3 +116,13 @@ export interface UserInfo {
     supervisor_id: string
 
 }
+
+export interface LeaveBalance {
+    employee_id: string,
+    employee_name: string,
+    remaining_annual_leaves: number,
+    remaining_casual_leaves: number,
+    remaining_maternity_leaves: number,
+    remaining_nopay_leaves: number,
+    remaining_total_leaves: number,
+}
