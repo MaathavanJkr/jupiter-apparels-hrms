@@ -1,3 +1,8 @@
+-- These 3 lines only needed for query submission.No need to add to the project.
+-- DROP DATABASE IF EXISTS jupiter_apparels;
+-- CREATE DATABASE jupiter_apparels;
+-- USE jupiter_apparels;
+
 ALTER TABLE branches
 DROP FOREIGN KEY fk_manager;
 
@@ -146,7 +151,7 @@ CREATE TABLE leave_applications (
     submission_date DATE DEFAULT (CURRENT_DATE()),
     status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
     response_date DATE,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
 );
 CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
@@ -182,7 +187,7 @@ CREATE INDEX idx_pay_grade_id_allocated ON allocated_leaves(pay_grade_id);
 -- ---------------------------------------------------------------------------
 
 -- Function to get the total approved leaves of a particular type for a given employee.
-
+DELIMITER $$
 CREATE FUNCTION get_used_leaves(emp_id VARCHAR(36), type ENUM('Annual', 'Casual', 'Maternity', 'Nopay'))
 RETURNS INT
 DETERMINISTIC
@@ -198,7 +203,8 @@ BEGIN
       AND status = 'Approved';
 
     RETURN IFNULL(used_leaves_count, 0);
-END ;
+END$$
+DELIMITER ;
 
 
 -- ---------------------------------------------------------------------------
@@ -245,7 +251,6 @@ JOIN
     employment_statuses es ON e.employment_status_id = es.employment_status_id
 LEFT JOIN
     employees s ON e.supervisor_id = s.employee_id;
-
 
 
 
@@ -377,170 +382,123 @@ JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
 
 -- Ensures that an employee cannot have themselves as the supervisor.
 
-
+DELIMITER $$
 CREATE TRIGGER check_supervisor_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF NEW.supervisor_id = NEW.employee_id THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
     END IF;
-END ;
+END$$
+DELIMITER ;
 
 
-
-
+DELIMITER $$
 CREATE TRIGGER check_supervisor_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF NEW.supervisor_id = NEW.employee_id THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
     END IF;
-END  ;
-
-
--- ensures that regular employees cannot be added as supervisors
-
-CREATE TRIGGER check_supervisor_type_before_insert
-BEFORE INSERT ON employees
-FOR EACH ROW
-BEGIN
-    DECLARE user_role VARCHAR(50);
-
-    IF NEW.supervisor_id IS NOT NULL THEN
-        SELECT u.role INTO user_role
-        FROM users u
-        WHERE u.employee_id = NEW.supervisor_id;
-
-        IF user_role = 'Employee' THEN
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Regular Employees cannot be Supervisors, Assign Role to supervisor';
-        END IF;
-        IF user_role IS NULL THEN
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Employees Without accounts cannot be Supervisors, Create Account and assign higher roles';
-        END IF;
-    END IF;
-END;
-
-
-CREATE TRIGGER check_supervisor_type_before_update
-BEFORE UPDATE ON employees
-FOR EACH ROW
-BEGIN
-    DECLARE user_role VARCHAR(50);
-
-    IF NEW.supervisor_id IS NOT NULL THEN
-        SELECT u.role INTO user_role
-        FROM users u
-        WHERE u.employee_id = NEW.supervisor_id;
-
-        IF user_role = 'Employee' THEN
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Regular Employees cannot be Supervisors, Assign Role to supervisor';
-        END IF;
-        IF user_role IS NULL THEN
-            SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Employees Without accounts cannot be Supervisors, Create Account and assign higher roles';
-        END IF;
-    END IF;
-END;
+END $$
+DELIMITER ;
 
 
 
 -- Prevents duplicate emails in the employees table.
-
+DELIMITER $$
 CREATE TRIGGER prevent_duplicate_email_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
     END IF;
-END  ;
+END $$
+DELIMITER ;
 
 
-
-
+DELIMITER $$
 CREATE TRIGGER prevent_duplicate_email_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
     END IF;
-END ;
-
+END$$
+DELIMITER ;
 
 
 -- Prevents duplicate NICs  in the employees table.
-
+DELIMITER $$
 CREATE TRIGGER prevent_duplicate_nic_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
     END IF;
-END ;
+END$$
+DELIMITER ;
 
 
-
-
+DELIMITER $$
 CREATE TRIGGER prevent_duplicate_nic_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
     END IF;
-END  ;
-
+END $$
+DELIMITER ;
 
 
 -- Ensures that employees can only be assigned to active(valid) job titles
-
+DELIMITER $$
 CREATE TRIGGER check_active_job_title_before_insert BEFORE INSERT ON employees
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM job_titles WHERE job_title_id = NEW.job_title_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
     END IF;
-END  ;
+END $$
+DELIMITER ;
 
 
-
-
+DELIMITER $$
 CREATE TRIGGER check_active_job_title_before_update BEFORE UPDATE ON employees
 FOR EACH ROW
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM job_titles WHERE job_title_id = NEW.job_title_id) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
     END IF;
-END ;
-
+END$$
+DELIMITER ;
 
 
 -- Ensures that the leave start date is before the end date.
-
+DELIMITER $$
 CREATE TRIGGER validate_leave_dates_before_insert BEFORE INSERT ON leave_applications
 FOR EACH ROW
 BEGIN
     IF NEW.start_date > NEW.end_date THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
     END IF;
-END  ;
+END $$
+DELIMITER ;
 
 
-
-
+DELIMITER $$
 CREATE TRIGGER validate_leave_dates_before_update BEFORE UPDATE ON leave_applications
 FOR EACH ROW
 BEGIN
     IF NEW.start_date > NEW.end_date THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
     END IF;
-END  ;
-
+END $$
+DELIMITER ;
 
 
 -- Ensures that employees cannot submit overlapping leave applications.
-
+DELIMITER $$
 CREATE TRIGGER prevent_overlapping_leaves BEFORE INSERT ON leave_applications
 FOR EACH ROW
 BEGIN
@@ -550,7 +508,8 @@ BEGIN
                  OR (NEW.end_date BETWEEN start_date AND end_date))) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave applications are overlapping.';
     END IF;
-END  ;
+END $$
+DELIMITER ;
 
 
 
@@ -590,10 +549,10 @@ INSERT INTO pay_grades VALUES ('PG002', 2, 'Mid Level');    -- HR Manager, Accou
 INSERT INTO pay_grades VALUES ('PG003', 3, 'Senior Level');  -- COO, CFO
 INSERT INTO pay_grades VALUES ('PG004', 4, 'Executive Level');  -- CEO
 
-INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 15); 
+INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 15);
 INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 20);
 INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 25);
-INSERT INTO allocated_leaves VALUES ('PG004', 0, 12,  75, 30); 
+INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 30);
 
 INSERT INTO job_titles VALUES ('T001', 'Sewing Machine Operator');
 INSERT INTO job_titles VALUES ('T002', 'Fabric Cutter');
@@ -615,54 +574,40 @@ INSERT INTO employment_statuses VALUES ('S004', 'Contract-Parttime');
 INSERT INTO employment_statuses VALUES ('S005', 'Permanent');
 INSERT INTO employment_statuses VALUES ('S006', 'Freelance');
 
--- creating admin, HR Manager , supervisor
-INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number) 
-VALUES ('E0004', 'D003', 'B001', NULL, 'Emily', 'Brown', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678');
-INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'emily.brown', 'password101');
 
-INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number) 
-VALUES ('E0001', 'D001', 'B001', NULL, 'John', 'Doe', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567');
-INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'John.Doe', 'password303');
 
-INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number) 
-VALUES ('E0013', 'D001', 'B002', NULL, 'Logan', 'Clark', '1976-03-03', 'Male', 'Single', '123 Oak St, City D, Bangladesh', 'logan.clark@apparel.com', 'NIC013', 'T009', 'PG002', 'S005','+880173349');
-INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
-
-INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number) 
-VALUES ('E0007', 'D002', 'B001', 'E0001', 'James', 'Wilson', '1975-09-05', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'james.wilson@apparel.com', 'NIC007', 'T006', 'PG002', 'S003','+923023456');
-INSERT INTO users VALUES ('U004', 'E0007', 'Supervisor', 'james.Wilson', 'password505');
-
-INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number) 
-VALUES ('E0005', 'D005', 'B001', 'E0013', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789');
-INSERT INTO users VALUES ('U007', 'E0005', 'Supervisor', 'David.Jones', 'password555');
-
-INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number) 
+INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number)
 VALUES
-('E0003', 'D009', 'B001', 'E0001', 'Michael', 'Johnson', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234'),
-('E0002', 'D009', 'B001', 'E0013', 'Jane', 'Smith', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345'),
-('E0006', 'D002', 'B001', 'E0013', 'Sophia', 'Miller', '1983-07-25', 'Female', 'Married', '987 Birch St, City B, Pakistan', 'sophia.miller@apparel.com', 'NIC006', 'T010', 'PG003', 'S005','+923023456'),
-('E0011', 'D009', 'B002', 'E0013', 'Ethan', 'Lopez', '1989-01-23', 'Male', 'Single', '654 Cedar Ave, City K, Bangladesh', 'ethan.lopez@apparel.com', 'NIC011', 'T011', 'PG003', 'S005','+880171123'),
-('E0012', 'D009', 'B002', 'E0013', 'Mia', 'Gonzalez', '1988-07-13', 'Female', 'Married', '987 Birch St, City D, Bangladesh', 'mia.gonzalez@apparel.com', 'NIC012', 'T010', 'PG003', 'S005','+880172234'),
-('E0021', 'D009', 'B003', 'E0013', 'Jack', 'King', '1987-12-04', 'Male', 'Single', '789 Pine Rd, Gampaha, Sri Lanka', 'jack.king@apparel.com', 'NIC021', 'T011', 'PG003', 'S005','+94711234'),
-('E0022', 'D009', 'B003', 'E0005', 'Grace', 'Harris', '1990-07-02', 'Female', 'Married', '321 Elm St, Matara, Sri Lanka', 'grace.harris@apparel.com', 'NIC022', 'T010', 'PG003', 'S005','+94722345'),
+('E0003', 'D009', 'B001', NULL, 'Michael', 'Johnson', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234'),
+('E0002', 'D009', 'B001', 'E0003', 'Jane', 'Smith', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345'),
+('E0006', 'D002', 'B001', 'E0003', 'Sophia', 'Miller', '1983-07-25', 'Female', 'Married', '987 Birch St, City B, Pakistan', 'sophia.miller@apparel.com', 'NIC006', 'T010', 'PG003', 'S005','+923023456'),
+('E0011', 'D009', 'B002', 'E0003', 'Ethan', 'Lopez', '1989-01-23', 'Male', 'Single', '654 Cedar Ave, City K, Bangladesh', 'ethan.lopez@apparel.com', 'NIC011', 'T011', 'PG003', 'S005','+880171123'),
+('E0012', 'D009', 'B002', 'E0003', 'Mia', 'Gonzalez', '1988-07-13', 'Female', 'Married', '987 Birch St, City D, Bangladesh', 'mia.gonzalez@apparel.com', 'NIC012', 'T010', 'PG003', 'S005','+880172234'),
+('E0021', 'D009', 'B003', 'E0003', 'Jack', 'King', '1987-12-04', 'Male', 'Single', '789 Pine Rd, Gampaha, Sri Lanka', 'jack.king@apparel.com', 'NIC021', 'T011', 'PG003', 'S005','+94711234'),
+('E0022', 'D009', 'B003', 'E0003', 'Grace', 'Harris', '1990-07-02', 'Female', 'Married', '321 Elm St, Matara, Sri Lanka', 'grace.harris@apparel.com', 'NIC022', 'T010', 'PG003', 'S005','+94722345'),
+('E0001', 'D001', 'B001', 'E0002', 'John', 'Doe', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567'),
+('E0004', 'D003', 'B001', 'E0002', 'Emily', 'Brown', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678'),
+('E0005', 'D005', 'B001', 'E0002', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789'),
 ('E0010', 'D005', 'B001', 'E0005', 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890'),
-('E0008', 'D005', 'B001', 'E0007', 'Ava', 'Taylor', '1993-04-17', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'ava.taylor@apparel.com', 'NIC008', 'T001', 'PG001', 'S006','+923078904'),
-('E0009', 'D005', 'B001', 'E0007', 'Lucas', 'Davis', '1982-11-19', 'Male', 'Married', '789 Pine Rd, City K, Pakistan', 'lucas.davis@apparel.com', 'NIC009', 'T002', 'PG001', 'S004','+923089012'),
-('E0014', 'D005', 'B002', 'E0013', 'Isabella', 'Rodriguez', '1991-12-28', 'Female', 'Married', '456 Maple Ave, City G, Bangladesh', 'isabella.rodriguez@apparel.com', 'NIC014', 'T004', 'PG002', 'S003','+880174456'),
-('E0017', 'D008', 'B002', 'E0013', 'Elijah', 'Moore', '1980-05-21', 'Male', 'Married', '654 Cedar Ave, City G, Bangladesh', 'elijah.moore@apparel.com', 'NIC017', 'T007', 'PG002', 'S005','+880678901'),
-('E0015', 'D002', 'B002', 'E0013', 'Mason', 'Martinez', '1984-02-12', 'Male', 'Married', '789 Pine Rd, City G, Bangladesh', 'mason.martinez@apparel.com', 'NIC015', 'T005', 'PG002', 'S005','+880789012'),
-('E0016', 'D005', 'B002', 'E0001', 'Amelia', 'Hernandez', '1996-10-01', 'Female', 'Single', '321 Elm St, City D, Bangladesh', 'amelia.hernandez@apparel.com', 'NIC016', 'T003', 'PG002', 'S003','+880890123'),
-('E0018', 'D005', 'B002', 'E0001', 'Avery', 'Garcia', '1985-09-16', 'Female', 'Single', '987 Birch St, City M, Bangladesh', 'avery.garcia@apparel.com', 'NIC018', 'T001', 'PG001', 'S006','+880901234'),
-('E0019', 'D005', 'B002', 'E0001', 'Benjamin', 'White', '1992-11-08', 'Male', 'Married', '123 Oak St, City D, Bangladesh', 'benjamin.white@apparel.com', 'NIC019', 'T001', 'PG001', 'S006','+880012345'),
-('E0020', 'D005', 'B002', 'E0007', 'Ella', 'Lee', '1994-03-26', 'Female', 'Single', '456 Maple Ave, City M, Bangladesh', 'ella.lee@apparel.com', 'NIC020', 'T002', 'PG001', 'S004','+880123456'),
-('E0023', 'D002', 'B003', 'E0001', 'Oliver', 'Young', '1986-06-18', 'Male', 'Married', '654 Cedar Ave, Jaffna, Sri Lanka', 'oliver.young@apparel.com', 'NIC023', 'T005', 'PG002', 'S005','+94773456'),
-('E0024', 'D005', 'B003', 'E0007', 'Scarlett', 'Thompson', '1993-08-25', 'Female', 'Single', '987 Birch St, Colombo, Sri Lanka', 'scarlett.thompson@apparel.com', 'NIC024', 'T004', 'PG002', 'S003','+94567890'),
-('E0025', 'D008', 'B003', 'E0001', 'Henry', 'Martinez', '1982-04-15', 'Male', 'Single', '123 Oak St, Colombo, Sri Lanka', 'henry.martinez@apparel.com', 'NIC025', 'T007', 'PG002', 'S003','+94678901'),
-('E0026', 'D003', 'B003', 'E0007', 'Luna', 'Perez', '1995-09-28', 'Female', 'Married', '456 Maple Ave, Matara, Sri Lanka', 'luna.perez@apparel.com', 'NIC026', 'T008', 'PG002', 'S002','+94789012'),
-('E0027', 'D005', 'B003', 'E0005', 'Daniel', 'Sanchez', '1981-11-14', 'Male', 'Married', '789 Pine Rd, Matara, Sri Lanka', 'daniel.sanchez@apparel.com', 'NIC027', 'T003', 'PG002', 'S005','+94890123'),
-('E0028', 'D005', 'B003', 'E0005', 'Victoria', 'Adams', '1997-12-20', 'Female', 'Single', '321 Elm St, Kandy, Sri Lanka', 'victoria.adams@apparel.com', 'NIC028', 'T001', 'PG001', 'S004','+94901234'),
-('E0029', 'D005', 'B003', 'E0005', 'Sebastian', 'Roberts', '1980-03-09', 'Male', 'Married', '654 Cedar Ave, Colombo, Sri Lanka', 'sebastian.roberts@apparel.com', 'NIC029', 'T002', 'PG001', 'S006','+94012345'),
-('E0030', 'D005', 'B003', 'E0001', 'Aria', 'Scott', '1989-10-30', 'Female', 'Married', '987 Birch St, Colombo, Sri Lanka', 'aria.scott@apparel.com', 'NIC030', 'T001', 'PG001', 'S006','+94123456');
+('E0008', 'D005', 'B001', 'E0010', 'Ava', 'Taylor', '1993-04-17', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'ava.taylor@apparel.com', 'NIC008', 'T001', 'PG001', 'S006','+923078904'),
+('E0009', 'D005', 'B001', 'E0010', 'Lucas', 'Davis', '1982-11-19', 'Male', 'Married', '789 Pine Rd, City K, Pakistan', 'lucas.davis@apparel.com', 'NIC009', 'T002', 'PG001', 'S004','+923089012'),
+('E0007', 'D002', 'B001', 'E0006', 'James', 'Wilson', '1975-09-05', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'james.wilson@apparel.com', 'NIC007', 'T006', 'PG002', 'S003','+923023456'),
+('E0013', 'D001', 'B002', 'E0011', 'Logan', 'Clark', '1976-03-03', 'Male', 'Single', '123 Oak St, City D, Bangladesh', 'logan.clark@apparel.com', 'NIC013', 'T009', 'PG002', 'S005','+880173349'),
+('E0014', 'D005', 'B002', 'E0011', 'Isabella', 'Rodriguez', '1991-12-28', 'Female', 'Married', '456 Maple Ave, City G, Bangladesh', 'isabella.rodriguez@apparel.com', 'NIC014', 'T004', 'PG002', 'S003','+880174456'),
+('E0017', 'D008', 'B002', 'E0011', 'Elijah', 'Moore', '1980-05-21', 'Male', 'Married', '654 Cedar Ave, City G, Bangladesh', 'elijah.moore@apparel.com', 'NIC017', 'T007', 'PG002', 'S005','+880678901'),
+('E0015', 'D002', 'B002', 'E0012', 'Mason', 'Martinez', '1984-02-12', 'Male', 'Married', '789 Pine Rd, City G, Bangladesh', 'mason.martinez@apparel.com', 'NIC015', 'T005', 'PG002', 'S005','+880789012'),
+('E0016', 'D005', 'B002', 'E0014', 'Amelia', 'Hernandez', '1996-10-01', 'Female', 'Single', '321 Elm St, City D, Bangladesh', 'amelia.hernandez@apparel.com', 'NIC016', 'T003', 'PG002', 'S003','+880890123'),
+('E0018', 'D005', 'B002', 'E0016', 'Avery', 'Garcia', '1985-09-16', 'Female', 'Single', '987 Birch St, City M, Bangladesh', 'avery.garcia@apparel.com', 'NIC018', 'T001', 'PG001', 'S006','+880901234'),
+('E0019', 'D005', 'B002', 'E0016', 'Benjamin', 'White', '1992-11-08', 'Male', 'Married', '123 Oak St, City D, Bangladesh', 'benjamin.white@apparel.com', 'NIC019', 'T001', 'PG001', 'S006','+880012345'),
+('E0020', 'D005', 'B002', 'E0016', 'Ella', 'Lee', '1994-03-26', 'Female', 'Single', '456 Maple Ave, City M, Bangladesh', 'ella.lee@apparel.com', 'NIC020', 'T002', 'PG001', 'S004','+880123456'),
+('E0023', 'D002', 'B003', 'E0022', 'Oliver', 'Young', '1986-06-18', 'Male', 'Married', '654 Cedar Ave, Jaffna, Sri Lanka', 'oliver.young@apparel.com', 'NIC023', 'T005', 'PG002', 'S005','+94773456'),
+('E0024', 'D005', 'B003', 'E0021', 'Scarlett', 'Thompson', '1993-08-25', 'Female', 'Single', '987 Birch St, Colombo, Sri Lanka', 'scarlett.thompson@apparel.com', 'NIC024', 'T004', 'PG002', 'S003','+94567890'),
+('E0025', 'D008', 'B003', 'E0021', 'Henry', 'Martinez', '1982-04-15', 'Male', 'Single', '123 Oak St, Colombo, Sri Lanka', 'henry.martinez@apparel.com', 'NIC025', 'T007', 'PG002', 'S003','+94678901'),
+('E0026', 'D003', 'B003', 'E0021', 'Luna', 'Perez', '1995-09-28', 'Female', 'Married', '456 Maple Ave, Matara, Sri Lanka', 'luna.perez@apparel.com', 'NIC026', 'T008', 'PG002', 'S002','+94789012'),
+('E0027', 'D005', 'B003', 'E0024', 'Daniel', 'Sanchez', '1981-11-14', 'Male', 'Married', '789 Pine Rd, Matara, Sri Lanka', 'daniel.sanchez@apparel.com', 'NIC027', 'T003', 'PG002', 'S005','+94890123'),
+('E0028', 'D005', 'B003', 'E0027', 'Victoria', 'Adams', '1997-12-20', 'Female', 'Single', '321 Elm St, Kandy, Sri Lanka', 'victoria.adams@apparel.com', 'NIC028', 'T001', 'PG001', 'S004','+94901234'),
+('E0029', 'D005', 'B003', 'E0027', 'Sebastian', 'Roberts', '1980-03-09', 'Male', 'Married', '654 Cedar Ave, Colombo, Sri Lanka', 'sebastian.roberts@apparel.com', 'NIC029', 'T002', 'PG001', 'S006','+94012345'),
+('E0030', 'D005', 'B003', 'E0027', 'Aria', 'Scott', '1989-10-30', 'Female', 'Married', '987 Birch St, Colombo, Sri Lanka', 'aria.scott@apparel.com', 'NIC030', 'T001', 'PG001', 'S006','+94123456');
 
 INSERT INTO employee_dependents VALUES ('DP0001', 'E0030', 'Alice Doe', 'Daughter', '2010-05-14');
 INSERT INTO employee_dependents VALUES ('DP0002', 'E0025', 'Mark Smith', 'Son', '2012-09-22');
@@ -692,14 +637,60 @@ INSERT INTO leave_applications VALUES ('LA0003', 'E0028', 'Maternity', '2023-03-
 INSERT INTO leave_applications VALUES ('LA0004', 'E0014', 'Casual', '2023-04-10', '2023-04-12', 'Personal reasons', '2023-04-01', 'Approved', '2023-04-05');
 INSERT INTO leave_applications VALUES ('LA0005', 'E0005', 'Casual', '2023-05-05', '2023-05-07', 'Fever', '2023-05-03', 'Rejected', '2023-05-04');
 INSERT INTO leave_applications VALUES ('LA0006', 'E0026', 'Annual', '2023-06-12', '2023-06-18', 'Vacation', '2023-06-01', 'Approved', '2023-06-02');
+INSERT INTO leave_applications VALUES ('LA0007', 'E0018', 'Annual', '2023-07-01', '2023-07-05', 'Family trip', '2023-06-25', 'Approved', '2023-06-26');
+INSERT INTO leave_applications VALUES ('LA0008', 'E0021', 'Casual', '2023-07-10', '2023-07-12', 'Medical checkup', '2023-07-08', 'Approved', '2023-07-09');
+INSERT INTO leave_applications VALUES ('LA0009', 'E0030', 'Annual', '2023-07-15', '2023-07-20', 'Vacation', '2023-07-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0010', 'E0007', 'Nopay', '2023-08-01', '2023-08-03', 'Personal reasons', '2023-07-30', 'Rejected', '2023-07-31');
+INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2023-08-10', '2023-11-10', 'Pregnancy', '2023-08-01', 'Approved', '2023-08-02');
+INSERT INTO leave_applications VALUES ('LA0012', 'E0029', 'Annual', '2023-08-15', '2023-08-20', 'Family function', '2023-08-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0013', 'E0012', 'Casual', '2023-09-01', '2023-09-02', 'Doctor appointment', '2023-08-28', 'Approved', '2023-08-29');
+INSERT INTO leave_applications VALUES ('LA0014', 'E0020', 'Annual', '2023-09-05', '2023-09-08', 'Vacation', '2023-08-27', 'Approved', '2023-08-28');
+INSERT INTO leave_applications VALUES ('LA0015', 'E0017', 'Annual', '2023-09-15', '2023-09-18', 'Family event', '2023-09-05', 'Approved', '2023-09-06');
+INSERT INTO leave_applications VALUES ('LA0016', 'E0023', 'Casual', '2023-09-20', '2023-09-22', 'Sick', '2023-09-19', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0017', 'E0010', 'Annual', '2023-10-01', '2023-10-10', 'Vacation', '2023-09-25', 'Approved', '2023-09-26');
+INSERT INTO leave_applications VALUES ('LA0018', 'E0025', 'Nopay', '2023-10-12', '2023-10-15', 'Emergency', '2023-10-10', 'Rejected', '2023-10-11');
+INSERT INTO leave_applications VALUES ('LA0019', 'E0027', 'Annual', '2023-10-20', '2023-10-25', 'Family visit', '2023-10-10', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0020', 'E0021', 'Casual', '2023-10-25', '2023-10-26', 'Medical reasons', '2023-10-23', 'Approved', '2023-10-24');
+INSERT INTO leave_applications VALUES ('LA0021', 'E0003', 'Annual', '2023-11-01', '2023-11-05', 'Holiday', '2023-10-25', 'Approved', '2023-10-26');
+INSERT INTO leave_applications VALUES ('LA0022', 'E0026', 'Nopay', '2023-11-07', '2023-11-09', 'Personal reasons', '2023-11-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0023', 'E0015', 'Casual', '2023-11-12', '2023-11-14', 'Sick', '2023-11-10', 'Rejected', '2023-11-11');
+INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2023-11-20', '2024-02-20', 'Pregnancy', '2023-11-10', 'Approved', '2023-11-11');
+INSERT INTO leave_applications VALUES ('LA0025', 'E0012', 'Annual', '2023-12-01', '2023-12-05', 'Family function', '2023-11-20', 'Approved', '2023-11-21');
+INSERT INTO leave_applications VALUES ('LA0026', 'E0008', 'Annual', '2023-12-10', '2023-12-15', 'Vacation', '2023-12-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0027', 'E0024', 'Casual', '2023-12-20', '2023-12-22', 'Health reasons', '2023-12-18', 'Approved', '2023-12-19');
+INSERT INTO leave_applications VALUES ('LA0028', 'E0006', 'Nopay', '2024-01-02', '2024-01-04', 'Family emergency', '2023-12-30', 'Rejected', '2024-01-01');
+INSERT INTO leave_applications VALUES ('LA0029', 'E0022', 'Annual', '2024-01-10', '2024-01-15', 'Vacation', '2024-01-02', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0030', 'E0009', 'Casual', '2024-01-20', '2024-01-22', 'Health issues', '2024-01-18', 'Approved', '2024-01-19');
+INSERT INTO leave_applications VALUES ('LA0031', 'E0026', 'Maternity', '2024-02-01', '2024-05-01', 'Pregnancy', '2024-01-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0032', 'E0003', 'Annual', '2024-02-10', '2024-02-15', 'Family function', '2024-02-01', 'Approved', '2024-02-02');
+INSERT INTO leave_applications VALUES ('LA0033', 'E0028', 'Annual', '2024-03-01', '2024-03-05', 'Vacation', '2024-02-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0034', 'E0002', 'Nopay', '2024-03-10', '2024-03-12', 'Personal reasons', '2024-03-08', 'Rejected', '2024-03-09');
+INSERT INTO leave_applications VALUES ('LA0035', 'E0025', 'Annual', '2024-03-20', '2024-03-25', 'Family event', '2024-03-10', 'Approved', '2024-03-11');
+INSERT INTO leave_applications VALUES ('LA0036', 'E0016', 'Casual', '2024-04-01', '2024-04-03', 'Sick', '2024-03-29', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0037', 'E0024', 'Annual', '2024-04-10', '2024-04-12', 'Holiday', '2024-04-01', 'Approved', '2024-04-02');
+INSERT INTO leave_applications VALUES ('LA0038', 'E0014', 'Casual', '2024-04-20', '2024-04-21', 'Medical checkup', '2024-04-18', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0039', 'E0001', 'Nopay', '2024-05-01', '2024-05-03', 'Personal reasons', '2024-04-28', 'Rejected', '2024-04-29');
+INSERT INTO leave_applications VALUES ('LA0040', 'E0027', 'Annual', '2024-05-10', '2024-05-12', 'Vacation', '2024-04-30', 'Approved', '2024-05-01');
+INSERT INTO leave_applications VALUES ('LA0041', 'E0008', 'Maternity', '2024-06-01', '2024-09-01', 'Pregnancy', '2024-05-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0042', 'E0010', 'Annual', '2024-06-10', '2024-06-15', 'Family function', '2024-06-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0043', 'E0005', 'Casual', '2024-06-20', '2024-06-22', 'Health issues', '2024-06-18', 'Approved', '2024-06-19');
+INSERT INTO leave_applications VALUES ('LA0044', 'E0023', 'Nopay', '2024-07-01', '2024-07-05', 'Personal reasons', '2024-06-25', 'Rejected', '2024-06-26');
+INSERT INTO leave_applications VALUES ('LA0045', 'E0016', 'Annual', '2024-07-10', '2024-07-15', 'Vacation', '2024-07-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0046', 'E0012', 'Annual', '2024-07-20', '2024-07-25', 'Family event', '2024-07-10', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0047', 'E0020', 'Casual', '2024-08-01', '2024-08-02', 'Doctor appointment', '2024-07-30', 'Approved', '2024-07-31');
+INSERT INTO leave_applications VALUES ('LA0048', 'E0005', 'Annual', '2024-08-10', '2024-08-12', 'Holiday', '2024-08-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0049', 'E0027', 'Nopay', '2024-08-20', '2024-08-25', 'Emergency', '2024-08-15', 'Rejected', '2024-08-16');
+INSERT INTO leave_applications VALUES ('LA0050', 'E0018', 'Annual', '2024-09-01', '2024-09-05', 'Vacation', '2024-08-25', 'Pending', NULL);
 
 
 
-
+INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'emily.brown', 'password101');
+INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'John.Doe', 'password303');
 INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'Ella.Lee', 'password404');
+INSERT INTO users VALUES ('U004', 'E0007', 'Supervisor', 'james.Wilson', 'password505');
 INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'Aria.Scott', 'password606');
-
-
+INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
+INSERT INTO users VALUES ('U007', 'E0005', 'Supervisor', 'David.Jones', 'password555');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
