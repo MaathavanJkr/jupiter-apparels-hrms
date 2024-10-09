@@ -14,7 +14,7 @@ import DefaultLayout from "../layout/DefaultLayout";
 
 const Employees = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string|null>(null);
     const [itemsPerPage, setItemsPerPage] = useState<number>(5);
     const [nameSearchKey, setNameSearchKey] = useState<string>('');
@@ -29,45 +29,45 @@ const Employees = () => {
     const [searchDepartment, setSearchDepartment] = useState<string>('');
     const [searchBranch, setSearchBranch] = useState<string>('');
 
-    useEffect(()=>{
-        const fetchData = async () => {
-            try {
-                const branches = await getBranches();
-                const departments = await getDepartments();
-                const jobTitles = await getJobTitles();
-                const employmentStatuses = await getEmploymentStatuses();
-                const payGrades = await getPayGrades();
-                const supervisors = await getSupervisors();
-                setJobTitles(jobTitles);
-                setBranches(branches);
-                setDepartments(departments);
-                setEmploymentStatuses(employmentStatuses);
-                setPayGardes(payGrades);
-                setSupervisors(supervisors);
-            } catch (error) {
-                console.error("Failed to fetch Data",error);
-            }
-        }
+    // useEffect(()=>{
+    //     const fetchData = async () => {
+    //         try {
+    //             const branches = await getBranches();
+    //             const departments = await getDepartments();
+    //             const jobTitles = await getJobTitles();
+    //             const employmentStatuses = await getEmploymentStatuses();
+    //             const payGrades = await getPayGrades();
+    //             const supervisors = await getSupervisors();
+    //             setJobTitles(jobTitles);
+    //             setBranches(branches);
+    //             setDepartments(departments);
+    //             setEmploymentStatuses(employmentStatuses);
+    //             setPayGardes(payGrades);
+    //             setSupervisors(supervisors);
+    //         } catch (error) {
+    //             console.error("Failed to fetch Data",error);
+    //         }
+    //     }
 
-        fetchData();
-    },[])
+    //     fetchData();
+    // },[])
 
-    useEffect(()=>{
-        const fetchEmployees = async () => {
-            try {
-                const employees = await getEmployees();
-                setEmployees(employees);
-            }
-            catch (error) {
-                setError("Failed to fetch Employees");
-            }
-            finally {
-                setLoading(false);
-            }
-        }
+    // useEffect(()=>{
+    //     const fetchEmployees = async () => {
+    //         try {
+    //             const employees = await getEmployees();
+    //             setEmployees(employees);
+    //         }
+    //         catch (error) {
+    //             setError("Failed to fetch Employees");
+    //         }
+    //         finally {
+    //             setLoading(false);
+    //         }
+    //     }
 
-        fetchEmployees();
-    },[])
+    //     fetchEmployees();
+    // },[])
 
     if (error) {
         return <div>{error}</div>

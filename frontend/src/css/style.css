@@ -9,6 +9,9 @@
 }
 
 @layer components {
+  .card-btn {
+    @apply w-[200px] h-[45px] rounded-xl font-extrabold text-xl bg-blue-800 text-black hover:shadow-4 active:translate-y-1 transition-transform duration-150;
+  }
 }
 
 @layer utilities {

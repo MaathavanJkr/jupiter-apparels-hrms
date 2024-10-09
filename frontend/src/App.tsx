@@ -13,6 +13,7 @@ import EmployeeDetails from './pages/EmployeeDetails';
 import AddDependent from './pages/AddDependent';
 import AddContact from './pages/AddContact';
 import Profile from './pages/Profile';
+import Report from './pages/reportPage/Report';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,6 +37,15 @@ function App() {
             <>
               <PageTitle title="Employees | Jupiter Apparels" />
               <Employees />
+            </>
+          }
+        />
+        <Route
+          path="/report"
+          element={
+            <>
+              <PageTitle title="Report | Jupiter Apparels" />
+              <Report />
             </>
           }
         />
