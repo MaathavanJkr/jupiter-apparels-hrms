@@ -1,623 +1,697 @@
--- Procedure for creating allocated leaves
-DELIMITER $$
-CREATE PROCEDURE createAllocatedLeaves(
-    IN p_annual_leaves INT,
-    IN p_casual_leaves INT,
-    IN p_maternity_leaves INT,
-    IN p_no_pay_leaves INT
-)
-BEGIN
-    INSERT INTO allocated_leaves (pay_grade_id, annual_leaves, casual_leaves, maternity_leaves, no_pay_leaves)
-    VALUES (UUID(), p_annual_leaves, p_casual_leaves, p_maternity_leaves, p_no_pay_leaves);
-END$$
-DELIMITER ;
+-- These 3 lines only needed for query submission.No need to add to the project.
+DROP DATABASE IF EXISTS JupiterApperals;
+CREATE DATABASE JupiterApperals;
+USE JupiterApperals;
 
--- Procedure for retrieving allocated leaves by pay_grade_id
-DELIMITER $$
-CREATE PROCEDURE getAllocatedLeavesByPayGrade(
-    IN p_pay_grade_id VARCHAR(36)
-)
-BEGIN
-    SELECT * FROM allocated_leaves WHERE pay_grade_id = p_pay_grade_id;
-END$$
-DELIMITER ;
+-- Drop all tables
+DROP TABLE IF EXISTS leave_applications;
+DROP TABLE IF EXISTS emergency_contacts;
+DROP TABLE IF EXISTS employee_dependents;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS allocated_leaves;
+DROP TABLE IF EXISTS employees;
+DROP TABLE IF EXISTS employment_statuses;
+DROP TABLE IF EXISTS pay_grades;
+DROP TABLE IF EXISTS job_titles;
+DROP TABLE IF EXISTS organizations;
+DROP TABLE IF EXISTS branches;
+DROP TABLE IF EXISTS departments;
+DROP TABLE IF EXISTS custom_attribute_keys;
 
--- Procedure for retrieving all allocated leaves
-DELIMITER $$
-CREATE PROCEDURE getAllAllocatedLeaves()
-BEGIN
-    SELECT * FROM allocated_leaves;
-END$$
-DELIMITER ;
+-- Drop all functions
+DROP FUNCTION IF EXISTS get_used_leaves;
 
--- Procedure for updating allocated leaves
-DELIMITER $$
-CREATE PROCEDURE updateAllocatedLeaves(
-    IN p_pay_grade_id VARCHAR(36),
-    IN p_annual_leaves INT,
-    IN p_casual_leaves INT,
-    IN p_maternity_leaves INT,
-    IN p_no_pay_leaves INT
-)
-BEGIN
-    UPDATE allocated_leaves
-    SET annual_leaves = p_annual_leaves, casual_leaves = p_casual_leaves, maternity_leaves = p_maternity_leaves, no_pay_leaves = p_no_pay_leaves
-    WHERE pay_grade_id = p_pay_grade_id;
-END$$
-DELIMITER ;
+-- Drop all views
+DROP VIEW IF EXISTS employee_basic_info;
+DROP VIEW IF EXISTS pending_leave_applications;
+DROP VIEW IF EXISTS employees_grouped_by_department;
+DROP VIEW IF EXISTS payroll_info;
+DROP VIEW IF EXISTS used_leaves_view;
+DROP VIEW IF EXISTS remaining_leaves_view;
 
--- Procedure for deleting allocated leaves by pay_grade_id
-DELIMITER $$
-CREATE PROCEDURE deleteAllocatedLeaves(
-    IN p_pay_grade_id VARCHAR(36)
-)
-BEGIN
-    DELETE FROM allocated_leaves WHERE pay_grade_id = p_pay_grade_id;
-END$$
-DELIMITER ;
+-- Drop all triggers
+DROP TRIGGER IF EXISTS check_supervisor_before_insert;
+DROP TRIGGER IF EXISTS check_supervisor_before_update;
+DROP TRIGGER IF EXISTS prevent_duplicate_email_before_insert;
+DROP TRIGGER IF EXISTS prevent_duplicate_email_before_update;
+DROP TRIGGER IF EXISTS prevent_duplicate_nic_before_insert;
+DROP TRIGGER IF EXISTS prevent_duplicate_nic_before_update;
+DROP TRIGGER IF EXISTS check_active_job_title_before_insert;
+DROP TRIGGER IF EXISTS check_active_job_title_before_update;
+DROP TRIGGER IF EXISTS validate_leave_dates_before_insert;
+DROP TRIGGER IF EXISTS validate_leave_dates_before_update;
+DROP TRIGGER IF EXISTS prevent_overlapping_leaves;
 
 
-DELIMITER $$
 
--- Procedure to create a branch
-CREATE PROCEDURE createBranch(
-    IN p_name VARCHAR(255),
-    IN p_address VARCHAR(255),
-    IN p_contact_number VARCHAR(20),
-    IN p_manager_id VARCHAR(36)
-)
-BEGIN
-    INSERT INTO branches (branch_id, name, address, contact_number, manager_id)
-    VALUES (UUID(), p_name, p_address, p_contact_number, p_manager_id);
-END$$
-
--- Procedure to get a branch by ID
-CREATE PROCEDURE getBranchByID(
-    IN p_branch_id VARCHAR(36)
-)
-BEGIN
-    SELECT * FROM branches WHERE branch_id = p_branch_id;
-END$$
-
--- Procedure to get all branches
-CREATE PROCEDURE getAllBranches()
-BEGIN
-    SELECT * FROM branches;
-END$$
-
--- Procedure to update a branch
-CREATE PROCEDURE updateBranch(
-    IN p_branch_id VARCHAR(36),
-    IN p_name VARCHAR(255),
-    IN p_address VARCHAR(255),
-    IN p_contact_number VARCHAR(20),
-    IN p_manager_id VARCHAR(36)
-)
-BEGIN
-    UPDATE branches
-    SET name = p_name, address = p_address, contact_number = p_contact_number, manager_id = p_manager_id
-    WHERE branch_id = p_branch_id;
-END$$
-
--- Procedure to delete a branch
-CREATE PROCEDURE deleteBranch(
-    IN p_branch_id VARCHAR(36)
-)
-BEGIN
-    DELETE FROM branches WHERE branch_id = p_branch_id;
-END$$
-
-DELIMITER ;
-
-DELIMITER $$
-
--- Procedure to create a department
-CREATE PROCEDURE createDepartment(
-    IN p_name VARCHAR(255)
-)
-BEGIN
-    INSERT INTO departments (department_id, name)
-    VALUES (UUID(), p_name);
-END$$
-
--- Procedure to get a department by ID
-CREATE PROCEDURE getDepartmentByID(
-    IN p_department_id VARCHAR(36)
-)
-BEGIN
-    SELECT * FROM departments WHERE department_id = p_department_id;
-END$$
-
--- Procedure to get all departments
-CREATE PROCEDURE getAllDepartments()
-BEGIN
-    SELECT * FROM departments;
-END$$
-
--- Procedure to update a department
-CREATE PROCEDURE updateDepartment(
-    IN p_department_id VARCHAR(36),
-    IN p_name VARCHAR(255)
-)
-BEGIN
-    UPDATE departments
-    SET name = p_name
-    WHERE department_id = p_department_id;
-END$$
-
--- Procedure to delete a department
-CREATE PROCEDURE deleteDepartment(
-    IN p_department_id VARCHAR(36)
-)
-BEGIN
-    DELETE FROM departments WHERE department_id = p_department_id;
-END$$
-
-DELIMITER ;
-
-
-DELIMITER $$
-
--- Procedure to create an employee dependent
-CREATE PROCEDURE createEmployeeDependent(
-    IN p_employee_id VARCHAR(36),
-    IN p_name VARCHAR(255),
-    IN p_relationship_to_employee VARCHAR(255),
-    IN p_birth_date DATE
-)
-BEGIN
-    INSERT INTO employee_dependents (dependent_id, employee_id, name, relationship_to_employee, birth_date)
-    VALUES (UUID(), p_employee_id, p_name, p_relationship_to_employee, p_birth_date);
-END$$
-
--- Procedure to get an employee dependent by ID
-CREATE PROCEDURE getEmployeeDependentByID(
-    IN p_dependent_id VARCHAR(36)
-)
-BEGIN
-    SELECT * FROM employee_dependents WHERE dependent_id = p_dependent_id;
-END$$
-
--- Procedure to get all employee dependents
-CREATE PROCEDURE getAllEmployeeDependents()
-BEGIN
-    SELECT * FROM employee_dependents;
-END$$
-
--- Procedure to update an employee dependent
-CREATE PROCEDURE updateEmployeeDependent(
-    IN p_dependent_id VARCHAR(36),
-    IN p_employee_id VARCHAR(36),
-    IN p_name VARCHAR(255),
-    IN p_relationship_to_employee VARCHAR(255),
-    IN p_birth_date DATE
-)
-BEGIN
-    UPDATE employee_dependents
-    SET employee_id = p_employee_id,
-        name = p_name,
-        relationship_to_employee = p_relationship_to_employee,
-        birth_date = p_birth_date
-    WHERE dependent_id = p_dependent_id;
-END$$
-
--- Procedure to delete an employee dependent
-CREATE PROCEDURE deleteEmployeeDependent(
-    IN p_dependent_id VARCHAR(36)
-)
-BEGIN
-    DELETE FROM employee_dependents WHERE dependent_id = p_dependent_id;
-END$$
-
-DELIMITER ;
-
--- Procedure to create an emergency contact
-CREATE PROCEDURE createEmergencyContact(
-    IN employee_id VARCHAR(255),
-    IN name VARCHAR(255),
-    IN relationship VARCHAR(255),
-    IN contact_number VARCHAR(50),
-    IN address VARCHAR(255)
-)
-BEGIN
-    INSERT INTO emergency_contacts (emergency_id, employee_id, name, relationship, contact_number, address)
-    VALUES (UUID(), employee_id, name, relationship, contact_number, address);
-END $$
-
--- Procedure to get an emergency contact by ID
-CREATE PROCEDURE getEmergencyContactByID(
-    IN emergency_id VARCHAR(255)
-)
-BEGIN
-    SELECT * FROM emergency_contacts WHERE emergency_id = emergency_id;
-END $$
-
--- Procedure to get all emergency contacts
-CREATE PROCEDURE getAllEmergencyContacts()
-BEGIN
-    SELECT * FROM emergency_contacts;
-END $$
-
--- Procedure to update an emergency contact
-CREATE PROCEDURE updateEmergencyContact(
-    IN emergency_id VARCHAR(255),
-    IN employee_id VARCHAR(255),
-    IN name VARCHAR(255),
-    IN relationship VARCHAR(255),
-    IN contact_number VARCHAR(50),
-    IN address VARCHAR(255)
-)
-BEGIN
-    UPDATE emergency_contacts
-    SET employee_id = employee_id,
-        name = name,
-        relationship = relationship,
-        contact_number = contact_number,
-        address = address
-    WHERE emergency_id = emergency_id;
-END $$
-
--- Procedure to delete an emergency contact
-CREATE PROCEDURE deleteEmergencyContact(
-    IN emergency_id VARCHAR(255)
-)
-BEGIN
-    DELETE FROM emergency_contacts WHERE emergency_id = emergency_id;
-END $$
-
-DELIMITER $$
-
--- Procedure to create a new employee
-CREATE PROCEDURE CreateEmployee(
-    IN employeeID VARCHAR(255),
-    IN departmentID VARCHAR(255),
-    IN branchID VARCHAR(255),
-    IN supervisorID VARCHAR(255),
-    IN firstName VARCHAR(50),
-    IN lastName VARCHAR(50),
-    IN birthday DATE,
-    IN gender VARCHAR(10),
-    IN maritalStatus VARCHAR(10),
-    IN address VARCHAR(255),
-    IN email VARCHAR(100),
-    IN NIC VARCHAR(20),
-    IN jobTitleID VARCHAR(255),
-    IN payGradeID VARCHAR(255),
-    IN employeeStatusID VARCHAR(255),
-    IN contactNumber VARCHAR(15),
-    IN custAttr1Value VARCHAR(255),
-    IN custAttr2Value VARCHAR(255),
-    IN custAttr3Value VARCHAR(255)
-)
-BEGIN
-    INSERT INTO employees (
-        employee_id,
-        department_id,
-        branch_id,
-        supervisor_id,
-        first_name,
-        last_name,
-        birthday,
-        gender,
-        marital_status,
-        address,
-        email,
-        NIC,
-        job_title_id,
-        pay_grade_id,
-        employee_status_id,
-        contact_number,
-        cust_attr_1_value,
-        cust_attr_2_value,
-        cust_attr_3_value
+CREATE TABLE organizations (
+    organization_id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(80),
+    address VARCHAR(255),
+    reg_no INT
+);
+CREATE TABLE departments (
+    department_id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(80)
+);
+CREATE TABLE pay_grades (
+    pay_grade_id VARCHAR(36) PRIMARY KEY,
+    paygrade INT,
+    grade_name VARCHAR(36)
+);
+CREATE TABLE job_titles (
+    job_title_id VARCHAR(36) PRIMARY KEY,
+    title VARCHAR(80)
+);
+CREATE TABLE employment_statuses (
+    employment_status_id VARCHAR(36) PRIMARY KEY,
+    status ENUM(
+        'Intern-Fulltime',
+        'Intern-Parttime',
+        'Contract-Fulltime',
+        'Contract-Parttime',
+        'Permanent',
+        'Freelance'
     )
-    VALUES (
-        employeeID,
-        departmentID,
-        branchID,
-        supervisorID,
-        firstName,
-        lastName,
-        birthday,
-        gender,
-        maritalStatus,
-        address,
-        email,
-        NIC,
-        jobTitleID,
-        payGradeID,
-        employeeStatusID,
-        contactNumber,
-        custAttr1Value,
-        custAttr2Value,
-        custAttr3Value
-    );
-END $$
+);
+CREATE TABLE branches (
+    branch_id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(80),
+    address VARCHAR(255),
+    contact_number VARCHAR(10),
+    manager_id VARCHAR(36) NULL -- FOREIGN KEY (manager_id) REFERENCES Employee(employee_id)
+);
+CREATE TABLE employees (
+    employee_id VARCHAR(36) PRIMARY KEY,
+    department_id VARCHAR(36),
+    branch_id VARCHAR(36),
+    supervisor_id VARCHAR(36),
+    first_name VARCHAR(80),
+    last_name VARCHAR(80),
+    birth_date DATE,
+    gender ENUM('Male', 'Female'),
+    marital_status ENUM('Single', 'Married', 'Divorced', 'Widowed'),
+    address VARCHAR(255),
+    email VARCHAR(80) UNIQUE,
+    NIC VARCHAR(80) UNIQUE,
+    job_title_id VARCHAR(36),
+    pay_grade_id VARCHAR(36),
+    employment_status_id VARCHAR(36),
+    contact_number VARCHAR(10),
+    cust_attr_1_value VARCHAR(255),
+    cust_attr_2_value VARCHAR(255),
+    cust_attr_3_value VARCHAR(255),
+    FOREIGN KEY (department_id) REFERENCES departments(department_id),
+    FOREIGN KEY (branch_id) REFERENCES branches(branch_id),
+    FOREIGN KEY (supervisor_id) REFERENCES employees(employee_id),
+    FOREIGN KEY (job_title_id) REFERENCES job_titles(job_title_id),
+    FOREIGN KEY (pay_grade_id) REFERENCES pay_grades(pay_grade_id),
+    FOREIGN KEY (employment_status_id) REFERENCES employment_statuses(employment_status_id)
+);
+CREATE TABLE custom_attribute_keys (
+    custom_attribute_key_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(80) NOT NULL
+);
+CREATE TABLE allocated_leaves (
+    pay_grade_id VARCHAR(36),
+    annual_leaves INT,
+    casual_leaves INT,
+    maternity_leaves INT,
+    no_pay_leaves INT,
+    PRIMARY KEY (pay_grade_id),
+    FOREIGN KEY (pay_grade_id) REFERENCES pay_grades(pay_grade_id)
+);
+CREATE TABLE employee_dependents (
+    dependent_id VARCHAR(36) PRIMARY KEY,
+    employee_id VARCHAR(36),
+    name VARCHAR(80),
+    relationship_to_employee VARCHAR(80),
+    birth_date DATE,
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
+);
+CREATE TABLE emergency_contacts (
+    emergency_id VARCHAR(36) PRIMARY KEY,
+    employee_id VARCHAR(36),
+    name VARCHAR(80),
+    relationship VARCHAR(80),
+    contact_number VARCHAR(10),
+    address VARCHAR(255),
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
+);
+CREATE TABLE leave_applications (
+    application_id VARCHAR(36) PRIMARY KEY,
+    employee_id VARCHAR(36),
+    leave_type ENUM('Annual', 'Casual', 'Maternity', 'Nopay') NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    reason VARCHAR(255),
+    submission_date DATE DEFAULT (CURRENT_DATE()),
+    status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
+    response_date DATE,
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+CREATE TABLE users (
+    user_id VARCHAR(36) PRIMARY KEY,
+    employee_id VARCHAR(36),
+    role ENUM('Admin', 'Supervisor', 'Employee', 'HR manager') DEFAULT 'Employee',
+    username VARCHAR(80) NOT NULL UNIQUE,
+    password VARCHAR(80) NOT NULL DEFAULT '123', -- Default password for new users added by the HR Manager.
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
+);
 
--- Procedure to get an employee by ID
-CREATE PROCEDURE GetEmployeeByID(IN employeeID VARCHAR(255))
+ALTER TABLE branches
+ADD CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employees(employee_id);
+
+-- ---------------------------------------------------------------------------
+-- -------------------------------- Indexing ---------------------------------
+-- ---------------------------------------------------------------------------
+CREATE INDEX idx_department_id ON employees(department_id);
+CREATE INDEX idx_branch_id ON employees(branch_id);
+CREATE INDEX idx_supervisor_id ON employees(supervisor_id);
+CREATE INDEX idx_job_title_id ON employees(job_title_id);
+CREATE INDEX idx_pay_grade_id ON employees(pay_grade_id);
+
+
+CREATE INDEX idx_employee_id ON leave_applications(employee_id);
+CREATE INDEX idx_status ON leave_applications(status);
+CREATE INDEX idx_leave_type ON leave_applications(leave_type);
+
+CREATE INDEX idx_pay_grade_id_allocated ON allocated_leaves(pay_grade_id);
+
+
+-- ---------------------------------------------------------------------------
+-- -------------------------------- Functions ----------------------------------
+-- ---------------------------------------------------------------------------
+
+-- Function to get the total approved leaves of a particular type for a given employee.
+DELIMITER $$
+CREATE FUNCTION get_used_leaves(emp_id VARCHAR(36), type ENUM('Annual', 'Casual', 'Maternity', 'Nopay'))
+RETURNS INT
+DETERMINISTIC
 BEGIN
-    SELECT * FROM employees WHERE employee_id = employeeID;
-END $$
+    DECLARE used_leaves_count INT;
 
--- Procedure to get all employees
-CREATE PROCEDURE GetAllEmployees()
-BEGIN
-    SELECT * FROM employees;
-END $$
+    -- Get the count of approved leaves for the given employee and leave type
+    SELECT COUNT(*)
+    INTO used_leaves_count
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = type
+      AND status = 'Approved';
 
--- Procedure to update an employee
-CREATE PROCEDURE UpdateEmployee(
-    IN employeeID VARCHAR(255),
-    IN departmentID VARCHAR(255),
-    IN branchID VARCHAR(255),
-    IN supervisorID VARCHAR(255),
-    IN firstName VARCHAR(50),
-    IN lastName VARCHAR(50),
-    IN birthday DATE,
-    IN gender VARCHAR(10),
-    IN maritalStatus VARCHAR(10),
-    IN address VARCHAR(255),
-    IN email VARCHAR(100),
-    IN NIC VARCHAR(20),
-    IN jobTitleID VARCHAR(255),
-    IN payGradeID VARCHAR(255),
-    IN employeeStatusID VARCHAR(255),
-    IN contactNumber VARCHAR(15),
-    IN custAttr1Value VARCHAR(255),
-    IN custAttr2Value VARCHAR(255),
-    IN custAttr3Value VARCHAR(255)
-)
-BEGIN
-    UPDATE employees
-    SET
-        department_id = departmentID,
-        branch_id = branchID,
-        supervisor_id = supervisorID,
-        first_name = firstName,
-        last_name = lastName,
-        birthday = birthday,
-        gender = gender,
-        marital_status = maritalStatus,
-        address = address,
-        email = email,
-        NIC = NIC,
-        job_title_id = jobTitleID,
-        pay_grade_id = payGradeID,
-        employee_status_id = employeeStatusID,
-        contact_number = contactNumber,
-        cust_attr_1_value = custAttr1Value,
-        cust_attr_2_value = custAttr2Value,
-        cust_attr_3_value = custAttr3Value
-    WHERE employee_id = employeeID;
-END $$
-
--- Procedure to delete an employee
-CREATE PROCEDURE DeleteEmployee(IN employeeID VARCHAR(255))
-BEGIN
-    DELETE FROM employees WHERE employee_id = employeeID;
-END $$
-
+    RETURN IFNULL(used_leaves_count, 0);
+END$$
 DELIMITER ;
 
 
+-- ---------------------------------------------------------------------------
+-- -------------------------------- Views ----------------------------------
+-- ---------------------------------------------------------------------------
 
--- Procedure to get employment status by ID
-CREATE PROCEDURE GetEmploymentStatusByID(
-    IN empStatusID VARCHAR(255)
-)
-BEGIN
-    SELECT * FROM employment_statuses WHERE employment_status_id = empStatusID;
-END $$
 
--- Procedure to get all employment statuses
-CREATE PROCEDURE GetAllEmploymentStatuses()
-BEGIN
-    SELECT * FROM employment_statuses;
-END $$
+-- View for basic employee information.
+-- For PIM module.
+CREATE VIEW employee_basic_info AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS full_name,
+    e.birth_date,
+    e.gender,
+    e.marital_status,
+    e.address,
+    e.email,
+    e.contact_number,
+    e.NIC,
+    e.cust_attr_1_value,
+    e.cust_attr_2_value,
+    e.cust_attr_3_value,
+    d.name AS department_name,
+    b.name AS branch_name,
+    b.address AS branch_address,
+    b.contact_number AS branch_contact,
+    jt.title AS job_title,
+    pg.grade_name AS pay_grade,
+    pg.paygrade AS pay_grade_level,
+    es.status AS employment_status,
+    CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name
+FROM
+    employees e
+JOIN
+    departments d ON e.department_id = d.department_id
+JOIN
+    branches b ON e.branch_id = b.branch_id
+JOIN
+    job_titles jt ON e.job_title_id = jt.job_title_id
+JOIN
+    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
+JOIN
+    employment_statuses es ON e.employment_status_id = es.employment_status_id
+LEFT JOIN
+    employees s ON e.supervisor_id = s.employee_id;
 
-DELIMITER ;
+
+
+-- View for pending leave applications.
+-- Can be used when creating a list of pending applications for the supervisor to handle.
+CREATE VIEW pending_leave_applications AS
+SELECT
+    la.application_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    la.leave_type,
+    la.start_date,
+    la.end_date,
+    la.reason,
+    la.status,
+    la.submission_date,
+    la.response_date
+FROM
+    leave_applications la
+JOIN
+    employees e ON la.employee_id = e.employee_id
+WHERE
+    la.status = 'Pending';
+
+
+
+-- Employees group by department
+-- For report generation module.
+CREATE VIEW employees_grouped_by_department AS
+SELECT
+    d.department_id,
+    d.name AS department_name,
+    COUNT(e.employee_id) AS employee_count
+FROM
+    departments d
+LEFT JOIN
+    employees e ON d.department_id = e.department_id
+GROUP BY
+    d.department_id, d.name
+ORDER BY
+    d.name;
+
+
+
+-- View to display payroll-related information, including job title, pay grade, and number of dependents per employee.
+-- For Payroll Management module.
+CREATE VIEW payroll_info AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    jt.title AS job_title,
+    pg.grade_name AS pay_grade,
+    COUNT(ed.dependent_id) AS number_of_dependents
+FROM
+    employees e
+JOIN
+    job_titles jt ON e.job_title_id = jt.job_title_id
+JOIN
+    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
+LEFT JOIN
+    employee_dependents ed ON e.employee_id = ed.employee_id
+GROUP BY
+    e.employee_id, jt.title, pg.grade_name;
+
+
+
+-- View to show the number of used leaves for each employee by leave category using the reusable function.
+-- For leave management module.
+CREATE VIEW used_leaves_view AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+
+    -- Used Annual Leaves
+    get_used_leaves(e.employee_id, 'Annual') AS used_annual_leaves,
+
+    -- Used Casual Leaves
+    get_used_leaves(e.employee_id, 'Casual') AS used_casual_leaves,
+
+    -- Used Maternity Leaves
+    get_used_leaves(e.employee_id, 'Maternity') AS used_maternity_leaves,
+
+    -- Used No-pay Leaves
+    get_used_leaves(e.employee_id, 'Nopay') AS used_nopay_leaves,
+
+    -- Total used leaves
+    (get_used_leaves(e.employee_id, 'Annual') +
+     get_used_leaves(e.employee_id, 'Casual') +
+     get_used_leaves(e.employee_id, 'Maternity') +
+     get_used_leaves(e.employee_id, 'Nopay')) AS total_used_leaves
+
+FROM employees e;
+
+
+
+-- View to show the remaining leaves for each employee by leave category using the reusable function.
+-- For leave management module.
+CREATE VIEW remaining_leaves_view AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+
+    -- Remaining Annual Leaves
+    (al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) AS remaining_annual_leaves,
+
+    -- Remaining Casual Leaves
+    (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) AS remaining_casual_leaves,
+
+    -- Remaining Maternity Leaves
+    (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) AS remaining_maternity_leaves,
+
+    -- Remaining No-pay Leaves
+    (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')) AS remaining_nopay_leaves,
+
+    -- Total Remaining Leaves
+    ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
+     (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
+     (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
+     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) AS total_remaining_leaves
+
+FROM employees e
+JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
+
+
+
+-- ---------------------------------------------------------------------------
+-- -------------------------------- Triggers----------------------------------
+-- ---------------------------------------------------------------------------
+
+
+-- Ensures that an employee cannot have themselves as the supervisor.
 
 DELIMITER $$
-
--- Procedure to create a job title
-CREATE PROCEDURE CreateJobTitle(IN jobTitleID VARCHAR(255), IN title VARCHAR(255))
+CREATE TRIGGER check_supervisor_before_insert BEFORE INSERT ON employees
+FOR EACH ROW
 BEGIN
-    INSERT INTO job_titles (job_title_id, title) VALUES (jobTitleID, title);
-END $$
-
--- Procedure to get a job title by ID
-CREATE PROCEDURE GetJobTitleByID(IN jobTitleID VARCHAR(255))
-BEGIN
-    SELECT * FROM job_titles WHERE job_title_id = jobTitleID;
-END $$
-
--- Procedure to get all job titles
-CREATE PROCEDURE GetAllJobTitles()
-BEGIN
-    SELECT * FROM job_titles;
-END $$
-
--- Procedure to update a job title
-CREATE PROCEDURE UpdateJobTitle(IN jobTitleID VARCHAR(255), IN title VARCHAR(255))
-BEGIN
-    UPDATE job_titles SET title = title WHERE job_title_id = jobTitleID;
-END $$
-
--- Procedure to delete a job title
-CREATE PROCEDURE DeleteJobTitle(IN jobTitleID VARCHAR(255))
-BEGIN
-    DELETE FROM job_titles WHERE job_title_id = jobTitleID;
-END $$
-
-DELIMITER ;
-
-DELIMITER $$
-
--- Procedure to create a leave application
-CREATE PROCEDURE CreateLeaveApplication(
-    IN employeeID VARCHAR(255),
-    IN leaveType VARCHAR(50),
-    IN startDate DATE,
-    IN endDate DATE,
-    IN reason VARCHAR(255)
-)
-BEGIN
-    INSERT INTO leave_applications (
-        application_id,
-        employee_id,
-        leave_type,
-        start_date,
-        end_date,
-        reason,
-        submission_date,
-        status,
-        response_date
-    )
-    VALUES (
-        UUID(),
-        employeeID,
-        leaveType,
-        startDate,
-        endDate,
-        reason,
-        NOW(),
-        'Pending',
-        NULL
-    );
-END $$
-
--- Procedure to get a leave application by ID
-CREATE PROCEDURE GetLeaveApplicationByID(IN applicationID VARCHAR(255))
-BEGIN
-    SELECT * FROM leave_applications WHERE application_id = applicationID;
-END $$
-
--- Procedure to get all leave applications
-CREATE PROCEDURE GetAllLeaveApplications()
-BEGIN
-    SELECT * FROM leave_applications;
-END $$
-
--- Procedure to update a leave application
-CREATE PROCEDURE UpdateLeaveApplication(
-    IN applicationID VARCHAR(255),
-    IN leaveType VARCHAR(50),
-    IN startDate DATE,
-    IN endDate DATE,
-    IN reason VARCHAR(255),
-    IN status VARCHAR(50),
-    IN responseDate DATE
-)
-BEGIN
-    UPDATE leave_applications
-    SET leave_type = leaveType,
-        start_date = startDate,
-        end_date = endDate,
-        reason = reason,
-        status = status,
-        response_date = responseDate
-    WHERE application_id = applicationID;
-END $$
-
--- Procedure to delete a leave application
-CREATE PROCEDURE DeleteLeaveApplication(IN applicationID VARCHAR(255))
-BEGIN
-    DELETE FROM leave_applications WHERE application_id = applicationID;
-END $$
-
-DELIMITER ;
-
-
-
-DELIMITER $$
-
--- Procedure to create an organization
-CREATE PROCEDURE CreateOrganization(IN organizationID VARCHAR(255), IN name VARCHAR(255), IN address VARCHAR(255), IN reg_no INT)
-BEGIN
-    INSERT INTO organizations (organization_id, name, address, reg_no) VALUES (organizationID, name, address, reg_no);
-END $$
-
--- Procedure to get an organization by ID
-CREATE PROCEDURE GetOrganizationByID(IN organizationID VARCHAR(255))
-BEGIN
-    SELECT * FROM organizations WHERE organization_id = organizationID;
-END $$
-
--- Procedure to get all organizations
-CREATE PROCEDURE GetAllOrganizations()
-BEGIN
-    SELECT * FROM organizations;
-END $$
-
--- Procedure to update an organization
-CREATE PROCEDURE UpdateOrganization(IN organizationID VARCHAR(255), IN name VARCHAR(255), IN address VARCHAR(255), IN reg_no INT)
-BEGIN
-    UPDATE organizations SET name = name, address = address, reg_no = reg_no WHERE organization_id = organizationID;
-END $$
-
--- Procedure to delete an organization
-CREATE PROCEDURE DeleteOrganization(IN organizationID VARCHAR(255))
-BEGIN
-    DELETE FROM organizations WHERE organization_id = organizationID;
-END $$
-
+    IF NEW.supervisor_id = NEW.employee_id THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
+    END IF;
+END$$
 DELIMITER ;
 
 
 DELIMITER $$
-
--- Procedure to create a pay grade
-CREATE PROCEDURE CreatePayGrade(IN payGradeID VARCHAR(255), IN paygrade INT, IN gradeName VARCHAR(255))
+CREATE TRIGGER check_supervisor_before_update BEFORE UPDATE ON employees
+FOR EACH ROW
 BEGIN
-    INSERT INTO pay_grades (pay_grade_id, paygrade, grade_name) VALUES (payGradeID, paygrade, gradeName);
+    IF NEW.supervisor_id = NEW.employee_id THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
+    END IF;
 END $$
+DELIMITER ;
 
--- Procedure to get a pay grade by ID
-CREATE PROCEDURE GetPayGradeByID(IN payGradeID VARCHAR(255))
+
+
+-- Prevents duplicate emails in the employees table.
+DELIMITER $$
+CREATE TRIGGER prevent_duplicate_email_before_insert BEFORE INSERT ON employees
+FOR EACH ROW
 BEGIN
-    SELECT * FROM pay_grades WHERE pay_grade_id = payGradeID;
+    IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
+    END IF;
 END $$
-
--- Procedure to get all pay grades
-CREATE PROCEDURE GetAllPayGrades()
-BEGIN
-    SELECT * FROM pay_grades;
-END $$
-
--- Procedure to update a pay grade
-CREATE PROCEDURE UpdatePayGrade(IN payGradeID VARCHAR(255), IN paygrade INT, IN gradeName VARCHAR(255))
-BEGIN
-    UPDATE pay_grades SET paygrade = paygrade, grade_name = gradeName WHERE pay_grade_id = payGradeID;
-END $$
-
--- Procedure to delete a pay grade
-CREATE PROCEDURE DeletePayGrade(IN payGradeID VARCHAR(255))
-BEGIN
-    DELETE FROM pay_grades WHERE pay_grade_id = payGradeID;
-END $$
-
 DELIMITER ;
 
 
 DELIMITER $$
-
--- Procedure to create a user
-CREATE PROCEDURE CreateUser(
-    IN employeeID VARCHAR(255),
-    IN role VARCHAR(50),
-    IN username VARCHAR(50),
-    IN password VARCHAR(255)
-)
+CREATE TRIGGER prevent_duplicate_email_before_update BEFORE UPDATE ON employees
+FOR EACH ROW
 BEGIN
-    INSERT INTO users (user_id, employee_id, role, username, password)
-    VALUES (UUID(), employeeID, role, username, password);
-END $$
-
--- Procedure to get a user by username
-CREATE PROCEDURE GetUserByUsername(IN username VARCHAR(50))
-BEGIN
-    SELECT * FROM users WHERE username = username;
-END $$
-
+    IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
+    END IF;
+END$$
 DELIMITER ;
+
+
+-- Prevents duplicate NICs  in the employees table.
+DELIMITER $$
+CREATE TRIGGER prevent_duplicate_nic_before_insert BEFORE INSERT ON employees
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
+    END IF;
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE TRIGGER prevent_duplicate_nic_before_update BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
+    END IF;
+END $$
+DELIMITER ;
+
+
+-- Ensures that employees can only be assigned to active(valid) job titles
+DELIMITER $$
+CREATE TRIGGER check_active_job_title_before_insert BEFORE INSERT ON employees
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM job_titles WHERE job_title_id = NEW.job_title_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
+    END IF;
+END $$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE TRIGGER check_active_job_title_before_update BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM job_titles WHERE job_title_id = NEW.job_title_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Job title does not exist or is inactive.';
+    END IF;
+END$$
+DELIMITER ;
+
+
+-- Ensures that the leave start date is before the end date.
+DELIMITER $$
+CREATE TRIGGER validate_leave_dates_before_insert BEFORE INSERT ON leave_applications
+FOR EACH ROW
+BEGIN
+    IF NEW.start_date > NEW.end_date THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
+    END IF;
+END $$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE TRIGGER validate_leave_dates_before_update BEFORE UPDATE ON leave_applications
+FOR EACH ROW
+BEGIN
+    IF NEW.start_date > NEW.end_date THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave start date cannot be after the end date.';
+    END IF;
+END $$
+DELIMITER ;
+
+
+-- Ensures that employees cannot submit overlapping leave applications.
+DELIMITER $$
+CREATE TRIGGER prevent_overlapping_leaves BEFORE INSERT ON leave_applications
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM leave_applications
+               WHERE employee_id = NEW.employee_id
+                 AND ((NEW.start_date BETWEEN start_date AND end_date)
+                 OR (NEW.end_date BETWEEN start_date AND end_date))) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Leave applications are overlapping.';
+    END IF;
+END $$
+DELIMITER ;
+
+
+
+
+
+DELETE FROM organizations;
+DELETE FROM branches;
+DELETE FROM departments;
+DELETE FROM pay_grades;
+DELETE FROM allocated_leaves;
+DELETE FROM job_titles;
+DELETE FROM employment_statuses;
+DELETE FROM employees;
+DELETE FROM employee_dependents;
+DELETE FROM emergency_contacts;
+DELETE FROM leave_applications;
+DELETE FROM users;
+
+INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, Punjab, Pakistan', 19781001);
+
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Punjab', '789 Main Street, Punjab, Pakistan', '+924567890');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B002', 'Rangpur', '456 West Blvd, Rangpur, Bangladesh', '+880765431');
+INSERT INTO branches (branch_id,name,address,contact_number) VALUES  ('B003', 'Bandaragama', '242 Aluthgama, Bandaragama, Sri Lanka', '+942938476');
+
+INSERT INTO departments VALUES ('D001', 'HR');
+INSERT INTO departments VALUES ('D002', 'Finance');
+INSERT INTO departments VALUES ('D003', 'IT');
+INSERT INTO departments VALUES ('D004', 'Marketing');
+INSERT INTO departments VALUES ('D005', 'Production');
+INSERT INTO departments VALUES ('D006', 'Customer Service');
+INSERT INTO departments VALUES ('D007', 'Sales');
+INSERT INTO departments VALUES ('D008', 'Quality Assurance');
+INSERT INTO departments VALUES ('D009', 'Corporate Management');
+
+INSERT INTO pay_grades VALUES ('PG001', 1, 'Entry Level');  -- Normal employees(labors)
+INSERT INTO pay_grades VALUES ('PG002', 2, 'Mid Level');    -- HR Manager, Accountant, Software Engineer, QA Engineer,...
+INSERT INTO pay_grades VALUES ('PG003', 3, 'Senior Level');  -- COO, CFO
+INSERT INTO pay_grades VALUES ('PG004', 4, 'Executive Level');  -- CEO
+
+INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 15);
+INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 20);
+INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 25);
+INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 30);
+
+INSERT INTO job_titles VALUES ('T001', 'Sewing Machine Operator');
+INSERT INTO job_titles VALUES ('T002', 'Fabric Cutter');
+INSERT INTO job_titles VALUES ('T003', 'Fashion Designer');
+INSERT INTO job_titles VALUES ('T004', 'Production Manager');
+INSERT INTO job_titles VALUES ('T005', 'Accountant');
+INSERT INTO job_titles VALUES ('T006', 'Finance Manager');
+INSERT INTO job_titles VALUES ('T007', 'Quality Assurance Engineer');
+INSERT INTO job_titles VALUES ('T008', 'Software Engineer');
+INSERT INTO job_titles VALUES ('T009', 'HR Manager');
+INSERT INTO job_titles VALUES ('T010', 'Chief Financial Officer');
+INSERT INTO job_titles VALUES ('T011', 'Chief Operating Officer');
+INSERT INTO job_titles VALUES ('T012', 'Chief Executive Officer');
+
+INSERT INTO employment_statuses VALUES ('S001', 'Intern-Fulltime');
+INSERT INTO employment_statuses VALUES ('S002', 'Intern-Parttime');
+INSERT INTO employment_statuses VALUES ('S003', 'Contract-Fulltime');
+INSERT INTO employment_statuses VALUES ('S004', 'Contract-Parttime');
+INSERT INTO employment_statuses VALUES ('S005', 'Permanent');
+INSERT INTO employment_statuses VALUES ('S006', 'Freelance');
+
+
+
+INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number)
+VALUES
+('E0003', 'D009', 'B001', NULL, 'Michael', 'Johnson', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234'),
+('E0002', 'D009', 'B001', 'E0003', 'Jane', 'Smith', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345'),
+('E0006', 'D002', 'B001', 'E0003', 'Sophia', 'Miller', '1983-07-25', 'Female', 'Married', '987 Birch St, City B, Pakistan', 'sophia.miller@apparel.com', 'NIC006', 'T010', 'PG003', 'S005','+923023456'),
+('E0011', 'D009', 'B002', 'E0003', 'Ethan', 'Lopez', '1989-01-23', 'Male', 'Single', '654 Cedar Ave, City K, Bangladesh', 'ethan.lopez@apparel.com', 'NIC011', 'T011', 'PG003', 'S005','+880171123'),
+('E0012', 'D009', 'B002', 'E0003', 'Mia', 'Gonzalez', '1988-07-13', 'Female', 'Married', '987 Birch St, City D, Bangladesh', 'mia.gonzalez@apparel.com', 'NIC012', 'T010', 'PG003', 'S005','+880172234'),
+('E0021', 'D009', 'B003', 'E0003', 'Jack', 'King', '1987-12-04', 'Male', 'Single', '789 Pine Rd, Gampaha, Sri Lanka', 'jack.king@apparel.com', 'NIC021', 'T011', 'PG003', 'S005','+94711234'),
+('E0022', 'D009', 'B003', 'E0003', 'Grace', 'Harris', '1990-07-02', 'Female', 'Married', '321 Elm St, Matara, Sri Lanka', 'grace.harris@apparel.com', 'NIC022', 'T010', 'PG003', 'S005','+94722345'),
+('E0001', 'D001', 'B001', 'E0002', 'John', 'Doe', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567'),
+('E0004', 'D003', 'B001', 'E0002', 'Emily', 'Brown', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678'),
+('E0005', 'D005', 'B001', 'E0002', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789'),
+('E0010', 'D005', 'B001', 'E0005', 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890'),
+('E0008', 'D005', 'B001', 'E0010', 'Ava', 'Taylor', '1993-04-17', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'ava.taylor@apparel.com', 'NIC008', 'T001', 'PG001', 'S006','+923078904'),
+('E0009', 'D005', 'B001', 'E0010', 'Lucas', 'Davis', '1982-11-19', 'Male', 'Married', '789 Pine Rd, City K, Pakistan', 'lucas.davis@apparel.com', 'NIC009', 'T002', 'PG001', 'S004','+923089012'),
+('E0007', 'D002', 'B001', 'E0006', 'James', 'Wilson', '1975-09-05', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'james.wilson@apparel.com', 'NIC007', 'T006', 'PG002', 'S003','+923023456'),
+('E0013', 'D001', 'B002', 'E0011', 'Logan', 'Clark', '1976-03-03', 'Male', 'Single', '123 Oak St, City D, Bangladesh', 'logan.clark@apparel.com', 'NIC013', 'T009', 'PG002', 'S005','+880173349'),
+('E0014', 'D005', 'B002', 'E0011', 'Isabella', 'Rodriguez', '1991-12-28', 'Female', 'Married', '456 Maple Ave, City G, Bangladesh', 'isabella.rodriguez@apparel.com', 'NIC014', 'T004', 'PG002', 'S003','+880174456'),
+('E0017', 'D008', 'B002', 'E0011', 'Elijah', 'Moore', '1980-05-21', 'Male', 'Married', '654 Cedar Ave, City G, Bangladesh', 'elijah.moore@apparel.com', 'NIC017', 'T007', 'PG002', 'S005','+880678901'),
+('E0015', 'D002', 'B002', 'E0012', 'Mason', 'Martinez', '1984-02-12', 'Male', 'Married', '789 Pine Rd, City G, Bangladesh', 'mason.martinez@apparel.com', 'NIC015', 'T005', 'PG002', 'S005','+880789012'),
+('E0016', 'D005', 'B002', 'E0014', 'Amelia', 'Hernandez', '1996-10-01', 'Female', 'Single', '321 Elm St, City D, Bangladesh', 'amelia.hernandez@apparel.com', 'NIC016', 'T003', 'PG002', 'S003','+880890123'),
+('E0018', 'D005', 'B002', 'E0016', 'Avery', 'Garcia', '1985-09-16', 'Female', 'Single', '987 Birch St, City M, Bangladesh', 'avery.garcia@apparel.com', 'NIC018', 'T001', 'PG001', 'S006','+880901234'),
+('E0019', 'D005', 'B002', 'E0016', 'Benjamin', 'White', '1992-11-08', 'Male', 'Married', '123 Oak St, City D, Bangladesh', 'benjamin.white@apparel.com', 'NIC019', 'T001', 'PG001', 'S006','+880012345'),
+('E0020', 'D005', 'B002', 'E0016', 'Ella', 'Lee', '1994-03-26', 'Female', 'Single', '456 Maple Ave, City M, Bangladesh', 'ella.lee@apparel.com', 'NIC020', 'T002', 'PG001', 'S004','+880123456'),
+('E0023', 'D002', 'B003', 'E0022', 'Oliver', 'Young', '1986-06-18', 'Male', 'Married', '654 Cedar Ave, Jaffna, Sri Lanka', 'oliver.young@apparel.com', 'NIC023', 'T005', 'PG002', 'S005','+94773456'),
+('E0024', 'D005', 'B003', 'E0021', 'Scarlett', 'Thompson', '1993-08-25', 'Female', 'Single', '987 Birch St, Colombo, Sri Lanka', 'scarlett.thompson@apparel.com', 'NIC024', 'T004', 'PG002', 'S003','+94567890'),
+('E0025', 'D008', 'B003', 'E0021', 'Henry', 'Martinez', '1982-04-15', 'Male', 'Single', '123 Oak St, Colombo, Sri Lanka', 'henry.martinez@apparel.com', 'NIC025', 'T007', 'PG002', 'S003','+94678901'),
+('E0026', 'D003', 'B003', 'E0021', 'Luna', 'Perez', '1995-09-28', 'Female', 'Married', '456 Maple Ave, Matara, Sri Lanka', 'luna.perez@apparel.com', 'NIC026', 'T008', 'PG002', 'S002','+94789012'),
+('E0027', 'D005', 'B003', 'E0024', 'Daniel', 'Sanchez', '1981-11-14', 'Male', 'Married', '789 Pine Rd, Matara, Sri Lanka', 'daniel.sanchez@apparel.com', 'NIC027', 'T003', 'PG002', 'S005','+94890123'),
+('E0028', 'D005', 'B003', 'E0027', 'Victoria', 'Adams', '1997-12-20', 'Female', 'Single', '321 Elm St, Kandy, Sri Lanka', 'victoria.adams@apparel.com', 'NIC028', 'T001', 'PG001', 'S004','+94901234'),
+('E0029', 'D005', 'B003', 'E0027', 'Sebastian', 'Roberts', '1980-03-09', 'Male', 'Married', '654 Cedar Ave, Colombo, Sri Lanka', 'sebastian.roberts@apparel.com', 'NIC029', 'T002', 'PG001', 'S006','+94012345'),
+('E0030', 'D005', 'B003', 'E0027', 'Aria', 'Scott', '1989-10-30', 'Female', 'Married', '987 Birch St, Colombo, Sri Lanka', 'aria.scott@apparel.com', 'NIC030', 'T001', 'PG001', 'S006','+94123456');
+
+INSERT INTO employee_dependents VALUES ('DP0001', 'E0030', 'Alice Doe', 'Daughter', '2010-05-14');
+INSERT INTO employee_dependents VALUES ('DP0002', 'E0025', 'Mark Smith', 'Son', '2012-09-22');
+INSERT INTO employee_dependents VALUES ('DP0003', 'E0007', 'Olivia Jones', 'Wife', '1986-11-05');
+INSERT INTO employee_dependents VALUES ('DP0004', 'E0015', 'David Brown', 'Son', '2015-03-10');
+INSERT INTO employee_dependents VALUES ('DP0005', 'E0008', 'Sophia Williams', 'Daughter', '2018-07-25');
+INSERT INTO employee_dependents VALUES ('DP0006', 'E0010', 'Emily Martin', 'Daughter', '2013-12-20');
+INSERT INTO employee_dependents VALUES ('DP0007', 'E0026', 'Ethan Taylor', 'Son', '2016-01-18');
+INSERT INTO employee_dependents VALUES ('DP0008', 'E0028', 'Liam Anderson', 'Son', '2017-02-23');
+INSERT INTO employee_dependents VALUES ('DP0009', 'E0019', 'Charlotte Jackson', 'Daughter', '2005-11-11');
+INSERT INTO employee_dependents VALUES ('DP0010', 'E0014', 'Isabella Thomas', 'Daughter', '2009-04-04');
+
+INSERT INTO emergency_contacts VALUES ('EC0001', 'E0011', 'Mary Doe', 'Wife', '+880567890', '123 Main St, City A, Bangladesh');
+INSERT INTO emergency_contacts VALUES ('EC0002', 'E0002', 'Paul Smith', 'Brother', '+927654321', '456 Second St, City B, Pakistan');
+INSERT INTO emergency_contacts VALUES ('EC0003', 'E0030', 'Anna Jones', 'Sister', '+949384756', '789 Third St, City C, Sri Lanka');
+INSERT INTO emergency_contacts VALUES ('EC0004', 'E0014', 'James Brown', 'Father', '+880334455', '101 Fourth St, City D, Bangladesh');
+INSERT INTO emergency_contacts VALUES ('EC0005', 'E0025', 'Linda Williams', 'Mother', '+943445566', '202 Fifth St, City E, Sri Lanka');
+INSERT INTO emergency_contacts VALUES ('EC0006', 'E0006', 'Kevin Martin', 'Husband', '+928776655', '303 Sixth St, City F, Pakistan');
+INSERT INTO emergency_contacts VALUES ('EC0007', 'E0027', 'Sarah Taylor', 'Mother', '+944556677', '404 Seventh St, City G, Sri Lanka');
+INSERT INTO emergency_contacts VALUES ('EC0008', 'E0018', 'David Anderson', 'Brother', '+880778899', '505 Eighth St, City H, Bangladesh');
+INSERT INTO emergency_contacts VALUES ('EC0009', 'E0009', 'Emily Jackson', 'Wife', '+927889900', '606 Ninth St, City I, Pakistan');
+INSERT INTO emergency_contacts VALUES ('EC0010', 'E0010', 'John Thomas', 'Husband', '+928990011', '707 Tenth St, City J, Pakistan');
+
+INSERT INTO leave_applications VALUES ('LA0001', 'E0019', 'Annual', '2023-01-10', '2023-01-12', 'Flu', '2023-01-09', 'Approved', '2023-01-10');
+INSERT INTO leave_applications VALUES ('LA0002', 'E0027', 'Annual', '2023-02-15', '2023-02-20', 'Vacation', '2023-02-05', 'Approved', '2023-02-06');
+INSERT INTO leave_applications VALUES ('LA0003', 'E0028', 'Maternity', '2023-03-01', '2023-05-01', 'Pregnancy', '2023-02-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0004', 'E0014', 'Casual', '2023-04-10', '2023-04-12', 'Personal reasons', '2023-04-01', 'Approved', '2023-04-05');
+INSERT INTO leave_applications VALUES ('LA0005', 'E0005', 'Casual', '2023-05-05', '2023-05-07', 'Fever', '2023-05-03', 'Rejected', '2023-05-04');
+INSERT INTO leave_applications VALUES ('LA0006', 'E0026', 'Annual', '2023-06-12', '2023-06-18', 'Vacation', '2023-06-01', 'Approved', '2023-06-02');
+INSERT INTO leave_applications VALUES ('LA0007', 'E0018', 'Annual', '2023-07-01', '2023-07-05', 'Family trip', '2023-06-25', 'Approved', '2023-06-26');
+INSERT INTO leave_applications VALUES ('LA0008', 'E0021', 'Casual', '2023-07-10', '2023-07-12', 'Medical checkup', '2023-07-08', 'Approved', '2023-07-09');
+INSERT INTO leave_applications VALUES ('LA0009', 'E0030', 'Annual', '2023-07-15', '2023-07-20', 'Vacation', '2023-07-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0010', 'E0007', 'Nopay', '2023-08-01', '2023-08-03', 'Personal reasons', '2023-07-30', 'Rejected', '2023-07-31');
+INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2023-08-10', '2023-11-10', 'Pregnancy', '2023-08-01', 'Approved', '2023-08-02');
+INSERT INTO leave_applications VALUES ('LA0012', 'E0029', 'Annual', '2023-08-15', '2023-08-20', 'Family function', '2023-08-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0013', 'E0012', 'Casual', '2023-09-01', '2023-09-02', 'Doctor appointment', '2023-08-28', 'Approved', '2023-08-29');
+INSERT INTO leave_applications VALUES ('LA0014', 'E0020', 'Annual', '2023-09-05', '2023-09-08', 'Vacation', '2023-08-27', 'Approved', '2023-08-28');
+INSERT INTO leave_applications VALUES ('LA0015', 'E0017', 'Annual', '2023-09-15', '2023-09-18', 'Family event', '2023-09-05', 'Approved', '2023-09-06');
+INSERT INTO leave_applications VALUES ('LA0016', 'E0023', 'Casual', '2023-09-20', '2023-09-22', 'Sick', '2023-09-19', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0017', 'E0010', 'Annual', '2023-10-01', '2023-10-10', 'Vacation', '2023-09-25', 'Approved', '2023-09-26');
+INSERT INTO leave_applications VALUES ('LA0018', 'E0025', 'Nopay', '2023-10-12', '2023-10-15', 'Emergency', '2023-10-10', 'Rejected', '2023-10-11');
+INSERT INTO leave_applications VALUES ('LA0019', 'E0027', 'Annual', '2023-10-20', '2023-10-25', 'Family visit', '2023-10-10', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0020', 'E0021', 'Casual', '2023-10-25', '2023-10-26', 'Medical reasons', '2023-10-23', 'Approved', '2023-10-24');
+INSERT INTO leave_applications VALUES ('LA0021', 'E0003', 'Annual', '2023-11-01', '2023-11-05', 'Holiday', '2023-10-25', 'Approved', '2023-10-26');
+INSERT INTO leave_applications VALUES ('LA0022', 'E0026', 'Nopay', '2023-11-07', '2023-11-09', 'Personal reasons', '2023-11-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0023', 'E0015', 'Casual', '2023-11-12', '2023-11-14', 'Sick', '2023-11-10', 'Rejected', '2023-11-11');
+INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2023-11-20', '2024-02-20', 'Pregnancy', '2023-11-10', 'Approved', '2023-11-11');
+INSERT INTO leave_applications VALUES ('LA0025', 'E0012', 'Annual', '2023-12-01', '2023-12-05', 'Family function', '2023-11-20', 'Approved', '2023-11-21');
+INSERT INTO leave_applications VALUES ('LA0026', 'E0008', 'Annual', '2023-12-10', '2023-12-15', 'Vacation', '2023-12-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0027', 'E0024', 'Casual', '2023-12-20', '2023-12-22', 'Health reasons', '2023-12-18', 'Approved', '2023-12-19');
+INSERT INTO leave_applications VALUES ('LA0028', 'E0006', 'Nopay', '2024-01-02', '2024-01-04', 'Family emergency', '2023-12-30', 'Rejected', '2024-01-01');
+INSERT INTO leave_applications VALUES ('LA0029', 'E0022', 'Annual', '2024-01-10', '2024-01-15', 'Vacation', '2024-01-02', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0030', 'E0009', 'Casual', '2024-01-20', '2024-01-22', 'Health issues', '2024-01-18', 'Approved', '2024-01-19');
+INSERT INTO leave_applications VALUES ('LA0031', 'E0026', 'Maternity', '2024-02-01', '2024-05-01', 'Pregnancy', '2024-01-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0032', 'E0003', 'Annual', '2024-02-10', '2024-02-15', 'Family function', '2024-02-01', 'Approved', '2024-02-02');
+INSERT INTO leave_applications VALUES ('LA0033', 'E0028', 'Annual', '2024-03-01', '2024-03-05', 'Vacation', '2024-02-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0034', 'E0002', 'Nopay', '2024-03-10', '2024-03-12', 'Personal reasons', '2024-03-08', 'Rejected', '2024-03-09');
+INSERT INTO leave_applications VALUES ('LA0035', 'E0025', 'Annual', '2024-03-20', '2024-03-25', 'Family event', '2024-03-10', 'Approved', '2024-03-11');
+INSERT INTO leave_applications VALUES ('LA0036', 'E0016', 'Casual', '2024-04-01', '2024-04-03', 'Sick', '2024-03-29', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0037', 'E0024', 'Annual', '2024-04-10', '2024-04-12', 'Holiday', '2024-04-01', 'Approved', '2024-04-02');
+INSERT INTO leave_applications VALUES ('LA0038', 'E0014', 'Casual', '2024-04-20', '2024-04-21', 'Medical checkup', '2024-04-18', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0039', 'E0001', 'Nopay', '2024-05-01', '2024-05-03', 'Personal reasons', '2024-04-28', 'Rejected', '2024-04-29');
+INSERT INTO leave_applications VALUES ('LA0040', 'E0027', 'Annual', '2024-05-10', '2024-05-12', 'Vacation', '2024-04-30', 'Approved', '2024-05-01');
+INSERT INTO leave_applications VALUES ('LA0041', 'E0008', 'Maternity', '2024-06-01', '2024-09-01', 'Pregnancy', '2024-05-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0042', 'E0010', 'Annual', '2024-06-10', '2024-06-15', 'Family function', '2024-06-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0043', 'E0005', 'Casual', '2024-06-20', '2024-06-22', 'Health issues', '2024-06-18', 'Approved', '2024-06-19');
+INSERT INTO leave_applications VALUES ('LA0044', 'E0023', 'Nopay', '2024-07-01', '2024-07-05', 'Personal reasons', '2024-06-25', 'Rejected', '2024-06-26');
+INSERT INTO leave_applications VALUES ('LA0045', 'E0016', 'Annual', '2024-07-10', '2024-07-15', 'Vacation', '2024-07-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0046', 'E0012', 'Annual', '2024-07-20', '2024-07-25', 'Family event', '2024-07-10', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0047', 'E0020', 'Casual', '2024-08-01', '2024-08-02', 'Doctor appointment', '2024-07-30', 'Approved', '2024-07-31');
+INSERT INTO leave_applications VALUES ('LA0048', 'E0005', 'Annual', '2024-08-10', '2024-08-12', 'Holiday', '2024-08-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0049', 'E0027', 'Nopay', '2024-08-20', '2024-08-25', 'Emergency', '2024-08-15', 'Rejected', '2024-08-16');
+INSERT INTO leave_applications VALUES ('LA0050', 'E0018', 'Annual', '2024-09-01', '2024-09-05', 'Vacation', '2024-08-25', 'Pending', NULL);
+
+
+
+INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'emily.brown', 'password101');
+INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'John.Doe', 'password303');
+INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'Ella.Lee', 'password404');
+INSERT INTO users VALUES ('U004', 'E0007', 'Supervisor', 'james.Wilson', 'password505');
+INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'Aria.Scott', 'password606');
+INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
+INSERT INTO users VALUES ('U007', 'E0005', 'Supervisor', 'David.Jones', 'password555');
+
+-- Update branches with the appropriate manager_id
+UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
+
+UPDATE branches SET manager_id = 'E0011'  WHERE branch_id = 'B002';
+
+UPDATE branches SET manager_id = 'E0021' WHERE branch_id = 'B003';
