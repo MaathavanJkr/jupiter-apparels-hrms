@@ -29,10 +29,13 @@ DROP FUNCTION IF EXISTS get_used_leaves;
 -- Drop all views
 DROP VIEW IF EXISTS employee_basic_info;
 DROP VIEW IF EXISTS pending_leave_applications;
-DROP VIEW IF EXISTS employees_grouped_by_department;
 DROP VIEW IF EXISTS payroll_info;
 DROP VIEW IF EXISTS used_leaves_view;
 DROP VIEW IF EXISTS remaining_leaves_view;
+DROP VIEW IF EXISTS emergency_medical_details;
+DROP VIEW IF EXISTS employees_grouped_by_job_title_department_pay_grade
+DROP VIEW IF EXISTS employees_grouped_by_department;
+DROP VIEW IF EXISTS total_leaves_by_department;
 
 -- Drop all triggers
 DROP TRIGGER IF EXISTS check_supervisor_before_insert;
@@ -277,25 +280,6 @@ WHERE
     la.status = 'Pending';
 
 
-
--- Employees group by department
--- For report generation module.
-CREATE VIEW employees_grouped_by_department AS
-SELECT
-    d.department_id,
-    d.name AS department_name,
-    COUNT(e.employee_id) AS employee_count
-FROM
-    departments d
-LEFT JOIN
-    employees e ON d.department_id = e.department_id
-GROUP BY
-    d.department_id, d.name
-ORDER BY
-    d.name;
-
-
-
 -- View to display payroll-related information, including job title, pay grade, and number of dependents per employee.
 -- For Payroll Management module.
 CREATE VIEW payroll_info AS
@@ -432,29 +416,29 @@ GROUP BY
 ORDER BY
     jt.title, d.name, pg.grade_name;
 
--- -- For reporting module
--- CREATE VIEW emergency_medical_details AS
--- SELECT
---     e.employee_id,
---     e.first_name
---     d.department_id,
---     d.name AS department_name,
---     e.gender,
---     e.cust_attr_1_value as nationality,
---     COUNT(*) AS employee_count
--- FROM
---     employees e
--- JOIN
---     departments d ON e.department_id = d.department_id
--- GROUP BY
---     d.department_id,
---     d.name,
---     e.gender,
---     e.cust_attr_1_value
--- ORDER BY
---     d.name,
---     e.gender,
---     e.cust_attr_1_value;
+-- Custom Report: Employees with their blood group and emergency contact details
+-- For reporting module.
+CREATE VIEW emergency_medical_details AS
+SELECT
+    e.employee_id,
+    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+    d.name AS department,
+    b.name AS branch,
+    e.gender,
+    e.cust_attr_2_value as blood_group,
+    ec.name AS person_to_contact,
+    ec.relationship,
+    ec.contact_number,
+    ec.address
+FROM
+    employees e
+LEFT JOIN
+    departments d ON e.department_id = d.department_id
+LEFT JOIN
+    branches b ON b.branch_id = e.branch_id
+LEFT JOIN
+    emergency_contacts ec ON ec.employee_id = e.employee_id;
+
 
 
 -- ---------------------------------------------------------------------------
