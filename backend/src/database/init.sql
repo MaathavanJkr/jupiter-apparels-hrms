@@ -277,25 +277,6 @@ WHERE
     la.status = 'Pending';
 
 
-
--- Employees group by department
--- For report generation module.
-CREATE VIEW employees_grouped_by_department AS
-SELECT
-    d.department_id,
-    d.name AS department_name,
-    COUNT(e.employee_id) AS employee_count
-FROM
-    departments d
-LEFT JOIN
-    employees e ON d.department_id = e.department_id
-GROUP BY
-    d.department_id, d.name
-ORDER BY
-    d.name;
-
-
-
 -- View to display payroll-related information, including job title, pay grade, and number of dependents per employee.
 -- For Payroll Management module.
 CREATE VIEW payroll_info AS
@@ -375,6 +356,86 @@ SELECT
 FROM employees e
 JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
 
+
+-- Employees group by department
+-- For report generation module.
+CREATE VIEW employees_grouped_by_department AS
+SELECT
+    d.department_id,
+    d.name AS department_name,
+    COUNT(e.employee_id) AS employee_count
+FROM
+    departments d
+LEFT JOIN
+    employees e ON d.department_id = e.department_id
+GROUP BY
+    d.department_id, d.name
+ORDER BY
+    d.name;
+
+
+-- Total leaves by department from January 1st to 31st December
+-- For report generation module.
+CREATE VIEW total_leaves_by_department AS
+SELECT
+    d.department_id,
+    d.name AS department_name,
+    SUM(ulv.total_used_leaves) AS total_leaves_taken
+FROM
+    used_leaves_view ulv
+JOIN
+    employees e ON ulv.employee_id = e.employee_id
+JOIN
+    departments d ON e.department_id = d.department_id
+GROUP BY
+    d.department_id, d.name
+ORDER BY
+    d.name;
+
+-- Employee reports grouped by job title, department, pay grade.
+-- For report generation module.
+CREATE VIEW employees_grouped_by_job_title_department_pay_grade AS
+SELECT
+    jt.title AS job_title,
+    d.name AS department_name,
+    pg.grade_name AS pay_grade,
+    COUNT(e.employee_id) AS employee_count
+FROM
+    employees e
+JOIN
+    job_titles jt ON e.job_title_id = jt.job_title_id
+JOIN
+    departments d ON e.department_id = d.department_id
+JOIN
+    pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
+GROUP BY
+    jt.title, d.name, pg.grade_name
+ORDER BY
+    jt.title, d.name, pg.grade_name;
+
+-- -- For reporting module
+-- CREATE VIEW emergency_medical_details AS
+-- SELECT
+--     e.employee_id,
+--     e.first_name
+--     d.department_id,
+--     d.name AS department_name,
+--     e.gender,
+--     e.cust_attr_1_value as nationality,
+--     COUNT(*) AS employee_count
+-- FROM
+--     employees e
+-- JOIN
+--     departments d ON e.department_id = d.department_id
+-- GROUP BY
+--     d.department_id,
+--     d.name,
+--     e.gender,
+--     e.cust_attr_1_value
+-- ORDER BY
+--     d.name,
+--     e.gender,
+--     e.cust_attr_1_value;
 
 
 -- ---------------------------------------------------------------------------
@@ -577,9 +638,11 @@ INSERT INTO employment_statuses VALUES ('S004', 'Contract-Parttime');
 INSERT INTO employment_statuses VALUES ('S005', 'Permanent');
 INSERT INTO employment_statuses VALUES ('S006', 'Freelance');
 
-INSERT INTO custom_attribute_keys VALUES ('nationality');
-INSERT INTO custom_attribute_keys VALUES ('blood_group');
-INSERT INTO custom_attribute_keys VALUES ('preferred_language');
+
+INSERT INTO custom_attribute_keys(name) VALUES ('nationality');
+INSERT INTO custom_attribute_keys(name) VALUES ('blood_group');
+INSERT INTO custom_attribute_keys(name) VALUES ('preferred_language');
+
 
 
 INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number, cust_attr_1_value, cust_attr_2_value, cust_attr_3_value)
@@ -637,39 +700,39 @@ INSERT INTO emergency_contacts VALUES ('EC0008', 'E0018', 'David Anderson', 'Bro
 INSERT INTO emergency_contacts VALUES ('EC0009', 'E0009', 'Emily Jackson', 'Wife', '+927889900', '606 Ninth St, City I, Pakistan');
 INSERT INTO emergency_contacts VALUES ('EC0010', 'E0010', 'John Thomas', 'Husband', '+928990011', '707 Tenth St, City J, Pakistan');
 
-INSERT INTO leave_applications VALUES ('LA0001', 'E0019', 'Annual', '2023-01-10', '2023-01-12', 'Flu', '2023-01-09', 'Approved', '2023-01-10');
-INSERT INTO leave_applications VALUES ('LA0002', 'E0027', 'Annual', '2023-02-15', '2023-02-20', 'Vacation', '2023-02-05', 'Approved', '2023-02-06');
-INSERT INTO leave_applications VALUES ('LA0003', 'E0028', 'Maternity', '2023-03-01', '2023-05-01', 'Pregnancy', '2023-02-20', 'Pending', NULL);
-INSERT INTO leave_applications VALUES ('LA0004', 'E0014', 'Casual', '2023-04-10', '2023-04-12', 'Personal reasons', '2023-04-01', 'Approved', '2023-04-05');
-INSERT INTO leave_applications VALUES ('LA0005', 'E0005', 'Casual', '2023-05-05', '2023-05-07', 'Fever', '2023-05-03', 'Rejected', '2023-05-04');
-INSERT INTO leave_applications VALUES ('LA0006', 'E0026', 'Annual', '2023-06-12', '2023-06-18', 'Vacation', '2023-06-01', 'Approved', '2023-06-02');
-INSERT INTO leave_applications VALUES ('LA0007', 'E0018', 'Annual', '2023-07-01', '2023-07-05', 'Family trip', '2023-06-25', 'Approved', '2023-06-26');
-INSERT INTO leave_applications VALUES ('LA0008', 'E0021', 'Casual', '2023-07-10', '2023-07-12', 'Medical checkup', '2023-07-08', 'Approved', '2023-07-09');
-INSERT INTO leave_applications VALUES ('LA0009', 'E0030', 'Annual', '2023-07-15', '2023-07-20', 'Vacation', '2023-07-05', 'Pending', NULL);
-INSERT INTO leave_applications VALUES ('LA0010', 'E0007', 'Nopay', '2023-08-01', '2023-08-03', 'Personal reasons', '2023-07-30', 'Rejected', '2023-07-31');
-INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2023-08-10', '2023-11-10', 'Pregnancy', '2023-08-01', 'Approved', '2023-08-02');
-INSERT INTO leave_applications VALUES ('LA0012', 'E0029', 'Annual', '2023-08-15', '2023-08-20', 'Family function', '2023-08-05', 'Pending', NULL);
-INSERT INTO leave_applications VALUES ('LA0013', 'E0012', 'Casual', '2023-09-01', '2023-09-02', 'Doctor appointment', '2023-08-28', 'Approved', '2023-08-29');
-INSERT INTO leave_applications VALUES ('LA0014', 'E0020', 'Annual', '2023-09-05', '2023-09-08', 'Vacation', '2023-08-27', 'Approved', '2023-08-28');
-INSERT INTO leave_applications VALUES ('LA0015', 'E0017', 'Annual', '2023-09-15', '2023-09-18', 'Family event', '2023-09-05', 'Approved', '2023-09-06');
-INSERT INTO leave_applications VALUES ('LA0016', 'E0023', 'Casual', '2023-09-20', '2023-09-22', 'Sick', '2023-09-19', 'Pending', NULL);
-INSERT INTO leave_applications VALUES ('LA0017', 'E0010', 'Annual', '2023-10-01', '2023-10-10', 'Vacation', '2023-09-25', 'Approved', '2023-09-26');
-INSERT INTO leave_applications VALUES ('LA0018', 'E0025', 'Nopay', '2023-10-12', '2023-10-15', 'Emergency', '2023-10-10', 'Rejected', '2023-10-11');
-INSERT INTO leave_applications VALUES ('LA0019', 'E0027', 'Annual', '2023-10-20', '2023-10-25', 'Family visit', '2023-10-10', 'Pending', NULL);
-INSERT INTO leave_applications VALUES ('LA0020', 'E0021', 'Casual', '2023-10-25', '2023-10-26', 'Medical reasons', '2023-10-23', 'Approved', '2023-10-24');
-INSERT INTO leave_applications VALUES ('LA0021', 'E0003', 'Annual', '2023-11-01', '2023-11-05', 'Holiday', '2023-10-25', 'Approved', '2023-10-26');
-INSERT INTO leave_applications VALUES ('LA0022', 'E0026', 'Nopay', '2023-11-07', '2023-11-09', 'Personal reasons', '2023-11-05', 'Pending', NULL);
-INSERT INTO leave_applications VALUES ('LA0023', 'E0015', 'Casual', '2023-11-12', '2023-11-14', 'Sick', '2023-11-10', 'Rejected', '2023-11-11');
-INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2023-11-20', '2024-02-20', 'Pregnancy', '2023-11-10', 'Approved', '2023-11-11');
-INSERT INTO leave_applications VALUES ('LA0025', 'E0012', 'Annual', '2023-12-01', '2023-12-05', 'Family function', '2023-11-20', 'Approved', '2023-11-21');
-INSERT INTO leave_applications VALUES ('LA0026', 'E0008', 'Annual', '2023-12-10', '2023-12-15', 'Vacation', '2023-12-01', 'Pending', NULL);
-INSERT INTO leave_applications VALUES ('LA0027', 'E0024', 'Casual', '2023-12-20', '2023-12-22', 'Health reasons', '2023-12-18', 'Approved', '2023-12-19');
+INSERT INTO leave_applications VALUES ('LA0001', 'E0019', 'Annual', '2024-01-10', '2024-01-12', 'Flu', '2024-01-09', 'Approved', '2024-01-10');
+INSERT INTO leave_applications VALUES ('LA0002', 'E0027', 'Annual', '2024-02-15', '2024-02-20', 'Vacation', '2024-02-05', 'Approved', '2024-02-06');
+INSERT INTO leave_applications VALUES ('LA0003', 'E0028', 'Maternity', '2024-03-01', '2024-05-01', 'Pregnancy', '2024-02-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0004', 'E0014', 'Casual', '2024-04-10', '2024-04-12', 'Personal reasons', '2024-04-01', 'Approved', '2024-04-05');
+INSERT INTO leave_applications VALUES ('LA0005', 'E0005', 'Casual', '2024-05-05', '2024-05-07', 'Fever', '2024-05-03', 'Rejected', '2024-05-04');
+INSERT INTO leave_applications VALUES ('LA0006', 'E0026', 'Annual', '2024-06-12', '2024-06-18', 'Vacation', '2024-06-01', 'Approved', '2024-06-02');
+INSERT INTO leave_applications VALUES ('LA0007', 'E0018', 'Annual', '2024-07-01', '2024-07-05', 'Family trip', '2024-06-25', 'Approved', '2024-06-26');
+INSERT INTO leave_applications VALUES ('LA0008', 'E0021', 'Casual', '2024-07-10', '2024-07-12', 'Medical checkup', '2024-07-08', 'Approved', '2024-07-09');
+INSERT INTO leave_applications VALUES ('LA0009', 'E0030', 'Annual', '2024-07-15', '2024-07-20', 'Vacation', '2024-07-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0010', 'E0007', 'Nopay', '2024-08-01', '2024-08-03', 'Personal reasons', '2024-07-30', 'Rejected', '2024-07-31');
+INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2024-08-10', '2024-11-10', 'Pregnancy', '2024-08-01', 'Approved', '2024-08-02');
+INSERT INTO leave_applications VALUES ('LA0012', 'E0029', 'Annual', '2024-08-15', '2024-08-20', 'Family function', '2024-08-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0013', 'E0012', 'Casual', '2024-09-01', '2024-09-02', 'Doctor appointment', '2024-08-28', 'Approved', '2024-08-29');
+INSERT INTO leave_applications VALUES ('LA0014', 'E0020', 'Annual', '2024-09-05', '2024-09-08', 'Vacation', '2024-08-27', 'Approved', '2024-08-28');
+INSERT INTO leave_applications VALUES ('LA0015', 'E0017', 'Annual', '2024-09-15', '2024-09-18', 'Family event', '2024-09-05', 'Approved', '2024-09-06');
+INSERT INTO leave_applications VALUES ('LA0016', 'E0023', 'Casual', '2024-09-20', '2024-09-22', 'Sick', '2024-09-19', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0017', 'E0010', 'Annual', '2024-10-01', '2024-10-10', 'Vacation', '2024-09-25', 'Approved', '2024-09-26');
+INSERT INTO leave_applications VALUES ('LA0018', 'E0025', 'Nopay', '2024-10-12', '2024-10-15', 'Emergency', '2024-10-10', 'Rejected', '2024-10-11');
+INSERT INTO leave_applications VALUES ('LA0019', 'E0027', 'Annual', '2024-10-20', '2024-10-25', 'Family visit', '2024-10-10', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0020', 'E0021', 'Casual', '2024-10-25', '2024-10-26', 'Medical reasons', '2024-10-23', 'Approved', '2024-10-24');
+INSERT INTO leave_applications VALUES ('LA0021', 'E0003', 'Annual', '2024-11-01', '2024-11-05', 'Holiday', '2024-10-25', 'Approved', '2024-10-26');
+INSERT INTO leave_applications VALUES ('LA0022', 'E0026', 'Nopay', '2024-11-07', '2024-11-09', 'Personal reasons', '2024-11-05', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0023', 'E0015', 'Casual', '2024-11-12', '2024-11-14', 'Sick', '2024-11-10', 'Rejected', '2024-11-11');
+INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2024-11-20', '2024-12-20', 'Pregnancy', '2024-11-10', 'Approved', '2024-11-11');
+INSERT INTO leave_applications VALUES ('LA0025', 'E0012', 'Annual', '2024-12-01', '2024-12-05', 'Family function', '2024-11-20', 'Approved', '2024-11-21');
+INSERT INTO leave_applications VALUES ('LA0026', 'E0008', 'Annual', '2024-12-10', '2024-12-15', 'Vacation', '2024-12-01', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0027', 'E0024', 'Casual', '2024-12-20', '2024-12-22', 'Health reasons', '2024-12-18', 'Approved', '2024-12-19');
 INSERT INTO leave_applications VALUES ('LA0028', 'E0006', 'Nopay', '2024-01-02', '2024-01-04', 'Family emergency', '2023-12-30', 'Rejected', '2024-01-01');
 INSERT INTO leave_applications VALUES ('LA0029', 'E0022', 'Annual', '2024-01-10', '2024-01-15', 'Vacation', '2024-01-02', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0030', 'E0009', 'Casual', '2024-01-20', '2024-01-22', 'Health issues', '2024-01-18', 'Approved', '2024-01-19');
 INSERT INTO leave_applications VALUES ('LA0031', 'E0026', 'Maternity', '2024-02-01', '2024-05-01', 'Pregnancy', '2024-01-20', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0032', 'E0003', 'Annual', '2024-02-10', '2024-02-15', 'Family function', '2024-02-01', 'Approved', '2024-02-02');
-INSERT INTO leave_applications VALUES ('LA0033', 'E0028', 'Annual', '2024-03-01', '2024-03-05', 'Vacation', '2024-02-20', 'Pending', NULL);
+INSERT INTO leave_applications VALUES ('LA0033', 'E0028', 'Annual', '2024-07-01', '2024-07-05', 'Vacation', '2024-06-20', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0034', 'E0002', 'Nopay', '2024-03-10', '2024-03-12', 'Personal reasons', '2024-03-08', 'Rejected', '2024-03-09');
 INSERT INTO leave_applications VALUES ('LA0035', 'E0025', 'Annual', '2024-03-20', '2024-03-25', 'Family event', '2024-03-10', 'Approved', '2024-03-11');
 INSERT INTO leave_applications VALUES ('LA0036', 'E0016', 'Casual', '2024-04-01', '2024-04-03', 'Sick', '2024-03-29', 'Pending', NULL);
