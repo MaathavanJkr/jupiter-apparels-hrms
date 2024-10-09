@@ -227,9 +227,9 @@ SELECT
     e.email,
     e.contact_number,
     e.NIC,
-    e.cust_attr_1_value,
-    e.cust_attr_2_value,
-    e.cust_attr_3_value,
+    e.cust_attr_1_value AS nationality,
+    e.cust_attr_2_value AS blood_group,
+    e.cust_attr_3_value AS preferred_language,
     d.name AS department_name,
     b.name AS branch_name,
     b.address AS branch_address,
@@ -529,6 +529,7 @@ DELETE FROM employee_dependents;
 DELETE FROM emergency_contacts;
 DELETE FROM leave_applications;
 DELETE FROM users;
+DELETE FROM custom_attribute_keys;
 
 INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, Punjab, Pakistan', 19781001);
 
@@ -576,40 +577,43 @@ INSERT INTO employment_statuses VALUES ('S004', 'Contract-Parttime');
 INSERT INTO employment_statuses VALUES ('S005', 'Permanent');
 INSERT INTO employment_statuses VALUES ('S006', 'Freelance');
 
+INSERT INTO custom_attribute_keys VALUES ('nationality');
+INSERT INTO custom_attribute_keys VALUES ('blood_group');
+INSERT INTO custom_attribute_keys VALUES ('preferred_language');
 
 
-INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number)
+INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number, cust_attr_1_value, cust_attr_2_value, cust_attr_3_value)
 VALUES
-('E0003', 'D009', 'B001', NULL, 'Michael', 'Johnson', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234'),
-('E0002', 'D009', 'B001', 'E0003', 'Jane', 'Smith', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345'),
-('E0006', 'D002', 'B001', 'E0003', 'Sophia', 'Miller', '1983-07-25', 'Female', 'Married', '987 Birch St, City B, Pakistan', 'sophia.miller@apparel.com', 'NIC006', 'T010', 'PG003', 'S005','+923023456'),
-('E0011', 'D009', 'B002', 'E0003', 'Ethan', 'Lopez', '1989-01-23', 'Male', 'Single', '654 Cedar Ave, City K, Bangladesh', 'ethan.lopez@apparel.com', 'NIC011', 'T011', 'PG003', 'S005','+880171123'),
-('E0012', 'D009', 'B002', 'E0003', 'Mia', 'Gonzalez', '1988-07-13', 'Female', 'Married', '987 Birch St, City D, Bangladesh', 'mia.gonzalez@apparel.com', 'NIC012', 'T010', 'PG003', 'S005','+880172234'),
-('E0021', 'D009', 'B003', 'E0003', 'Jack', 'King', '1987-12-04', 'Male', 'Single', '789 Pine Rd, Gampaha, Sri Lanka', 'jack.king@apparel.com', 'NIC021', 'T011', 'PG003', 'S005','+94711234'),
-('E0022', 'D009', 'B003', 'E0003', 'Grace', 'Harris', '1990-07-02', 'Female', 'Married', '321 Elm St, Matara, Sri Lanka', 'grace.harris@apparel.com', 'NIC022', 'T010', 'PG003', 'S005','+94722345'),
-('E0001', 'D001', 'B001', 'E0002', 'John', 'Doe', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567'),
-('E0004', 'D003', 'B001', 'E0002', 'Emily', 'Brown', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678'),
-('E0005', 'D005', 'B001', 'E0002', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789'),
-('E0010', 'D005', 'B001', 'E0005', 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890'),
-('E0008', 'D005', 'B001', 'E0010', 'Ava', 'Taylor', '1993-04-17', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'ava.taylor@apparel.com', 'NIC008', 'T001', 'PG001', 'S006','+923078904'),
-('E0009', 'D005', 'B001', 'E0010', 'Lucas', 'Davis', '1982-11-19', 'Male', 'Married', '789 Pine Rd, City K, Pakistan', 'lucas.davis@apparel.com', 'NIC009', 'T002', 'PG001', 'S004','+923089012'),
-('E0007', 'D002', 'B001', 'E0006', 'James', 'Wilson', '1975-09-05', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'james.wilson@apparel.com', 'NIC007', 'T006', 'PG002', 'S003','+923023456'),
-('E0013', 'D001', 'B002', 'E0011', 'Logan', 'Clark', '1976-03-03', 'Male', 'Single', '123 Oak St, City D, Bangladesh', 'logan.clark@apparel.com', 'NIC013', 'T009', 'PG002', 'S005','+880173349'),
-('E0014', 'D005', 'B002', 'E0011', 'Isabella', 'Rodriguez', '1991-12-28', 'Female', 'Married', '456 Maple Ave, City G, Bangladesh', 'isabella.rodriguez@apparel.com', 'NIC014', 'T004', 'PG002', 'S003','+880174456'),
-('E0017', 'D008', 'B002', 'E0011', 'Elijah', 'Moore', '1980-05-21', 'Male', 'Married', '654 Cedar Ave, City G, Bangladesh', 'elijah.moore@apparel.com', 'NIC017', 'T007', 'PG002', 'S005','+880678901'),
-('E0015', 'D002', 'B002', 'E0012', 'Mason', 'Martinez', '1984-02-12', 'Male', 'Married', '789 Pine Rd, City G, Bangladesh', 'mason.martinez@apparel.com', 'NIC015', 'T005', 'PG002', 'S005','+880789012'),
-('E0016', 'D005', 'B002', 'E0014', 'Amelia', 'Hernandez', '1996-10-01', 'Female', 'Single', '321 Elm St, City D, Bangladesh', 'amelia.hernandez@apparel.com', 'NIC016', 'T003', 'PG002', 'S003','+880890123'),
-('E0018', 'D005', 'B002', 'E0016', 'Avery', 'Garcia', '1985-09-16', 'Female', 'Single', '987 Birch St, City M, Bangladesh', 'avery.garcia@apparel.com', 'NIC018', 'T001', 'PG001', 'S006','+880901234'),
-('E0019', 'D005', 'B002', 'E0016', 'Benjamin', 'White', '1992-11-08', 'Male', 'Married', '123 Oak St, City D, Bangladesh', 'benjamin.white@apparel.com', 'NIC019', 'T001', 'PG001', 'S006','+880012345'),
-('E0020', 'D005', 'B002', 'E0016', 'Ella', 'Lee', '1994-03-26', 'Female', 'Single', '456 Maple Ave, City M, Bangladesh', 'ella.lee@apparel.com', 'NIC020', 'T002', 'PG001', 'S004','+880123456'),
-('E0023', 'D002', 'B003', 'E0022', 'Oliver', 'Young', '1986-06-18', 'Male', 'Married', '654 Cedar Ave, Jaffna, Sri Lanka', 'oliver.young@apparel.com', 'NIC023', 'T005', 'PG002', 'S005','+94773456'),
-('E0024', 'D005', 'B003', 'E0021', 'Scarlett', 'Thompson', '1993-08-25', 'Female', 'Single', '987 Birch St, Colombo, Sri Lanka', 'scarlett.thompson@apparel.com', 'NIC024', 'T004', 'PG002', 'S003','+94567890'),
-('E0025', 'D008', 'B003', 'E0021', 'Henry', 'Martinez', '1982-04-15', 'Male', 'Single', '123 Oak St, Colombo, Sri Lanka', 'henry.martinez@apparel.com', 'NIC025', 'T007', 'PG002', 'S003','+94678901'),
-('E0026', 'D003', 'B003', 'E0021', 'Luna', 'Perez', '1995-09-28', 'Female', 'Married', '456 Maple Ave, Matara, Sri Lanka', 'luna.perez@apparel.com', 'NIC026', 'T008', 'PG002', 'S002','+94789012'),
-('E0027', 'D005', 'B003', 'E0024', 'Daniel', 'Sanchez', '1981-11-14', 'Male', 'Married', '789 Pine Rd, Matara, Sri Lanka', 'daniel.sanchez@apparel.com', 'NIC027', 'T003', 'PG002', 'S005','+94890123'),
-('E0028', 'D005', 'B003', 'E0027', 'Victoria', 'Adams', '1997-12-20', 'Female', 'Single', '321 Elm St, Kandy, Sri Lanka', 'victoria.adams@apparel.com', 'NIC028', 'T001', 'PG001', 'S004','+94901234'),
-('E0029', 'D005', 'B003', 'E0027', 'Sebastian', 'Roberts', '1980-03-09', 'Male', 'Married', '654 Cedar Ave, Colombo, Sri Lanka', 'sebastian.roberts@apparel.com', 'NIC029', 'T002', 'PG001', 'S006','+94012345'),
-('E0030', 'D005', 'B003', 'E0027', 'Aria', 'Scott', '1989-10-30', 'Female', 'Married', '987 Birch St, Colombo, Sri Lanka', 'aria.scott@apparel.com', 'NIC030', 'T001', 'PG001', 'S006','+94123456');
+('E0003', 'D009', 'B001', NULL, 'Michael', 'Johnson', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234','Nationality-A','AB','Tamil'),
+('E0002', 'D009', 'B001', 'E0003', 'Jane', 'Smith', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345','Nationality-B','O','English'),
+('E0006', 'D002', 'B001', 'E0003', 'Sophia', 'Miller', '1983-07-25', 'Female', 'Married', '987 Birch St, City B, Pakistan', 'sophia.miller@apparel.com', 'NIC006', 'T010', 'PG003', 'S005','+923023456','Nationality-C','A','Sinhala'),
+('E0011', 'D009', 'B002', 'E0003', 'Ethan', 'Lopez', '1989-01-23', 'Male', 'Single', '654 Cedar Ave, City K, Bangladesh', 'ethan.lopez@apparel.com', 'NIC011', 'T011', 'PG003', 'S005','+880171123','Nationality-D','B','Tamil'),
+('E0012', 'D009', 'B002', 'E0003', 'Mia', 'Gonzalez', '1988-07-13', 'Female', 'Married', '987 Birch St, City D, Bangladesh', 'mia.gonzalez@apparel.com', 'NIC012', 'T010', 'PG003', 'S005','+880172234','Nationality-A','O','English'),
+('E0021', 'D009', 'B003', 'E0003', 'Jack', 'King', '1987-12-04', 'Male', 'Single', '789 Pine Rd, Gampaha, Sri Lanka', 'jack.king@apparel.com', 'NIC021', 'T011', 'PG003', 'S005','+94711234','Nationality-B','A','Sinhala'),
+('E0022', 'D009', 'B003', 'E0003', 'Grace', 'Harris', '1990-07-02', 'Female', 'Married', '321 Elm St, Matara, Sri Lanka', 'grace.harris@apparel.com', 'NIC022', 'T010', 'PG003', 'S005','+94722345','Nationality-C','AB','Tamil'),
+('E0001', 'D001', 'B001', 'E0002', 'John', 'Doe', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567','Nationality-D','B','English'),
+('E0004', 'D003', 'B001', 'E0002', 'Emily', 'Brown', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678','Nationality-A','A','Sinhala'),
+('E0005', 'D005', 'B001', 'E0002', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789','Nationality-B','O','Tamil'),
+('E0010', 'D005', 'B001', 'E0005', 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890','Nationality-C','A','English'),
+('E0008', 'D005', 'B001', 'E0010', 'Ava', 'Taylor', '1993-04-17', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'ava.taylor@apparel.com', 'NIC008', 'T001', 'PG001', 'S006','+923078904','Nationality-D','B','Sinhala'),
+('E0009', 'D005', 'B001', 'E0010', 'Lucas', 'Davis', '1982-11-19', 'Male', 'Married', '789 Pine Rd, City K, Pakistan', 'lucas.davis@apparel.com', 'NIC009', 'T002', 'PG001', 'S004','+923089012','Nationality-A','AB','Tamil'),
+('E0007', 'D002', 'B001', 'E0006', 'James', 'Wilson', '1975-09-05', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'james.wilson@apparel.com', 'NIC007', 'T006', 'PG002', 'S003','+923023456','Nationality-B','O','English'),
+('E0013', 'D001', 'B002', 'E0011', 'Logan', 'Clark', '1976-03-03', 'Male', 'Single', '123 Oak St, City D, Bangladesh', 'logan.clark@apparel.com', 'NIC013', 'T009', 'PG002', 'S005','+880173349','Nationality-C','A','Sinhala'),
+('E0014', 'D005', 'B002', 'E0011', 'Isabella', 'Rodriguez', '1991-12-28', 'Female', 'Married', '456 Maple Ave, City G, Bangladesh', 'isabella.rodriguez@apparel.com', 'NIC014', 'T004', 'PG002', 'S003','+880174456','Nationality-D','AB','Tamil'),
+('E0017', 'D008', 'B002', 'E0011', 'Elijah', 'Moore', '1980-05-21', 'Male', 'Married', '654 Cedar Ave, City G, Bangladesh', 'elijah.moore@apparel.com', 'NIC017', 'T007', 'PG002', 'S005','+880678901','Nationality-A','B','English'),
+('E0015', 'D002', 'B002', 'E0012', 'Mason', 'Martinez', '1984-02-12', 'Male', 'Married', '789 Pine Rd, City G, Bangladesh', 'mason.martinez@apparel.com', 'NIC015', 'T005', 'PG002', 'S005','+880789012','Nationality-B','O','Sinhala'),
+('E0016', 'D005', 'B002', 'E0014', 'Amelia', 'Hernandez', '1996-10-01', 'Female', 'Single', '321 Elm St, City D, Bangladesh', 'amelia.hernandez@apparel.com', 'NIC016', 'T003', 'PG002', 'S003','+880890123','Nationality-C','A','Tamil'),
+('E0018', 'D005', 'B002', 'E0016', 'Avery', 'Garcia', '1985-09-16', 'Female', 'Single', '987 Birch St, City M, Bangladesh', 'avery.garcia@apparel.com', 'NIC018', 'T001', 'PG001', 'S006','+880901234','Nationality-D','B','English'),
+('E0019', 'D005', 'B002', 'E0016', 'Benjamin', 'White', '1992-11-08', 'Male', 'Married', '123 Oak St, City D, Bangladesh', 'benjamin.white@apparel.com', 'NIC019', 'T001', 'PG001', 'S006','+880012345','Nationality-A','AB','Sinhala'),
+('E0020', 'D005', 'B002', 'E0016', 'Ella', 'Lee', '1994-03-26', 'Female', 'Single', '456 Maple Ave, City M, Bangladesh', 'ella.lee@apparel.com', 'NIC020', 'T002', 'PG001', 'S004','+880123456','Nationality-B','O','English'),
+('E0023', 'D002', 'B003', 'E0022', 'Oliver', 'Young', '1986-06-18', 'Male', 'Married', '654 Cedar Ave, Jaffna, Sri Lanka', 'oliver.young@apparel.com', 'NIC023', 'T005', 'PG002', 'S005','+94773456', 'Nationality-A', 'B', 'Sinhala'),
+('E0024', 'D005', 'B003', 'E0021', 'Scarlett', 'Thompson', '1993-08-25', 'Female', 'Single', '987 Birch St, Colombo, Sri Lanka', 'scarlett.thompson@apparel.com', 'NIC024', 'T004', 'PG002', 'S003','+94567890', 'Nationality-B', 'A', 'Tamil'),
+('E0025', 'D008', 'B003', 'E0021', 'Henry', 'Martinez', '1982-04-15', 'Male', 'Single', '123 Oak St, Colombo, Sri Lanka', 'henry.martinez@apparel.com', 'NIC025', 'T007', 'PG002', 'S003','+94678901', 'Nationality-C', 'O', 'English'),
+('E0026', 'D003', 'B003', 'E0021', 'Luna', 'Perez', '1995-09-28', 'Female', 'Married', '456 Maple Ave, Matara, Sri Lanka', 'luna.perez@apparel.com', 'NIC026', 'T008', 'PG002', 'S002','+94789012', 'Nationality-D', 'AB', 'Sinhala'),
+('E0027', 'D005', 'B003', 'E0024', 'Daniel', 'Sanchez', '1981-11-14', 'Male', 'Married', '789 Pine Rd, Matara, Sri Lanka', 'daniel.sanchez@apparel.com', 'NIC027', 'T003', 'PG002', 'S005','+94890123', 'Nationality-A', 'B', 'English'),
+('E0028', 'D005', 'B003', 'E0027', 'Victoria', 'Adams', '1997-12-20', 'Female', 'Single', '321 Elm St, Kandy, Sri Lanka', 'victoria.adams@apparel.com', 'NIC028', 'T001', 'PG001', 'S004','+94901234', 'Nationality-B', 'O', 'Tamil'),
+('E0029', 'D005', 'B003', 'E0027', 'Sebastian', 'Roberts', '1980-03-09', 'Male', 'Married', '654 Cedar Ave, Colombo, Sri Lanka', 'sebastian.roberts@apparel.com', 'NIC029', 'T002', 'PG001', 'S006','+94012345', 'Nationality-C', 'AB', 'Sinhala'),
+('E0030', 'D005', 'B003', 'E0027', 'Aria', 'Scott', '1989-10-30', 'Female', 'Married', '987 Birch St, Colombo, Sri Lanka', 'aria.scott@apparel.com', 'NIC030', 'T001', 'PG001', 'S006','+94123456', 'Nationality-D', 'A', 'English');
 
 INSERT INTO employee_dependents VALUES ('DP0001', 'E0030', 'Alice Doe', 'Daughter', '2010-05-14');
 INSERT INTO employee_dependents VALUES ('DP0002', 'E0025', 'Mark Smith', 'Son', '2012-09-22');
