@@ -621,3 +621,16 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+-- Procedure to get remaining leaves by employee ID
+CREATE PROCEDURE GetRemainingLeavesByID(IN p_employee_id VARCHAR(36))
+BEGIN
+    SELECT * FROM remaining_leaves_view WHERE employee_id = p_employee_id;
+END $$
+
+-- Procedure to get all remaining leaves
+CREATE PROCEDURE GetAllRemainingLeaves()
+BEGIN
+    SELECT * FROM remaining_leaves_view;
+END $$
