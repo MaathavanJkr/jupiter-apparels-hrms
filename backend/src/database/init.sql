@@ -277,6 +277,25 @@ WHERE
     la.status = 'Pending';
 
 
+
+-- Employees group by department
+-- For report generation module.
+CREATE VIEW employees_grouped_by_department AS
+SELECT
+    d.department_id,
+    d.name AS department_name,
+    COUNT(e.employee_id) AS employee_count
+FROM
+    departments d
+LEFT JOIN
+    employees e ON d.department_id = e.department_id
+GROUP BY
+    d.department_id, d.name
+ORDER BY
+    d.name;
+
+
+
 -- View to display payroll-related information, including job title, pay grade, and number of dependents per employee.
 -- For Payroll Management module.
 CREATE VIEW payroll_info AS
@@ -590,7 +609,6 @@ DELETE FROM employee_dependents;
 DELETE FROM emergency_contacts;
 DELETE FROM leave_applications;
 DELETE FROM users;
-DELETE FROM custom_attribute_keys;
 
 INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, Punjab, Pakistan', 19781001);
 
