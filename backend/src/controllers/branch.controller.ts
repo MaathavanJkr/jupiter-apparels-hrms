@@ -1,73 +1,106 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
-import db from "../database/database";
-import { Branch } from "../models/branch.model";
-import { ResultSetHeader } from "mysql2";
+import {
+    Branch,
+    createBranchModel,
+    deleteBranchModel,
+    getAllBranchesModel,
+    getBranchByIDModel,
+    updateBranchModel,
+}from "../models/branch.model";
 
+//manager id?
 export const createBranch = async (req: Request, res: Response) => {
     const {name, address, contact_number, manager_id } = req.body;
-    try {
-        const [result] = await db
-            .promise()
-            .query(
-                "INSERT INTO branches (name, address, contact_number, manager_id) VALUES (?, ?, ?, ?)",
-                [name, address, contact_number, manager_id]
-            );
-        res.status(201).json({ id: (result as ResultSetHeader).insertId, message: "Branch created" });
-    } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-    }
-}
+    
+    if (!name || !address || !contact_number || !manager_id) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+    
+      const branch: Branch = {
+        name: name as string,
+        address: address as string,
+        contact_number: contact_number as string,
+        manager_id: manager_id as string,
+      } as Branch;
 
-export const getBranches = async (req: Request, res: Response) => {
-    try {
-        const [branches] = await db
-            .promise()
-            .query<Branch[]>("SELECT * FROM branches");
-        res.status(200).json(branches);
-    } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-    }
+      await createBranchModel(branch)
+        .then((result) => {
+        return res.status(201).json(result);
+        })
+        .catch((error) => {
+        return res.status(500).json({ error });
+        });
+};
+
+export const getAllBranches = async (req: Request, res: Response) => {
+    await getAllBranchesModel()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
 };
 
 export const getBranchByID = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [branches] = await db
-            .promise()
-            .query<Branch[]>("SELECT * FROM branches WHERE id = ?", id);
+    const { id } = req.params;
 
-        res.status(200).json(branches[0]);
-    } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-    }
-}
+  await getBranchByIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const updateBranch = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const { id } = req.params;
     const { name, address, contact_number, manager_id } = req.body;
-    try {
-        await db
-            .promise()
-            .query(
-                "UPDATE branches SET name = ?, address = ?, contact_number = ?, manager_id = ? WHERE id = ?",
-                [name, address, contact_number, manager_id, id]
-            );
-        res.status(200).json({ message: "Branch updated" });
-    } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-    }
-}
+    
+    await getBranchByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      const branch = result.data;
+      if (name) branch.name = name;
+      if (address) branch.address = address;
+      if (contact_number) branch.contact_number = contact_number;
+      if (manager_id) branch.manager_id = manager_id;
+
+      await updateBranchModel(branch)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 
 export const deleteBranch = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [result] = await db
-            .promise()
-            .query("DELETE FROM branches WHERE id = ?", id);
-        res.status(200).json({ id: result, message: `Branch with id: ${id} deleted` });
-    } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-    }
-}
+    const { id } = req.params;
+
+  await getBranchByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      await deleteBranchModel(id)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
