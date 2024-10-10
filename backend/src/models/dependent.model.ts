@@ -118,3 +118,27 @@ export const deleteEmployeeDependentModel = async (dependent_id: string): Promis
     return { error: error, message: "Database Query Failed", data: null };
   }
 };
+
+export const getEmployeeDependentByEmployeeIDModel = async (emp_id: string): Promise<Output> => {
+  try {
+    const [result] = await db
+        .promise()
+        .query("CALL getEmployeeDependentByEmployeeID(?)", [emp_id]);
+
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Dependent not found", message: null };
+    } else {
+      return {
+        data: (result as EmployeeDependent[])[0],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+};

@@ -285,6 +285,14 @@ BEGIN
     DELETE FROM employee_dependents WHERE dependent_id = p_dependent_id;
 END$$
 
+-- Procedure to get an employee dependent by employee ID
+CREATE PROCEDURE getEmployeeDependentByEmployeeID(
+    IN p_employee_id VARCHAR(36)
+)
+BEGIN
+    SELECT * FROM employee_dependents WHERE employee_id = p_employee_id;
+END$$
+
 DELIMITER ;
 
 DELIMITER $$
@@ -303,10 +311,10 @@ END $$
 
 -- Procedure to get an emergency contact by ID
 CREATE PROCEDURE getEmergencyContactByID(
-    IN emergency_id VARCHAR(255)
+    IN p_emergency_id VARCHAR(255)
 )
 BEGIN
-    SELECT * FROM emergency_contacts WHERE emergency_id = emergency_id;
+    SELECT * FROM emergency_contacts WHERE emergency_id = p_emergency_id;
 END $$
 
 -- Procedure to get all emergency contacts
@@ -343,6 +351,14 @@ BEGIN
 END $$
 DELIMITER ;
 DELIMITER $$
+
+-- Procedure to get an emergency contact by employee ID
+CREATE PROCEDURE getEmergencyContactByEmployeeID(
+    IN p_employee_id VARCHAR(255)
+)
+BEGIN
+    SELECT * FROM emergency_contacts WHERE emergency_id = p_employee_id;
+END $$
 
 -- Procedure to create a new employee
 CREATE PROCEDURE CreateEmployee(

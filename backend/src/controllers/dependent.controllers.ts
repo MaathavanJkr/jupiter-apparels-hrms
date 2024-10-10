@@ -116,6 +116,6 @@ export const getEmployeeDependentByEmployeeID = async (req:Request, res:Response
     });
 };
 
-function getByIDModel(id: string) {
-    throw new Error("Function not implemented.");
-}
+// function getByIDModel(id: string) {
+//     throw new Error("Function not implemented.");
+// }

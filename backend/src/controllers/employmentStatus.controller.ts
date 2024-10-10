@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import {
-    EmploymentStatus,
     getAllEmploymentStatusesModel,
     getEmploymentStatusByIDModel,
 } from "../models/employmentStatus.model";

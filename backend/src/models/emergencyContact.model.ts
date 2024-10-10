@@ -119,3 +119,27 @@ export const deleteEmergencyContactModel = async (emergency_id: string): Promise
     return { error: error, message: "Database Query Failed", data: null };
   }
 };
+
+export const getEmergencyContactByEmployeeIDModel = async (employee_id: string): Promise<Output> => {
+  try {
+    const [result] = await db
+        .promise()
+        .query("CALL getEmergencyContactByEmployeeID(?)", [employee_id]);
+
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Emergency contact not found", message: null };
+    } else {
+      return {
+        data: (result as EmergencyContact[])[0],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+};
