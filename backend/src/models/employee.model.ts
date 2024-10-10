@@ -37,6 +37,11 @@ export interface Employee extends RowDataPacket {
     cust_attr_3_value: string;
 }
 
+export interface Supervisor extends RowDataPacket {
+    supervisor_id?: string;
+    full_name: string;
+}
+
 export const createEmployeeModel = async (employee: Employee): Promise<Output> => {
     const {
         department_id,

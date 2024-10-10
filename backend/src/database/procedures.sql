@@ -1,3 +1,60 @@
+-- DROP statements for all stored procedures
+DROP PROCEDURE IF EXISTS `createAllocatedLeaves`;
+DROP PROCEDURE IF EXISTS `createBranch`;
+DROP PROCEDURE IF EXISTS `createDepartment`;
+DROP PROCEDURE IF EXISTS `createEmergencyContact`;
+DROP PROCEDURE IF EXISTS `CreateEmployee`;
+DROP PROCEDURE IF EXISTS `createEmployeeDependent`;
+DROP PROCEDURE IF EXISTS `CreateJobTitle`;
+DROP PROCEDURE IF EXISTS `CreateLeaveApplication`;
+DROP PROCEDURE IF EXISTS `CreateOrganization`;
+DROP PROCEDURE IF EXISTS `CreatePayGrade`;
+DROP PROCEDURE IF EXISTS `CreateUser`;
+DROP PROCEDURE IF EXISTS `deleteAllocatedLeaves`;
+DROP PROCEDURE IF EXISTS `deleteBranch`;
+DROP PROCEDURE IF EXISTS `deleteDepartment`;
+DROP PROCEDURE IF EXISTS `deleteEmergencyContact`;
+DROP PROCEDURE IF EXISTS `DeleteEmployee`;
+DROP PROCEDURE IF EXISTS `deleteEmployeeDependent`;
+DROP PROCEDURE IF EXISTS `DeleteJobTitle`;
+DROP PROCEDURE IF EXISTS `DeleteLeaveApplication`;
+DROP PROCEDURE IF EXISTS `DeleteOrganization`;
+DROP PROCEDURE IF EXISTS `DeletePayGrade`;
+DROP PROCEDURE IF EXISTS `getAllAllocatedLeaves`;
+DROP PROCEDURE IF EXISTS `getAllBranches`;
+DROP PROCEDURE IF EXISTS `getAllDepartments`;
+DROP PROCEDURE IF EXISTS `getAllEmergencyContacts`;
+DROP PROCEDURE IF EXISTS `getAllEmployeeDependents`;
+DROP PROCEDURE IF EXISTS `GetAllEmployees`;
+DROP PROCEDURE IF EXISTS `GetAllEmploymentStatuses`;
+DROP PROCEDURE IF EXISTS `GetAllJobTitles`;
+DROP PROCEDURE IF EXISTS `GetAllLeaveApplications`;
+DROP PROCEDURE IF EXISTS `getAllocatedLeavesByPayGrade`;
+DROP PROCEDURE IF EXISTS `GetAllOrganizations`;
+DROP PROCEDURE IF EXISTS `GetAllPayGrades`;
+DROP PROCEDURE IF EXISTS `getBranchByID`;
+DROP PROCEDURE IF EXISTS `getDepartmentByID`;
+DROP PROCEDURE IF EXISTS `getEmergencyContactByID`;
+DROP PROCEDURE IF EXISTS `GetEmployeeByID`;
+DROP PROCEDURE IF EXISTS `getEmployeeDependentByID`;
+DROP PROCEDURE IF EXISTS `GetEmploymentStatusByID`;
+DROP PROCEDURE IF EXISTS `GetJobTitleByID`;
+DROP PROCEDURE IF EXISTS `GetLeaveApplicationByID`;
+DROP PROCEDURE IF EXISTS `GetOrganizationByID`;
+DROP PROCEDURE IF EXISTS `GetPayGradeByID`;
+DROP PROCEDURE IF EXISTS `GetUserByUsername`;
+DROP PROCEDURE IF EXISTS `updateAllocatedLeaves`;
+DROP PROCEDURE IF EXISTS `updateBranch`;
+DROP PROCEDURE IF EXISTS `updateDepartment`;
+DROP PROCEDURE IF EXISTS `updateEmergencyContact`;
+DROP PROCEDURE IF EXISTS `UpdateEmployee`;
+DROP PROCEDURE IF EXISTS `updateEmployeeDependent`;
+DROP PROCEDURE IF EXISTS `UpdateJobTitle`;
+DROP PROCEDURE IF EXISTS `UpdateLeaveApplication`;
+DROP PROCEDURE IF EXISTS `UpdateOrganization`;
+DROP PROCEDURE IF EXISTS `UpdatePayGrade`;
+
+
 -- Procedure for creating allocated leaves
 DELIMITER $$
 CREATE PROCEDURE createAllocatedLeaves(
@@ -620,7 +677,7 @@ BEGIN
     SELECT * FROM users WHERE username = username;
 END $$
 
-DELIMITER ;
+
 
 
 -- Procedure to get remaining leaves by employee ID
@@ -745,3 +802,4 @@ BEGIN
     SELECT * FROM employee_demographics_language_nationality
     WHERE cust_attr_1_value = p_nationality AND cust_attr_3_value = p_language;
 END $$
+DELIMITER ;
