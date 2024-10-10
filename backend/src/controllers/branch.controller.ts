@@ -9,11 +9,10 @@ import {
     updateBranchModel,
 }from "../models/branch.model";
 
-//manager id?
 export const createBranch = async (req: Request, res: Response) => {
     const {name, address, contact_number, manager_id } = req.body;
     
-    if (!name || !address || !contact_number || !manager_id) {
+    if (!name || !address || !contact_number) {
         return res.status(400).json({ error: "Missing required fields" });
       }
     
