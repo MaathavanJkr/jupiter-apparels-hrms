@@ -1,109 +1,121 @@
 import { Request, Response } from "express";
-import db from "../database/database";
-import { EmployeeDependent } from "../models/dependent.model";
-import { ResultSetHeader } from "mysql2";
+import {
+    EmployeeDependent,
+    createEmployeeDependentModel,
+    getAllEmployeeDependentsModel,
+    getEmployeeDependentByIDModel,
+    updateEmployeeDependentModel,
+    deleteEmployeeDependentModel,
+    getEmployeeDependentByEmployeeIDModel,
+} from "../models/dependent.model"
 
 
 export const createEmployeeDependent = async (req:Request, res:Response) => {
     const {employee_id, name, relationship_to_employee, birth_date} = req.body;
+    
     if (!employee_id || !name || !relationship_to_employee || !birth_date) {
         return res.status(400).json({ error: "Missing required fields" });
     }
-    
-    try {
-        await db
-        .promise()
-        .query(
-            "INSERT INTO employee_dependents (dependent_id,employee_id, name, relationship_to_employee, birth_date) VALUES (UUID(),?,?,?,?)",
-            [employee_id, name, relationship_to_employee, birth_date]
-        );
-        res.status(201).json({message: "Employee Dependent created successfully"});
-    } catch (error) {
-        res.status(500).json({error: "Database Query Failed", message: error});
-    }
-}
 
-export const getEmployeeDependents = async (req: Request, res: Response) => {
-    try {
-        const [employeeDependents] = await db
-        .promise()
-        .query<EmployeeDependent[]>("SELECT * FROM employee_dependents");
-        
-        res.status(200).send(employeeDependents);
-        
-    } catch (error) {
-        res.status(500).json({error: "Database Query failed", message: error});
-    }
-}
+    const employeeDependent: EmployeeDependent = {
+        employee_id: employee_id as string,
+        name: name as string,
+        relationship_to_employee: relationship_to_employee as string,
+        birth_date: birth_date as Date,
+    } as EmployeeDependent;
+    
+    await createEmployeeDependentModel(employeeDependent)
+        .then((result) => {
+        return res.status(201).json(result);
+        })
+        .catch((error) => {
+        return res.status(500).json({ error });
+        });
+};
+
+
+export const getAllEmployeeDependents = async (req: Request, res: Response) => {
+    await getAllEmployeeDependentsModel()
+        .then((result) => {
+        return res.status(200).json(result);
+        })
+        .catch((error) => {
+        return res.status(500).json({ error });
+        });
+};
 
 export const getEmployeeDependentByID = async (req:Request, res:Response) => {
-    const id = req.params.id;
+    const { id } = req.params;
 
-    try {
-        const [employeeDependents] = await db
-        .promise()
-        .query<EmployeeDependent[]>("SELECT * FROM employee_dependents WHERE dependent_id = ?", [id]);
-        if (employeeDependents.length === 0) {
-            res.status(404).json({ message: `Employee Dependent with id: ${id} not found` });
-        } else {
-            res.status(200).json(employeeDependents[0]);
-        }
-    } catch (error) {
-        res.status(500).json({error: "Database query failed", message: error});
-    }
-}
+  await getEmployeeDependentByIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const updateEmployeeDependent = async (req: Request, res:Response) => {
-    const id = req.params.id;
-    const { name, relationship_to_employee, birth_date} = req.body;
-    try{
-        const [result] = await db
-        .promise()
-        .query(
-            "UPDATE employee_dependents SET name=?, relationship_to_employee=?, birth_date=? WHERE dependent_id = ?",
-            [name, relationship_to_employee, birth_date, id]
-        );
-        if ((result as ResultSetHeader).affectedRows > 0) {
-            res.status(200).json({ message: "Employee Dependent updated successfully" });
-        } else {
-            res.status(404).json({ message: `Employee Dependent with id: ${id} not found` });
-        }
-    } catch(error) {
-        res.status(500).json({error: "Database query failed", message: error});
-    }
-}
+    const { id } = req.params;
+  const { employee_id, name, relationship_to_employee, birth_date } = req.body;
+
+  await getEmployeeDependentByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      const employeeDependent = result.data;
+      if (employee_id) employeeDependent.employee_id = employee_id;
+      if (name) employeeDependent.name = name;
+      if (relationship_to_employee) employeeDependent.relationship_to_employee = relationship_to_employee;
+      if (birth_date) employeeDependent.birth_date = birth_date;
+
+      await updateEmployeeDependentModel(employeeDependent)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const deleteEmployeeDependent = async (req:Request, res:Response) => {
-    const id = req.params.id;
-    try {
-        const [result] = await db
-        .promise()
-        .query(
-            "DELETE FROM employee_dependents where dependent_id = ?", [id]
-        );
-        if ((result as ResultSetHeader).affectedRows > 0) {
-            res.status(200).json({
-                message: `Employee Dependent with id: ${id} deleted successfully`
-            });
-        } else {
-            res.status(404).json({
-                message: `Employee Dependent with id: ${id} not found`
-            });
-        }
-    } catch (error) {
-        res.status(500).json({error: "Database query failed", message: error});
-    }
-}
+    const { id } = req.params;
 
+  await getEmployeeDependentByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      await deleteEmployeeDependentModel(id)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    })
+};
 export const getEmployeeDependentByEmployeeID = async (req:Request, res:Response) => {
-    const id = req.params.employee_id;
+    const { id } = req.params;
 
-    try {
-        const [employeeDependents] = await db
-        .promise()
-        .query<EmployeeDependent[]>("SELECT * FROM employee_dependents WHERE employee_id = ?", [id]);
-        res.status(200).json(employeeDependents);
-    } catch (error) {
-        res.status(500).json({error: "Database query failed", message: error});
-    }
+  await getEmployeeDependentByEmployeeIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+
+function getByIDModel(id: string) {
+    throw new Error("Function not implemented.");
 }
