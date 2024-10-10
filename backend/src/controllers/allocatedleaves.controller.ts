@@ -1,73 +1,105 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
-import db from "../database/database";
-import { AllocatedLeaves } from "../models/allocatedleaves.model";
-import { ResultSetHeader } from "mysql2";
+import {
+  AllocatedLeaves,
+  createAllocatedLeavesModel,
+  deleteAllocatedLeavesModel,
+  getAllAllocatedLeavesModel,
+  getAllocatedLeavesByPayGradeModel,
+  updateAllocatedLeavesModel,
+} from "../models/allocatedleaves.model";
 
 export const createAllocatedLeaves = async (req: Request, res: Response) => {
-    const { pay_grade_id,annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves } = req.body;
-    try {
-        const [result] = await db
-          .promise()
-          .query(
-            "INSERT INTO allocated_leaves (pay_grade_id,annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves) VALUES (?, ?, ?, ?, ?)",
-            [pay_grade_id,annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves]
-          );
-        res.status(201).json({ id: (result as ResultSetHeader).insertId, message: "Allocated leave record created" });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-      }
-}
+    const { annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves } = req.body;
+    
+    if(!annual_leaves || !casual_leaves || !maternity_leaves || !no_pay_leaves ){
+      return res.status(400).json({error : "Missing required fields "});
+    }
 
-export const getAllocatedLeaves = async (req: Request, res: Response) => {
-  try {
-    const [allocatedleaves] = await db
-      .promise()
-      .query<AllocatedLeaves[]>("SELECT * FROM allocated_leaves");
-    res.status(200).json(allocatedleaves);
-  } catch (error) {
-    res.status(500).json({ error: "Database query failed", message: error });
-  }
+    const allocatedLeaves: AllocatedLeaves = {
+      annual_leaves: annual_leaves as number,
+      casual_leaves: casual_leaves as number,
+      maternity_leaves: maternity_leaves as number,
+      no_pay_leaves: no_pay_leaves as number,
+    } as AllocatedLeaves;
+
+    await createAllocatedLeavesModel (allocatedLeaves)
+      .then((result) => {
+        return res.status(201).json(result);
+      })
+      .catch((error) => {
+        return res.status(500).json({error});
+      });
 };
 
-export const getAllocatedLeavesByID = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [allocatedleaves] = await db
-          .promise()
-          .query<AllocatedLeaves[]>("SELECT * FROM allocated_leaves WHERE id = ?", id);
+export const getAllocatedLeaves = async (req: Request, res: Response) => {
+  await getAllAllocatedLeavesModel()
+    .then((result)=>{
+      return res.status(200).json(result);
+    })
+    .catch((error)=>{
+      return res.status(500).json({error});
+    });
+};
 
-        res.status(200).json(allocatedleaves[0]);
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-      }
-}
+export const getAllocatedLeavesByPayGrade = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    
+    await getAllocatedLeavesByPayGradeModel(id)
+      .then((result)=>{
+        return res.status(200).json(result);
+      })
+      .catch((error)=>{
+        return res.status(500).json({error});
+      });
+};
 
 export const updateAllocatedLeaves = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const { pay_grade_id,annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves } = req.body;
-    try {
-        await db
-          .promise()
-          .query(
-            "UPDATE allocated_leaves SET pay_grade_id = ? ,annual_leaves = ? ,casual_leaves = ? ,maternity_leaves = ? ,no_pay_leaves = ? WHERE id = ?",
-            [pay_grade_id,annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves,id]
-          );
-        res.status(200).json({ message: "Allocated leave record updated" });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
+  const { id } = req.params;
+  const { annual_leaves,casual_leaves,maternity_leaves,no_pay_leaves  } = req.body;
+
+  await getAllocatedLeavesByPayGradeModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
       }
-}
+      const allocatedLeaves = result.data;
+      if (annual_leaves) allocatedLeaves.annual_leaves = annual_leaves;
+      if (casual_leaves) allocatedLeaves.casual_leaves = casual_leaves;
+      if (maternity_leaves) allocatedLeaves.maternity_leaves = maternity_leaves;
+      if (no_pay_leaves) allocatedLeaves.no_pay_leaves = no_pay_leaves;
+
+      await updateAllocatedLeavesModel(allocatedLeaves)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 
-export const deleteAllocaedLeaves = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [result] = await db
-          .promise()
-          .query("DELETE FROM allocated_leaves WHERE id = ?", id);
-        res.status(200).json({ id: result, message: `Allocated leave record with id: ${id} deleted` });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
+export const deleteAllocatedLeaves = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  await getAllocatedLeavesByPayGradeModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
       }
-}
+      await deleteAllocatedLeavesModel(id)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+  };
