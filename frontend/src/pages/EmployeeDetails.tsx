@@ -2,18 +2,22 @@ import { Link, useParams } from "react-router-dom";
 import DependentTable from "../components/Tables/DependentTable";
 import ContactTable from "../components/Tables/ContactTable";
 import { ToastContainer } from "react-toastify";
+import DefaultLayout from "../layout/DefaultLayout";
 
 const EmployeeDetails = () => {
+    const role = localStorage.getItem('role');
+    const isAuthorized = (role ==="Admin" || role === "HR manager");
 
     const { employee_id } = useParams<{ employee_id: string }>();
   return (
-    <>
+    <DefaultLayout>
         <div className="flex-col gap-6">
             <h3 className="pb-2 text-xl font-bold text-black dark:text-white sm:text-2xl">
                 Dependent Details
             </h3>
             <span className="mx-auto mb-6 inline-block h-1 w-25 rounded bg-primary"></span>
             <div className="mb-6">
+                {isAuthorized && (
                 <Link to={'/employee/adddependent/'+employee_id}>
                     <button className="flex gap-1 block  rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -22,6 +26,7 @@ const EmployeeDetails = () => {
                         Add Dependent
                     </button>
                 </Link>
+                )}
             </div>
             <div className="mb-6">
                 <DependentTable employee_id={employee_id!}  />
@@ -33,7 +38,8 @@ const EmployeeDetails = () => {
             </h3>
             <span className="mx-auto mb-6 inline-block h-1 w-25 rounded bg-primary"></span>
             <div className="mb-6">
-                <Link to={'/employee/addcontact/'+employee_id}>
+                {isAuthorized && (
+                    <Link to={'/employee/addcontact/'+employee_id}>
                     <button className="flex gap-1 block  rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -41,12 +47,13 @@ const EmployeeDetails = () => {
                         Add Contact
                     </button>
                 </Link>
+                )}
             </div>
             <ContactTable employee_id= {employee_id!} />
         </div>
         <ToastContainer />
 
-    </>
+    </DefaultLayout>
   )
 }
 
