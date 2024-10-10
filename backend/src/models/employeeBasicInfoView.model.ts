@@ -54,7 +54,7 @@ export const getEmployeeBasicInfoByIDModel = async (id: string): Promise<Output>
 
 export const getAllEmployeesBasicInfoModel = async (): Promise<Output> => {
     try {
-        const [result] = await db.promise().query("CALL GetAllEmployeesBasicInfo()");
+        const [result] = await db.promise().query("CALL GetAllEmployeeBasicInfos()");
         return { data: result as EmployeeBasicInfo[], error: null, message: null };
     } catch (error) {
         return {
