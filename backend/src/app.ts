@@ -13,6 +13,7 @@ import departmentRoutes from './routes/department.route';
 import employeeRoutes from './routes/employee.route';
 import jobtitleRoutes from './routes/jobtitle.route';
 import paygradeRoutes from './routes/paygrade.route';
+import remainingLeavesViewRoute from "./routes/remainingLeavesView.route";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +32,7 @@ app.use('/dependent',employeeDependentRoutes);
 app.use('/employmentstatus',employmentStatusRoutes);
 app.use('/jobtitle',jobtitleRoutes);
 app.use('/paygrade',paygradeRoutes);
+app.use('/remainingLeavesView', remainingLeavesViewRoute);
 
 
 export default app;

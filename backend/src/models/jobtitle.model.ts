@@ -3,14 +3,13 @@ import db from "../database/database";
 import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
 
-export interface JobTitle extends RowDataPacket{
-    job_title_id?: string;
-    title: string;
+export interface JobTitle extends RowDataPacket {
+  job_title_id?: string;
+  title: string;
 }
 
-
 export const createJobTitleModel = async (
-  jobTitle: JobTitle
+    jobTitle: JobTitle
 ): Promise<Output> => {
   const { title } = jobTitle;
 
@@ -22,11 +21,8 @@ export const createJobTitleModel = async (
 
   try {
     await db
-      .promise()
-      .query(
-        "INSERT INTO job_titles (job_title_id, title) VALUES(UUID(), ?)",
-        [title]
-      );
+        .promise()
+        .query("CALL CreateJobTitle(?, ?)", [jobTitle.job_title_id, title]);
     return {
       data: jobTitle,
       message: "Job title created successfully",
@@ -37,12 +33,11 @@ export const createJobTitleModel = async (
   }
 };
 
-
 export const getJobTitleByIDModel = async (id: string): Promise<Output> => {
   try {
     const [result] = await db
-      .promise()
-      .query("SELECT * FROM job_titles WHERE job_title_id = ?", [id]);
+        .promise()
+        .query("CALL GetJobTitleByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Job title not found", message: null };
@@ -62,10 +57,9 @@ export const getJobTitleByIDModel = async (id: string): Promise<Output> => {
   }
 };
 
-
 export const getAllJobTitlesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("SELECT * FROM job_titles");
+    const [result] = await db.promise().query("CALL GetAllJobTitles()");
     return { data: result as JobTitle[], error: null, message: null };
   } catch (error) {
     return {
@@ -76,9 +70,8 @@ export const getAllJobTitlesModel = async (): Promise<Output> => {
   }
 };
 
-
 export const updateJobTitleModel = async (
-  jobTitle: JobTitle
+    jobTitle: JobTitle
 ): Promise<Output> => {
   const { job_title_id, title } = jobTitle;
 
@@ -88,11 +81,8 @@ export const updateJobTitleModel = async (
 
   try {
     await db
-      .promise()
-      .query(
-        "UPDATE job_titles SET title = ? WHERE job_title_id = ?",
-        [title, job_title_id]
-      );
+        .promise()
+        .query("CALL UpdateJobTitle(?, ?)", [job_title_id, title]);
     return {
       message: "Job title updated successfully",
       error: null,
@@ -103,9 +93,8 @@ export const updateJobTitleModel = async (
   }
 };
 
-
 export const deleteJobTitleModel = async (
-  job_title_id: string
+    job_title_id: string
 ): Promise<Output> => {
   if (!job_title_id) {
     return { error: "Missing required fields", data: null, message: null };
@@ -113,8 +102,8 @@ export const deleteJobTitleModel = async (
 
   try {
     await db
-      .promise()
-      .query("DELETE FROM job_titles WHERE job_title_id = ?", [job_title_id]);
+        .promise()
+        .query("CALL DeleteJobTitle(?)", [job_title_id]);
     return {
       message: "Job title deleted successfully",
       error: null,
@@ -124,5 +113,3 @@ export const deleteJobTitleModel = async (
     return { error, message: "Database Query Failed", data: null };
   }
 };
-  
-  

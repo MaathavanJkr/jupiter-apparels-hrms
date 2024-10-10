@@ -21,11 +21,8 @@ export const createUserModel = async (user: User): Promise<Output> => {
 
   try {
     const [result] = await db
-      .promise()
-      .query(
-        "INSERT INTO users (user_id, employee_id, role, username, password) VALUES(UUID(),?,?,?,?)",
-        [employee_id, role, username, hashedPassword]
-      );
+        .promise()
+        .query("CALL CreateUser(?, ?, ?, ?)", [employee_id, role, username, hashedPassword]);
     return {
       data: { id: (result as ResultSetHeader).insertId },
       message: "User created successfully",
@@ -37,12 +34,12 @@ export const createUserModel = async (user: User): Promise<Output> => {
 };
 
 export const getUserByUsernameModel = async (
-  username: string
+    username: string
 ): Promise<Output> => {
   try {
     const [result] = await db
-      .promise()
-      .query("SELECT * FROM users WHERE username = ?", [username]);
+        .promise()
+        .query("CALL GetUserByUsername(?)", [username]);
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "User not found", message: null };
     } else {
