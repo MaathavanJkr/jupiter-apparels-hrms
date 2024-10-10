@@ -15,7 +15,7 @@ const Profile = () => {
     const isCorrect = user_id === localStorage.getItem("user_id");
 
     if (!isCorrect) {
-        navigate("/auth/login"); //change to dashboard
+        navigate("/"); //change to dashboard
     }
     const [currUserInfo, setCurrUserInfo] = useState<UserInfo>();
     const [currLeaveBalance, setCurrLeaveBalance] = useState<LeaveBalance>();

@@ -14,6 +14,7 @@ import AddDependent from './pages/AddDependent';
 import AddContact from './pages/AddContact';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
+import LeaveHistory from './pages/LeaveHistory';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -82,6 +83,15 @@ function App() {
             <>
               <PageTitle title= "Profile | Jupiter Apparels" />
               <Profile />
+            </>
+          }
+        />
+        <Route
+          path="/leave/history/:employee_id"
+          element={
+            <>
+              <PageTitle title= "Leave History | Jupiter Apparels" />
+              <LeaveHistory />
             </>
           }
         />

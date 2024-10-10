@@ -14,3 +14,17 @@ export const getLeaveBalanceByID = async (employee_id:string) => {
     }
 }
 
+export const getLeaveApplicationByID = async (employee_id:string) => {
+    try{
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get("leave/"+ employee_id, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data.error;
+    }
+}
+
