@@ -634,3 +634,114 @@ CREATE PROCEDURE GetAllRemainingLeaves()
 BEGIN
     SELECT * FROM remaining_leaves_view;
 END $$
+
+-- Procedure to get employee basic info by employee ID.
+CREATE PROCEDURE GetEmployeeByID(IN p_employee_id VARCHAR(36))
+BEGIN
+    SELECT * FROM employee_basic_info WHERE employee_id = p_employee_id;
+END $$
+
+-- Procedure to get employee basic info.
+CREATE PROCEDURE GetAllEmployees()
+BEGIN
+    SELECT * FROM employee_basic_info;
+END $$
+
+-- Procedure to get all pending leave applications
+CREATE PROCEDURE GetAllPendingLeaveApplications()
+BEGIN
+    SELECT * FROM pending_leave_applications;
+END $$
+
+-- Procedure to get pending leave application by application ID
+CREATE PROCEDURE GetPendingLeaveApplicationByID(IN p_application_id VARCHAR(36))
+BEGIN
+    SELECT * FROM pending_leave_applications WHERE application_id = p_application_id;
+END $$
+
+
+-- Procedure to get all payroll information
+CREATE PROCEDURE GetAllPayrollInfo()
+BEGIN
+    SELECT * FROM payroll_info;
+END $$
+
+-- Procedure to get payroll information by employee ID
+CREATE PROCEDURE GetPayrollInfoByEmployeeID(IN p_employee_id VARCHAR(36))
+BEGIN
+    SELECT * FROM payroll_info WHERE employee_id = p_employee_id;
+END $$
+
+-- Procedure to get all used leaves
+CREATE PROCEDURE GetAllUsedLeaves()
+BEGIN
+    SELECT * FROM used_leaves_view;
+END $$
+
+-- Procedure to get used leaves by employee ID
+CREATE PROCEDURE GetUsedLeavesByEmployeeID(IN p_employee_id VARCHAR(36))
+BEGIN
+    SELECT * FROM used_leaves_view WHERE employee_id = p_employee_id;
+END $$
+
+-- Procedure to get all employees grouped by department
+CREATE PROCEDURE GetAllEmployeesGroupedByDepartment()
+BEGIN
+    SELECT * FROM employees_grouped_by_department;
+END $$
+
+-- Procedure to get employees grouped by department ID
+CREATE PROCEDURE GetEmployeesGroupedByDepartmentID(IN p_department_id VARCHAR(36))
+BEGIN
+    SELECT * FROM employees_grouped_by_department WHERE department_id = p_department_id;
+END $$
+
+-- Procedure to get total leaves by department
+CREATE PROCEDURE GetTotalLeavesByDepartment()
+BEGIN
+    SELECT * FROM total_leaves_by_department;
+END $$
+
+-- Procedure to get total leaves by department ID
+CREATE PROCEDURE GetTotalLeavesByDepartmentID(IN p_department_id VARCHAR(36))
+BEGIN
+    SELECT * FROM total_leaves_by_department WHERE department_id = p_department_id;
+END $$
+
+-- Procedure to get employees grouped by job title, department, and pay grade
+CREATE PROCEDURE GetEmployeesGroupedByJobTitle()
+BEGIN
+    SELECT * FROM employees_grouped_by_job_title_department_pay_grade;
+END $$
+
+-- Procedure to get employees grouped by specific job title
+CREATE PROCEDURE GetEmployeesGroupedByJobTitleID(IN p_job_title VARCHAR(100))
+BEGIN
+    SELECT * FROM employees_grouped_by_job_title_department_pay_grade WHERE job_title = p_job_title;
+END $$
+
+-- Procedure to get emergency medical details for all employees
+CREATE PROCEDURE GetEmergencyMedicalDetails()
+BEGIN
+    SELECT * FROM emergency_medical_details;
+END $$
+
+-- Procedure to get emergency medical details by employee ID
+CREATE PROCEDURE GetEmergencyMedicalDetailsByID(IN p_employee_id VARCHAR(36))
+BEGIN
+    SELECT * FROM emergency_medical_details WHERE employee_id = p_employee_id;
+END $$
+
+
+-- Procedure to get employee demographics grouped by nationality and preferred language
+CREATE PROCEDURE GetEmployeeDemographics()
+BEGIN
+    SELECT * FROM employee_demographics_language_nationality;
+END $$
+
+-- Procedure to get employee demographics by nationality and preferred language
+CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_nationality VARCHAR(50), IN p_language VARCHAR(50))
+BEGIN
+    SELECT * FROM employee_demographics_language_nationality
+    WHERE cust_attr_1_value = p_nationality AND cust_attr_3_value = p_language;
+END $$
