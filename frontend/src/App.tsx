@@ -15,6 +15,7 @@ import AddContact from './pages/AddContact';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import LeaveHistory from './pages/LeaveHistory';
+import ViewLeave from './pages/ViewLeave';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -92,6 +93,15 @@ function App() {
             <>
               <PageTitle title= "Leave History | Jupiter Apparels" />
               <LeaveHistory />
+            </>
+          }
+        />
+        <Route
+          path="/leave/view/:application_id"
+          element={
+            <>
+              <PageTitle title= "Leave | Jupiter Apparels" />
+              <ViewLeave />
             </>
           }
         />
