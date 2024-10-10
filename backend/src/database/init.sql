@@ -36,6 +36,7 @@ DROP VIEW IF EXISTS emergency_medical_details;
 DROP VIEW IF EXISTS employees_grouped_by_job_title_department_pay_grade
 DROP VIEW IF EXISTS employees_grouped_by_department;
 DROP VIEW IF EXISTS total_leaves_by_department;
+DROP VIEW IF EXISTS employee_demographics_language_nationality;
 
 -- Drop all triggers
 DROP TRIGGER IF EXISTS check_supervisor_before_insert;
@@ -213,7 +214,7 @@ DELIMITER ;
 
 
 -- ---------------------------------------------------------------------------
--- -------------------------------- Views ----------------------------------
+-- -------------------------------- Views ------------------------------------
 -- ---------------------------------------------------------------------------
 
 
@@ -439,6 +440,20 @@ LEFT JOIN
 LEFT JOIN
     emergency_contacts ec ON ec.employee_id = e.employee_id;
 
+-- Custom Report: Employee demographics grouped by nationality and preferred language
+-- This report helps analyze the diversity within the organization and understand language representation.
+-- For reporting module.
+CREATE VIEW employee_demographics_language_nationality AS
+SELECT
+    cust_attr_1_value AS nationality,
+    cust_attr_3_value AS preferred_language,
+    COUNT(employee_id) AS employee_count
+FROM
+    employees
+GROUP BY
+    cust_attr_1_value, cust_attr_3_value
+ORDER BY
+    cust_attr_1_value, cust_attr_3_value;
 
 
 -- ---------------------------------------------------------------------------
