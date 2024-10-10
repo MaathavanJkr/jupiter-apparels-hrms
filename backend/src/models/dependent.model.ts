@@ -8,7 +8,7 @@ export interface EmployeeDependent extends RowDataPacket {
   employee_id: string,
   name: string,
   relationship_to_employee: string,
-  birth_date: string,
+  birth_date: Date,
 }
 
 export const createEmployeeDependentModel = async (
