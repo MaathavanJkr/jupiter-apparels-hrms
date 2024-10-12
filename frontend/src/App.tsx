@@ -16,6 +16,7 @@ import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import LeaveHistory from './pages/LeaveHistory';
 import ViewLeave from './pages/ViewLeave';
+import SupervisorLeave from './pages/SupervisorLeave';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -102,6 +103,15 @@ function App() {
             <>
               <PageTitle title= "Leave | Jupiter Apparels" />
               <ViewLeave />
+            </>
+          }
+        />
+        <Route
+          path="/supervisor/leaveview/:supervisor_id"
+          element={
+            <>
+              <PageTitle title= "Leave | Jupiter Apparels" />
+              <SupervisorLeave />
             </>
           }
         />

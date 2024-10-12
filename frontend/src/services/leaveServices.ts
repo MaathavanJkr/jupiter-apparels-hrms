@@ -69,3 +69,17 @@ export const rejectLeave = async (application_id : string) => {
     }
 }
 
+export const getPendingLeavesByID = async (employee_id:string) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get('/leave/pending/'+employee_id, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data.error;
+    }
+}
+

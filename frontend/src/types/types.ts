@@ -22,6 +22,9 @@ export interface Employee {
     pay_grade_id: string;
     employment_status_id: string;
     contact_number: string;
+    cust_attr_1_value: string;
+    cust_attr_2_value: string;
+    cust_attr_3value: string;
 }
 
 export interface Branch {

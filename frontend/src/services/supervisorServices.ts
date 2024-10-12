@@ -15,3 +15,17 @@ export const getSupervisors = async () => {
         return error.response.data.error;
     }
 }
+
+export const getEmployeesUnder = async (supervisor_id:string) => {
+    try {
+        const token = localStorage.getItem("token");
+        const response = await axiosInstance.get('/supervisor/employees/'+supervisor_id, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data
+    } catch(error) {
+        return error.response.data.error;
+    }
+}
