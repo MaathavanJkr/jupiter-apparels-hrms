@@ -8,7 +8,7 @@ export interface EmployeeDependent extends RowDataPacket {
   employee_id: string,
   name: string,
   relationship_to_employee: string,
-  birth_date: string,
+  birth_date: Date,
 }
 
 export const createEmployeeDependentModel = async (
@@ -116,5 +116,29 @@ export const deleteEmployeeDependentModel = async (dependent_id: string): Promis
     };
   } catch (error) {
     return { error: error, message: "Database Query Failed", data: null };
+  }
+};
+
+export const getEmployeeDependentByEmployeeIDModel = async (emp_id: string): Promise<Output> => {
+  try {
+    const [result] = await db
+        .promise()
+        .query("CALL getEmployeeDependentByEmployeeID(?)", [emp_id]);
+
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Dependent not found", message: null };
+    } else {
+      return {
+        data: (result as EmployeeDependent[])[0],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
   }
 };

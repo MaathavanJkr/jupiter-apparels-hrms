@@ -1,110 +1,121 @@
 import { Request, Response } from "express";
-import db from "../database/database";
-import { EmergencyContact } from "../models/emergencyContact.model";
-import { ResultSetHeader } from "mysql2";
+import {
+    EmergencyContact,
+    createEmergencyContactModel,
+    deleteEmergencyContactModel,
+    getAllEmergencyContactsModel,
+    getEmergencyContactByIDModel,
+    updateEmergencyContactModel,
+    getEmergencyContactByEmployeeIDModel,
+    
+} from "../models/emergencyContact.model"
 
 export const createEmergencyContact = async (req:Request, res:Response) => {
     const {employee_id, name, relationship, contact_number, address} = req.body;
+    
     if (!employee_id || !name || !relationship || !contact_number || !address) {
         return res.status(400).json({ error: "Missing required fields" });
     }
 
-    try {
-        const [result] = await db
-        .promise()
-        .query(
-            "INSERT INTO emergency_contacts (emergency_id,employee_id, name, relationship, contact_number, address) VALUES (UUID(),?,?,?,?,?)",
-            [employee_id, name, relationship, contact_number, address]
-        );
-        res.status(201).json({id: (result as ResultSetHeader).insertId, message: "Emergency Contact created successfully"});
-    } catch (error) {
-        res.status(500).json({error: "Database Query Failed", message: error});
-    }
-}
-
-export const getEmergencyContacts = async (req: Request, res: Response) => {
-    try {
-        const [emergencyContacts] = await db
-        .promise()
-        .query<EmergencyContact[]>("SELECT * FROM emergency_contacts");
+    const emergencyContact: EmergencyContact = {
+        employee_id: employee_id as string,
+        name: name as string,
+        relationship: relationship as string,
+        contact_number: contact_number as string,
+        address: address as string,
        
-        res.status(200).send(emergencyContacts);
-        
-    } catch (error) {
-        res.status(500).json({error: "Database Query failed", message: error});
-    }
-}
+      } as EmergencyContact;
+    
+      await createEmergencyContactModel(emergencyContact)
+        .then((result) => {
+          return res.status(201).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    };
+
+export const getAllEmergencyContacts = async (req: Request, res: Response) => {
+    await getAllEmergencyContactsModel()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const getEmergencyContactByID = async (req:Request, res:Response) => {
-    const id = req.params.id;
+    const { id } = req.params;
 
-    try {
-        const [emergencyContacts] = await db
-        .promise()
-        .query<EmergencyContact[]>("SELECT * FROM emergency_contacts WHERE emergency_id = ?", [id]);
-        if (emergencyContacts.length === 0) {
-            res.status(404).json({ message: `Employee Dependent with id: ${id} not found` });
-        } else {
-            res.status(200).json(emergencyContacts[0]);
-        }
-    } catch (error) {
-        res.status(500).json({error: "Database query failed", message: error});
-    }
-}
+  await getEmergencyContactByIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const updateEmergencyContact = async (req: Request, res:Response) => {
-    const id = req.params.id;
-    const { name, relationship, contact_number, address} = req.body;
-    try{
-        const [result] = await db
-        .promise()
-        .query(
-            "UPDATE emergency_contacts SET name=?, relationship=?, contact_number=?, address=? WHERE emergency_id = ?",
-            [name, relationship, contact_number, address, id]
-        );
-        if ((result as ResultSetHeader).affectedRows > 0) {
-            res.status(200).json({ message: "Emergency Contact updated successfully" });
-        } else {
-            res.status(404).json({ message: `Emergency Contact with id: ${id} not found` });
-        }
-    } catch(error) {
-        res.status(500).json({error: "Database query failed", message: error});
-    }
-}
+    const { id } = req.params;
+    const { employee_id, name, relationship, contact_number, address} = req.body;
+    
+    await getEmergencyContactByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      const contact = result.data;
+      if (employee_id) contact.employee_id = employee_id;
+      if (name) contact.name = name;
+      if(relationship) contact.relationship = relationship;
+      if(contact_number) contact.contact_number = contact_number;
+      if (address) contact.address = address;
+      
+
+      await updateEmergencyContactModel(contact)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const deleteEmergencyContact = async (req:Request, res:Response) => {
-    const id = req.params.id;
-    try {
-        const [result] = await db
-        .promise()
-        .query(
-            "DELETE FROM emergency_contacts where emergency_id = ?", [id]
-        );
-        if ((result as ResultSetHeader).affectedRows > 0) {
-            res.status(200).json({
-                message: `Emergency Contact with id: ${id} deleted successfully`
-            });
-        } else {
-            res.status(404).json({
-                message: `Emergency Contact with id: ${id} not found`
-            });
-        }
-    } catch (error) {
-        res.status(500).json({error: "Database query failed", message: error});
-    }
-}
+    const { id } = req.params;
+
+  await getEmergencyContactByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      await deleteEmergencyContactModel(id)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const getEmergencyContactByEmployeeID = async  (req:Request, res:Response) => {
-    const employee_id = req.params.employee_id;
+    const { id } = req.params;
 
-    try {
-        const [emergencyContacts] = await db
-        .promise()
-        .query <EmergencyContact[]>(
-            "SELECT * FROM emergency_contacts WHERE employee_id = ?", [employee_id]
-        );
-        res.status(200).send(emergencyContacts);
-    } catch (error) {
-        res.status(500).json({error: "Database Query failed", message: error});
-    }
-}
+  await getEmergencyContactByEmployeeIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
