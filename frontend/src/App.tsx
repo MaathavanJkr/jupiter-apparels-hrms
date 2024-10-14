@@ -13,7 +13,12 @@ import EmployeeDetails from './pages/EmployeeDetails';
 import AddDependent from './pages/AddDependent';
 import AddContact from './pages/AddContact';
 import Profile from './pages/Profile';
+
 import Report from './pages/reportPage/Report';
+import UserAccount from './pages/user_account_creation/UserAccount';
+import Leaveapplication from './pages/leaveapplication/Leaveapplication';
+import Addcustomattribute from './pages/addcustomatrribute/Addcustomattribute';
+import Home from './pages/homepage/Home';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -40,12 +45,50 @@ function App() {
             </>
           }
         />
+
+      <Route
+          path="/homepage"
+          element={
+            <>
+              <PageTitle title="Homepage | Jupiter Apparels" />
+              <Home />
+            </>
+          }
+        />
         <Route
           path="/report"
           element={
             <>
               <PageTitle title="Report | Jupiter Apparels" />
               <Report />
+            </>
+          }
+        />
+        <Route
+          path="/createuseraccount"
+          element={
+            <>
+              <PageTitle title="User Account Creation | Jupiter Apparels" />
+              <UserAccount/>
+            </>
+          }
+        />
+        <Route
+          path="/leaveapplication"
+          element={
+            <>
+              <PageTitle title="Leave Application Submission | Jupiter Apparels" />
+              <Leaveapplication/>
+            </>
+          }
+        />
+
+        <Route
+          path="/addcustomatrribute"
+          element={
+            <>
+              <PageTitle title="Add Custom Atrribute | Jupiter Apparels" />
+              <Addcustomattribute/>
             </>
           }
         />
