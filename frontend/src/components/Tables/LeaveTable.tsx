@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { LeaveApplication } from "../../types/types";
-import { getLeaveApplicationsByID } from "../../services/leaveServices";
+import { getLeaveApplicationsByID, getPendingLeavesByID } from "../../services/leaveServices";
 import { useNavigate } from "react-router-dom";
 
-const LeaveTable = ({employee_id}:{employee_id:string}) => {
+const LeaveTable = ({employee_id,pending}:{employee_id:string, pending:boolean}) => {
     const [leaves, setLeaves] = useState<LeaveApplication[]>([]);
 
     const navigate = useNavigate();
@@ -11,7 +11,12 @@ const LeaveTable = ({employee_id}:{employee_id:string}) => {
     useEffect(()=> {
         const fetchLeaves = async () => {
           try {
-            const leaves : LeaveApplication[] = await getLeaveApplicationsByID(employee_id);
+            let leaves : LeaveApplication[];
+            if (pending) {
+                 leaves  = await getPendingLeavesByID(employee_id);
+            } else {
+                 leaves = await getLeaveApplicationsByID(employee_id);
+            }
             setLeaves(leaves);
           }
           catch (error) {
