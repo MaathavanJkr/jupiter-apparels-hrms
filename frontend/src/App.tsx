@@ -17,6 +17,7 @@ import ChangePassword from './pages/ChangePassword';
 import LeaveHistory from './pages/LeaveHistory';
 import ViewLeave from './pages/ViewLeave';
 import SupervisorLeave from './pages/SupervisorLeave';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,6 +35,15 @@ function App() {
     <Loader />
   ) : (
       <Routes>
+        <Route
+          path="/dashboard"
+          element={
+            <>
+              <PageTitle title="Dashboard | Jupiter Apparels" />
+              <Dashboard />
+            </>
+          }
+        />
         <Route
           path="/employees"
           element={
