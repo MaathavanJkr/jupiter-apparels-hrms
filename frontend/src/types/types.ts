@@ -122,3 +122,16 @@ export interface LeaveApplication {
     status: string;   
     response_date: string; 
 }
+
+export interface EmployeeCount {
+    total_count:number;
+    male_count:number;
+    female_count:number;
+}
+
+export interface LeaveCount {
+    total_count: number;
+    approved_count: number;
+    rejected_count: number;
+    pending_count: number;
+}

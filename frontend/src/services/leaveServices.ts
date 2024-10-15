@@ -83,3 +83,16 @@ export const getPendingLeavesByID = async (employee_id:string) => {
     }
 }
 
+export const getLeaveCount = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get('/leave/count/', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data.error;
+    }
+}
