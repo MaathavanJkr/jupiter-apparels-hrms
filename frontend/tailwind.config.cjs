@@ -64,6 +64,7 @@ module.exports = {
           8: '#F0950C',
           9: '#E5E7EB',
           10: '#0FADCF',
+          11: '#008000',
         },
         success: '#219653',
         danger: '#D34053',

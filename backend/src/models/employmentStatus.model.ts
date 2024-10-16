@@ -1,4 +1,3 @@
-// didn't add the create, Uptdate and delete functions sine the status is predefined.
 import { RowDataPacket } from "mysql2";
 import db from "../database/database";
 import { Output } from "./output.model";
@@ -17,43 +16,41 @@ export interface EmploymentStatus extends RowDataPacket {
     status: EmployementStatus,
 }
 
-
 export const getEmploymentStatusByIDModel = async (
     id: string
-  ): Promise<Output> => {
+): Promise<Output> => {
     try {
-      const [result] = await db
-        .promise()
-        .query("SELECT * FROM employment_statuses WHERE employment_status_id = ?", [id]);
-  
-      if (Array.isArray(result) && result.length === 0) {
-        return { data: null, error: "Employment status not found", message: null };
-      } else {
+        const [result] = await db
+            .promise()
+            .query("CALL GetEmploymentStatusByID(?)", [id]);
+
+        if (Array.isArray(result) && result.length === 0) {
+            return { data: null, error: "Employment status not found", message: null };
+        } else {
+            return {
+                data: (result as EmploymentStatus[])[0],
+                error: null,
+                message: null,
+            };
+        }
+    } catch (error) {
         return {
-          data: (result as EmploymentStatus[])[0],
-          error: null,
-          message: null,
+            data: null,
+            error: error,
+            message: "Database Query Failed",
         };
-      }
-    } catch (error) {
-      return {
-        data: null,
-        error: error,
-        message: "Database Query Failed",
-      };
     }
-  };
+};
 
-
-  export const getAllEmploymentStatusesModel = async (): Promise<Output> => {
+export const getAllEmploymentStatusesModel = async (): Promise<Output> => {
     try {
-      const [result] = await db.promise().query("SELECT * FROM employment_statuses");
-      return { data: result as EmploymentStatus[], error: null, message: null };
+        const [result] = await db.promise().query("CALL GetAllEmploymentStatuses()");
+        return { data: result as EmploymentStatus[], error: null, message: null };
     } catch (error) {
-      return {
-        data: null,
-        error,
-        message: "Database Query Failed",
-      };
+        return {
+            data: null,
+            error,
+            message: "Database Query Failed",
+        };
     }
-  };
+};

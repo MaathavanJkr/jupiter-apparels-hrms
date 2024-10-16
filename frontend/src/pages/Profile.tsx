@@ -1,16 +1,25 @@
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb"
 import DefaultLayout from "../layout/DefaultLayout"
 import { useEffect, useState } from "react";
-import { UserInfo } from "../types/types";
+import { Employee, LeaveBalance, UserInfo } from "../types/types";
 import { getUserInfoById } from "../services/userServices";
+import { getLeaveBalanceByID } from "../services/leaveServices";
+import { getEmployeeByID } from "../services/employeeServices";
 
 
 const Profile = () => {
     const navigate = useNavigate();
 
     const { user_id } = useParams<{ user_id: string }>();
+    const isCorrect = user_id === localStorage.getItem("user_id");
+
+    if (!isCorrect) {
+        navigate("/"); //change to dashboard
+    }
     const [currUserInfo, setCurrUserInfo] = useState<UserInfo>();
+    const [currLeaveBalance, setCurrLeaveBalance] = useState<LeaveBalance>();
+    const [currSupervisor, setCurrSupervisor] = useState <Employee>();
 
     useEffect(()=>{
         const fetchUserInfo = async () => {
@@ -23,6 +32,38 @@ const Profile = () => {
         }
         fetchUserInfo();
     },[])
+
+
+    useEffect(() => {
+        const fetchLeaveBalance = async () => {
+          if (currUserInfo?.employee_id && currUserInfo?.supervisor_id) {
+            try {
+              const leaveBalance: LeaveBalance = await getLeaveBalanceByID(currUserInfo.employee_id);
+              
+              setCurrLeaveBalance(leaveBalance);
+            } catch (error) {
+              console.log("Failed to fetch leave balance:", error);
+            }
+          }
+        };
+      
+        if (currUserInfo) {
+          fetchLeaveBalance();
+        }
+      }, [currUserInfo]);
+    useEffect(() => {
+        const fetchSupervisor = async () => {
+        try {
+            const supervisor: Employee = await getEmployeeByID(currUserInfo!.supervisor_id);
+            setCurrSupervisor(supervisor);
+        } catch (error) {
+            console.log("Failed to fetch supervisor:", error);
+        }
+        };
+        
+        fetchSupervisor();
+        
+      }, [currUserInfo]);
 
   return (
     <DefaultLayout>
@@ -92,7 +133,7 @@ const Profile = () => {
                     <span className="font-bold">Department:</span>  <span className="font-thin">{currUserInfo?.department_name}</span>
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
-                    <span className="font-bold">Supervisor:</span> <span className="font-thin">{currUserInfo?.supervisor_id}</span> {/*Change after backend */}
+                    <span className="font-bold">Supervisor:</span> <span className="font-thin">{currSupervisor ? (currSupervisor?.first_name + " " + currSupervisor?.last_name): "No supervisor"}</span> {/*Change after backend */}
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
                     <span className="font-bold">Paygrade:</span> <span className="font-thin">{currUserInfo?.pay_grade_name}</span> {/*Change after backend */}
@@ -105,9 +146,44 @@ const Profile = () => {
                     </p>
                 </div>
             </div>
+            <div className="mt-10.5 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
+                <h2 className="text-2xl text-primary font-bold mb-3.5">Remaining Leaves</h2>
 
+                {/* Data boxes */}
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Box 1 */}
+                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
+                    <p className="text-lg font-semibold">Annual Leaves</p>
+                    <p className="text-xl font-bold">10</p> {/* Replace with dynamic value */}
+                    </div>
 
+                    {/* Box 2 */}
+                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
+                    <p className="text-lg font-semibold">Casual Leaves</p>
+                    <p className="text-xl font-bold">5</p> {/* Replace with dynamic value */}
+                    </div>
 
+                    {/* Box 3 */}
+                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
+                    <p className="text-lg font-semibold">Maternity Leaves</p>
+                    <p className="text-xl font-bold">7</p> {/* Replace with dynamic value */}
+                    </div>
+
+                    {/* Box 4 */}
+                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
+                    <p className="text-lg font-semibold">No Pay Leaves</p>
+                    <p className="text-xl font-bold">2</p> {/* Replace with dynamic value */}
+                    </div>
+                </div>
+
+                {/* Button */}
+                <button
+                    onClick={() => navigate('/leave/history/' + currUserInfo?.employee_id)}
+                    className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                >
+                    View Leave History
+                </button>
+            </div>
     </DefaultLayout>
   )
 }

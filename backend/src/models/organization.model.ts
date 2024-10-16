@@ -11,7 +11,7 @@ export interface Organization extends RowDataPacket {
 }
 
 export const createOrganizationModel = async (
-  organization: Organization
+    organization: Organization
 ): Promise<Output> => {
   const { name, address, reg_no } = organization;
 
@@ -23,11 +23,8 @@ export const createOrganizationModel = async (
 
   try {
     await db
-      .promise()
-      .query(
-        "INSERT INTO organizations (organization_id, name, address, reg_no) VALUES(UUID(),?,?,?)",
-        [name, address, reg_no]
-      );
+        .promise()
+        .query("CALL CreateOrganization(?, ?, ?)", [organization.organization_id, name, address, reg_no]);
     return {
       data: organization,
       message: "Organization created successfully",
@@ -41,8 +38,8 @@ export const createOrganizationModel = async (
 export const getOrganizationByIDModel = async (id: string): Promise<Output> => {
   try {
     const [result] = await db
-      .promise()
-      .query("SELECT * FROM organizations WHERE organization_id = ?", [id]);
+        .promise()
+        .query("CALL GetOrganizationByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Organization not found", message: null };
@@ -64,7 +61,7 @@ export const getOrganizationByIDModel = async (id: string): Promise<Output> => {
 
 export const getAllOrganizationsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("SELECT * FROM organizations");
+    const [result] = await db.promise().query("CALL GetAllOrganizations()");
     return { data: result as Organization[], error: null, message: null };
   } catch (error) {
     return {
@@ -76,7 +73,7 @@ export const getAllOrganizationsModel = async (): Promise<Output> => {
 };
 
 export const updateOrganizationModel = async (
-  organization: Organization
+    organization: Organization
 ): Promise<Output> => {
   const { organization_id, name, address, reg_no } = organization;
 
@@ -86,11 +83,8 @@ export const updateOrganizationModel = async (
 
   try {
     await db
-      .promise()
-      .query(
-        "UPDATE organizations SET name = ?, address = ?, reg_no = ? WHERE organization_id = ?",
-        [name, address, reg_no, organization_id]
-      );
+        .promise()
+        .query("CALL UpdateOrganization(?, ?, ?, ?)", [organization_id, name, address, reg_no]);
     return {
       message: "Organization updated successfully",
       error: null,
@@ -102,7 +96,7 @@ export const updateOrganizationModel = async (
 };
 
 export const deleteOrganizationModel = async (
-  organization_id: string
+    organization_id: string
 ): Promise<Output> => {
   if (!organization_id) {
     return { error: "Missing required fields", data: null, message: null };
@@ -110,10 +104,8 @@ export const deleteOrganizationModel = async (
 
   try {
     await db
-      .promise()
-      .query("DELETE FROM organizations WHERE organization_id = ?", [
-        organization_id,
-      ]);
+        .promise()
+        .query("CALL DeleteOrganization(?)", [organization_id]);
     return {
       message: "Organization deleted successfully",
       error: null,

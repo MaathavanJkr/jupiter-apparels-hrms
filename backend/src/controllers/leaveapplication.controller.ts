@@ -1,73 +1,111 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
-import db from "../database/database";
-import { LeaveApplication } from "../models/leaveapplication.model";
-import { ResultSetHeader } from "mysql2";
+import {
+  LeaveApplication,
+  createLeaveApplicationModel,
+  deleteLeaveApplicationModel,
+  getAllLeaveApplicationsModel,
+  getLeaveApplicationByIDModel,
+  updateLeaveApplicationModel,
+} from "../models/leaveapplication.model"
 
 export const createLeaveApplication = async (req: Request, res: Response) => {
-    const {application_id,employee_id,leave_type,start_date,end_date,reason,submission_date,status,response_date } = req.body;
-    try {
-        const [result] = await db
-          .promise()
-          .query(
-            "INSERT INTO leave_applications (application_id,employee_id,leave_type,start_date,end_date,reason,submission_date,status,response_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [application_id,employee_id,leave_type,start_date,end_date,reason,submission_date,status,response_date]
-          );
-        res.status(201).json({ id: (result as ResultSetHeader).insertId, message: "Leave application created" });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-      }
-}
+    const {employee_id,leave_type,start_date,end_date,reason} = req.body;
+    
+    if (!employee_id || !leave_type || !start_date || !end_date || !reason){
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
-export const getLeaveApplications = async (req: Request, res: Response) => {
-  try {
-    const [leaveapplication] = await db
-      .promise()
-      .query<LeaveApplication[]>("SELECT * FROM leave_applications");
-    res.status(200).json(leaveapplication);
-  } catch (error) {
-    res.status(500).json({ error: "Database query failed", message: error });
-  }
+    const leaveApplication: LeaveApplication = {
+      employee_id: employee_id as string,
+      leave_type: leave_type as string,
+      start_date: start_date as Date,
+      end_date: end_date as Date,
+      reason: reason as string,
+    } as LeaveApplication;
+
+    await createLeaveApplicationModel(leaveApplication)
+    .then((result) => {
+      return res.status(201).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+
+export const getAllLeaveApplications = async (req: Request, res: Response) => {
+  await getAllLeaveApplicationsModel()
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
 };
 
 export const getLeaveApplicationByID = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [leaveapplication] = await db
-          .promise()
-          .query<LeaveApplication[]>("SELECT * FROM leave_applications WHERE id = ?", id);
+  const { id } = req.params;
 
-        res.status(200).json(leaveapplication[0]);
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
-      }
-}
+  await getLeaveApplicationByIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const updateLeaveApplication = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const { application_id,employee_id,leave_type,start_date,end_date,reason,submission_date,status,response_date } = req.body;
-    try {
-        await db
-          .promise()
-          .query(
-            "UPDATE leave_applications SET application_id = ?, employee_id = ?, leave_type = ?, start_date = ?, end_date = ?, reason = ?, submission_date = ?, status = ?, response_date = ? WHERE id = ?",
-            [application_id,employee_id,leave_type,start_date,end_date,reason,submission_date,status,response_date, id]
-          );
-        res.status(200).json({ message: "Leave application updated" });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
+  const { id } = req.params;
+    const { employee_id,leave_type,start_date,end_date,reason,submission_date,status,response_date } = req.body;
+    
+  await getLeaveApplicationByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
       }
-}
+      const leaveApplication = result.data;
+      if (employee_id) leaveApplication.employee_id = employee_id;
+      if (leave_type) leaveApplication.leave_type = leave_type;
+      if (start_date) leaveApplication.start_date = start_date;
+      if (end_date) leaveApplication.end_date = end_date;
+      if (reason) leaveApplication.reason = reason;
+      if (submission_date) leaveApplication.submission_date = submission_date;
+      if (status) leaveApplication.status = status;
+      if (response_date) leaveApplication.response_date = response_date;
 
+
+
+      await updateLeaveApplicationModel(leaveApplication)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const deleteLeaveApplication = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    try {
-        const [result] = await db
-          .promise()
-          .query("DELETE FROM leave_applications WHERE id = ?", id);
-        res.status(200).json({ id: result, message: `Leave application with id: ${id} deleted` });
-      } catch (error) {
-        res.status(500).json({ error: "Database query failed", message: error });
+  const { id } = req.params;
+
+  await getLeaveApplicationByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
       }
-}
+      await deleteLeaveApplicationModel(id)
+        .then((result) => {
+          return res.status(200).json(result);
+        })
+        .catch((error) => {
+          return res.status(500).json({ error });
+        });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};

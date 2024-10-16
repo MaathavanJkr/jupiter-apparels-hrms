@@ -3,7 +3,6 @@ export interface User {
     employee_id: string;
     role: string;
     username: string;
-    password: string;
 }
 
 export interface Employee {
@@ -23,25 +22,6 @@ export interface Employee {
     pay_grade_id: string;
     employment_status_id: string;
     contact_number: string;
-}
-
-export interface UserInfo {
-    employee_id: string,
-    user_id: string,
-    first_name: string,
-    last_name: string,
-    username: string,
-    role: string,
-    birth_date: string,
-    gender:string,
-    marital_status: string,
-    email: string,
-    nic: string,
-    department_name: string,
-    branch_name: string,
-    job_title: string,
-    employment_status: string,
-    contact_number: string,
 }
 
 export interface Branch {
@@ -116,4 +96,26 @@ export interface UserInfo {
     pay_grade_name : string,
     supervisor_id: string
 
+}
+
+export interface LeaveBalance {
+    employee_id: string,
+    employee_name: string,
+    remaining_annual_leaves: number,
+    remaining_casual_leaves: number,
+    remaining_maternity_leaves: number,
+    remaining_nopay_leaves: number,
+    remaining_total_leaves: number,
+}
+
+export interface LeaveApplication {
+    application_id?: string;  
+    employee_id: string;  
+    leave_type: string;  
+    start_date: string;      
+    end_date: string;     
+    reason: string;    
+    submission_date: string;  
+    status: string;   
+    response_date: string; 
 }

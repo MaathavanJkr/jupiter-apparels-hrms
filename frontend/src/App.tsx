@@ -13,6 +13,9 @@ import EmployeeDetails from './pages/EmployeeDetails';
 import AddDependent from './pages/AddDependent';
 import AddContact from './pages/AddContact';
 import Profile from './pages/Profile';
+import ChangePassword from './pages/ChangePassword';
+import LeaveHistory from './pages/LeaveHistory';
+import ViewLeave from './pages/ViewLeave';
 
 import Report from './pages/reportPage/Report';
 import UserAccount from './pages/user_account_creation/UserAccount';
@@ -134,6 +137,33 @@ function App() {
             <>
               <PageTitle title= "Profile | Jupiter Apparels" />
               <Profile />
+            </>
+          }
+        />
+        <Route
+          path="/leave/history/:employee_id"
+          element={
+            <>
+              <PageTitle title= "Leave History | Jupiter Apparels" />
+              <LeaveHistory />
+            </>
+          }
+        />
+        <Route
+          path="/leave/view/:application_id"
+          element={
+            <>
+              <PageTitle title= "Leave | Jupiter Apparels" />
+              <ViewLeave />
+            </>
+          }
+        />
+        <Route
+          path="/auth/changepassword/:user_id"
+          element={
+            <>
+              <PageTitle title= "Change Password | Jupiter Apparels" />
+              <ChangePassword />
             </>
           }
         />
