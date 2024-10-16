@@ -13,11 +13,37 @@ export const getLeaveBalanceByID = async (employee_id:string) => {
         throw error.response.data.error;
     }
 }
+export const getUsedLeavesByID = async (employee_id:string) => {
+    try{
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get("leave/used/"+ employee_id, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data.error;
+    }
+}
 
 export const getLeaveApplicationsByID = async (employee_id:string) => {
     try{
         const token = localStorage.getItem('token');
         const response = await axiosInstance.get("leave/employee/"+ employee_id, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data.error;
+    }
+}
+export const getLatestLeaveApplicationsByID = async (employee_id:string) => {
+    try{
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get("leave/latest/"+ employee_id, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

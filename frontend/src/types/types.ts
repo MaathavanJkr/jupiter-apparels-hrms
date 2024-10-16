@@ -98,7 +98,6 @@ export interface UserInfo {
     contact_number: string,
     pay_grade_name : string,
     supervisor_id: string
-
 }
 
 export interface LeaveBalance {
@@ -109,6 +108,16 @@ export interface LeaveBalance {
     remaining_maternity_leaves: number,
     remaining_nopay_leaves: number,
     remaining_total_leaves: number,
+}
+
+export interface UsedLeaves {
+    employee_id: string,
+    employee_name: string,
+    used_annual_leaves: number,
+    used_casual_leaves: number,
+    used_maternity_leaves: number,
+    used_nopay_leaves: number,
+    used_total_leaves: number,
 }
 
 export interface LeaveApplication {
@@ -134,4 +143,11 @@ export interface LeaveCount {
     approved_count: number;
     rejected_count: number;
     pending_count: number;
+}
+
+export interface Organization {
+    organization_id?: string;
+    name: string;
+    address: string;
+    reg_no: number;
 }

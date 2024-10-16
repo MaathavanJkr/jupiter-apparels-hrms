@@ -18,7 +18,7 @@ const LeaveHistory = () => {
                 </button>
             </Link>
           </div>
-        <LeaveTable  employee_id = {employee_id!} pending = {false}/>
+        <LeaveTable  employee_id = {employee_id!} pending = {false} latest = {false}/>
 
     </DefaultLayout>
   )

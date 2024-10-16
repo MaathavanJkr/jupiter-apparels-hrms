@@ -1,5 +1,5 @@
 import { ApexOptions } from 'apexcharts';
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { LeaveCount } from '../../types/types';
 
@@ -51,9 +51,9 @@ const options: ApexOptions = {
 };
 
 const PieChart = ({countData}:{countData:LeaveCount}) => {
-  const pending = (countData.pending_count/countData.total_count)*100;
-  const approved = (countData.approved_count/countData.total_count)*100;
-  const rejected = (countData.rejected_count/countData.total_count)*100;
+ // const pending = (countData.pending_count/countData.total_count)*100;
+  //const approved = (countData.approved_count/countData.total_count)*100;
+ // const rejected = (countData.rejected_count/countData.total_count)*100;
   const [state, setState] = useState<PieChartState>({
     series: [65, 34, 12],
   });

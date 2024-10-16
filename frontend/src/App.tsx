@@ -18,6 +18,7 @@ import LeaveHistory from './pages/LeaveHistory';
 import ViewLeave from './pages/ViewLeave';
 import SupervisorLeave from './pages/SupervisorLeave';
 import Dashboard from './pages/Dashboard';
+import OrganizationConfig from './pages/OrganizationConfig';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -41,6 +42,15 @@ function App() {
             <>
               <PageTitle title="Dashboard | Jupiter Apparels" />
               <Dashboard />
+            </>
+          }
+        />
+        <Route
+          path="/organization"
+          element={
+            <>
+              <PageTitle title="Organization | Jupiter Apparels" />
+              <OrganizationConfig />
             </>
           }
         />

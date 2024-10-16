@@ -35,7 +35,7 @@ const SupervisorLeave = () => {
       {employees!.map((employee) => (
         <>
           {employee.first_name + ' ' + employee.last_name}
-          <LeaveTable employee_id={employee.employee_id} pending={true} />
+          <LeaveTable employee_id={employee.employee_id} pending={true} latest={false} />
         </>
       ))}
     </DefaultLayout>

@@ -1,23 +1,28 @@
 import { useEffect, useState } from 'react';
-import { EmployeeCount, LeaveCount } from '../../types/types';
+import { EmployeeCount, LeaveCount, Organization } from '../../types/types';
 import RingChart from '../Charts/RingChart';
 import { getEmployeeCount } from '../../services/employeeServices';
 import { useNavigate } from 'react-router-dom';
 import PieChart from '../Charts/PieChart';
 import CardDataStats from '../CardDataStats';
 import { getLeaveCount } from '../../services/leaveServices';
+import { getOrganization } from '../../services/organizationServices';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [employeeCount, setEmployeeCount] = useState<EmployeeCount>();
   const [leaveCount, setLeaveCount] = useState<LeaveCount>();
+  const [organization, setOrganization] = useState<Organization>();
+
   useEffect(() => {
     const fetchCount = async () => {
       try {
         const employeeCount: EmployeeCount = await getEmployeeCount();
-        const leaveCount : LeaveCount = await getLeaveCount();
+        const leaveCount: LeaveCount = await getLeaveCount();
+        const organization: Organization = await getOrganization();
         setLeaveCount(leaveCount);
         setEmployeeCount(employeeCount);
+        setOrganization(organization);
       } catch (error) {
         console.log('Error fetching Employee count: ', error);
       }
@@ -31,6 +36,29 @@ const AdminDashboard = () => {
         <h2 className="text-2xl text-primary font-bold mb-3.5">
           Organization Details
         </h2>
+
+        <p className="text-gray-700 dark:text-gray-300">
+          <span className="font-bold">Name:</span>{' '}
+          <span className="font-thin">
+              Jupiter Apparals
+          </span>
+        </p>
+        <p className="text-gray-700 dark:text-gray-300">
+          <span className="font-bold">Registration No: </span>{' '}
+          <span className="font-thin">11233</span>
+        </p>
+        <p className="text-gray-700 dark:text-gray-300">
+          <span className="font-bold">Address:</span>{' '}
+          <span className="font-thin">Sri Lanka</span>
+        </p>
+      <button
+          onClick={() =>
+            navigate('/supervisor/leaveview/')
+          }
+          className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        >
+          Configure
+        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5 mt-10">
@@ -108,7 +136,7 @@ const AdminDashboard = () => {
             <span className="font-thin">500</span>
           </p>
 
-          <PieChart countData={leaveCount!}/>
+          <PieChart countData={leaveCount!} />
         </div>
       </div>
     </>
