@@ -1,3 +1,4 @@
+USE jupiter_apparels;
 -- drop procedures
 DROP PROCEDURE IF EXISTS createAllocatedLeaves;
 DROP PROCEDURE IF EXISTS createBranch;

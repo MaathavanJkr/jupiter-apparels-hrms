@@ -1,12 +1,8 @@
 -- These 3 lines only needed for query submission.No need to add to the project.
 
--- DROP DATABASE IF EXISTS jupiter_apparels;
--- CREATE DATABASE jupiter_apparels;
--- USE jupiter_apparels;
-
-ALTER TABLE branches
-DROP FOREIGN KEY fk_manager;
-
+DROP DATABASE IF EXISTS jupiter_apparels;
+CREATE DATABASE jupiter_apparels;
+USE jupiter_apparels;
 
 -- Drop all tables
 DROP TABLE IF EXISTS leave_applications;
@@ -33,7 +29,7 @@ DROP VIEW IF EXISTS payroll_info;
 DROP VIEW IF EXISTS used_leaves_view;
 DROP VIEW IF EXISTS remaining_leaves_view;
 DROP VIEW IF EXISTS emergency_medical_details;
-DROP VIEW IF EXISTS employees_grouped_by_job_title_department_pay_grade
+DROP VIEW IF EXISTS employees_grouped_by_job_title_department_pay_grade;
 DROP VIEW IF EXISTS employees_grouped_by_department;
 DROP VIEW IF EXISTS total_leaves_by_department;
 DROP VIEW IF EXISTS employee_demographics_language_nationality;
@@ -162,7 +158,7 @@ CREATE TABLE leave_applications (
 CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
-    role ENUM('Admin', 'Supervisor', 'Employee', 'HR manager') DEFAULT 'Employee',
+    role ENUM('Admin', 'Employee', 'HR manager') DEFAULT 'Employee',
     username VARCHAR(80) NOT NULL UNIQUE,
     password VARCHAR(80) NOT NULL DEFAULT '123', -- Default password for new users added by the HR Manager.
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
@@ -592,23 +588,6 @@ BEGIN
 END $$
 DELIMITER ;
 
-
-
-
-
-DELETE FROM organizations;
-DELETE FROM branches;
-DELETE FROM departments;
-DELETE FROM pay_grades;
-DELETE FROM allocated_leaves;
-DELETE FROM job_titles;
-DELETE FROM employment_statuses;
-DELETE FROM employees;
-DELETE FROM employee_dependents;
-DELETE FROM emergency_contacts;
-DELETE FROM leave_applications;
-DELETE FROM users;
-
 INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, Punjab, Pakistan', 19781001);
 
 INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Punjab', '789 Main Street, Punjab, Pakistan', '+924567890');
@@ -768,13 +747,13 @@ INSERT INTO leave_applications VALUES ('LA0050', 'E0018', 'Annual', '2024-09-01'
 
 
 
-INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'emily.brown', 'password101');
-INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'John.Doe', 'password303');
-INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'Ella.Lee', 'password404');
-INSERT INTO users VALUES ('U004', 'E0007', 'Supervisor', 'james.Wilson', 'password505');
-INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'Aria.Scott', 'password606');
+INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'maathavan', '123456');
+INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'shanil', '123456');
+INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'sahan', '123456');
+INSERT INTO users VALUES ('U004', 'E0007', 'HR manager', 'hiruni', '123456');
+INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'pratheep', '123456');
 INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
-INSERT INTO users VALUES ('U007', 'E0005', 'Supervisor', 'David.Jones', 'password555');
+INSERT INTO users VALUES ('U007', 'E0005', 'HR manager', 'David.Jones', 'password555');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
