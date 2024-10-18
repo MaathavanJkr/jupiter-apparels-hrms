@@ -1,62 +1,69 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../../services/authServices';
-import {ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { notifyError } from '../../services/notify';
-  
 
+import backgroundImage from '../../images/616991.jpg';
 
 const LogIn: React.FC = () => {
-
-  
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-
-  const handleSignin = async (e: {preventDefault: () => void;}) => {
+  const handleSignin = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    if (username!= '' && password != '') {
-      await login(username, password).then(()=> {
-        navigate('/employees'); //need to change to dashboard later
-      }).catch((err)=> {
-        notifyError(err);
-      });
+    if (username != '' && password != '') {
+      await login(username, password)
+        .then(() => {
+          navigate('/employees'); //need to change to dashboard later
+        })
+        .catch((err) => {
+          notifyError(err);
+        });
     } else {
       notifyError('Fill all Fields');
     }
-  }
+  };
   useEffect(() => {
     if (token) {
       navigate('/employees'); //need to change to dashboard later
-
     }
   }, []);
 
-
   return (
     <>
-     
-      <div className="h-screen rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="flex flex-wrap items-center">
-          <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="py-17.5 px-26 text-center">
+      <div className="h-screen overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="flex flex-wrap items-center h-full">
+          <div
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            }}
+            className="hidden w-full xl:block xl:w-1/2 h-full relative"
+          >
+            <div className="absolute inset-0 bg-black opacity-60"></div>
+
+            <div className="py-17.5 px-26 text-center relative z-10">
               <Link className="mb-5.5 inline-block" to="/">
-                <h1 className='text-2xl font-bold' >Jupiter Apparels</h1>
+                <h1 className="mt-40 text-7xl text-white text-w font-bold">
+                  Jupiter Apparels
+                </h1>
               </Link>
-
-              <p className="2xl:px-20">
-                HRMS system for Personal Information Management, Absence Management and Report Generation
+              <p className="text-xl mt-5 text-white">
+                Your gateway to seamless workforce management, empowering over
+                1000 employees across our global network
               </p>
-
             </div>
           </div>
 
-          <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
-            <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
+          <div className="w-full xl:w-1/2 xl:border-l-2 h-full overflow-hidden">
+            <div className="mt-25 w-full p-4 sm:p-12.5 xl:p-17.5">
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Log In to Jupiter Apparels
               </h2>
@@ -71,14 +78,26 @@ const LogIn: React.FC = () => {
                       type="text"
                       placeholder="Enter Username"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      autoComplete='off'
-                      onChange={(e)=>{setUsername(e.target.value)}}
+                      autoComplete="off"
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                      }}
                     />
-
                     <span className="absolute right-4 top-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                    </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                        />
+                      </svg>
                     </span>
                   </div>
                 </div>
@@ -92,9 +111,10 @@ const LogIn: React.FC = () => {
                       type="password"
                       placeholder="Enter Password"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      onChange={(e)=>{setPassword(e.target.value)}}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
                     />
-
                     <span className="absolute right-4 top-4">
                       <svg
                         className="fill-current"
@@ -126,7 +146,6 @@ const LogIn: React.FC = () => {
                   >
                     Log In
                   </button>
-                  
                 </div>
               </form>
             </div>
