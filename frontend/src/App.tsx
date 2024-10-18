@@ -15,6 +15,9 @@ import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import LeaveHistory from './pages/LeaveHistory';
 import ViewLeave from './pages/ViewLeave';
+import SupervisorLeave from './pages/SupervisorLeave';
+import Dashboard from './pages/Dashboard';
+import OrganizationConfig from './pages/OrganizationConfig';
 
 import Report from './pages/reportPage/Report';
 import UserAccount from './pages/user_account_creation/UserAccount';
@@ -41,6 +44,24 @@ function App() {
     <Loader />
   ) : (
     <Routes>
+        <Route
+          path="/dashboard"
+          element={
+            <>
+              <PageTitle title="Dashboard | Jupiter Apparels" />
+              <Dashboard />
+            </>
+          }
+        />
+        <Route
+          path="/organization"
+          element={
+            <>
+              <PageTitle title="Organization | Jupiter Apparels" />
+              <OrganizationConfig />
+            </>
+          }
+        />
       <Route
         path="/employees"
         element={
@@ -191,6 +212,15 @@ function App() {
           </>
         }
       />
+        <Route
+          path="/supervisor/leaveview/:supervisor_id"
+          element={
+            <>
+              <PageTitle title= "Leave | Jupiter Apparels" />
+              <SupervisorLeave />
+            </>
+          }
+        />
       <Route
         path="/auth/changepassword/:user_id"
         element={
