@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { createPayGrade,getPayGrade,getPayGradeByID,updatePayGrade,deletePayGrade } from '../controllers/paygrade.controller';
+import { createPayGrade,getAllPayGrade,getPayGradeByID,updatePayGrade,deletePayGrade } from '../controllers/paygrade.controller';
 const router = Router();
 
 router.post('/',createPayGrade);
-router.get('/',getPayGrade);
+router.get('/',getAllPayGrade);
 router.get('/:id',getPayGradeByID);
 router.put('/:id',updatePayGrade);
 router.delete('/:id',deletePayGrade);
