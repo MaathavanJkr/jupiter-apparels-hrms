@@ -37,10 +37,6 @@ DROP VIEW IF EXISTS employee_demographics_language_nationality;
 -- Drop all triggers
 DROP TRIGGER IF EXISTS check_supervisor_before_insert;
 DROP TRIGGER IF EXISTS check_supervisor_before_update;
-DROP TRIGGER IF EXISTS prevent_duplicate_email_before_insert;
-DROP TRIGGER IF EXISTS prevent_duplicate_email_before_update;
-DROP TRIGGER IF EXISTS prevent_duplicate_nic_before_insert;
-DROP TRIGGER IF EXISTS prevent_duplicate_nic_before_update;
 DROP TRIGGER IF EXISTS check_active_job_title_before_insert;
 DROP TRIGGER IF EXISTS check_active_job_title_before_update;
 DROP TRIGGER IF EXISTS validate_leave_dates_before_insert;
@@ -476,53 +472,6 @@ FOR EACH ROW
 BEGIN
     IF NEW.supervisor_id = NEW.employee_id THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The employee and the supervise IDs are the same.';
-    END IF;
-END $$
-DELIMITER ;
-
-
-
--- Prevents duplicate emails in the employees table.
-DELIMITER $$
-CREATE TRIGGER prevent_duplicate_email_before_insert BEFORE INSERT ON employees
-FOR EACH ROW
-BEGIN
-    IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
-    END IF;
-END $$
-DELIMITER ;
-
-
-DELIMITER $$
-CREATE TRIGGER prevent_duplicate_email_before_update BEFORE UPDATE ON employees
-FOR EACH ROW
-BEGIN
-    IF EXISTS (SELECT 1 FROM employees WHERE email = NEW.email AND employee_id != NEW.employee_id) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email address already in use by another employee.';
-    END IF;
-END$$
-DELIMITER ;
-
-
--- Prevents duplicate NICs  in the employees table.
-DELIMITER $$
-CREATE TRIGGER prevent_duplicate_nic_before_insert BEFORE INSERT ON employees
-FOR EACH ROW
-BEGIN
-    IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
-    END IF;
-END$$
-DELIMITER ;
-
-
-DELIMITER $$
-CREATE TRIGGER prevent_duplicate_nic_before_update BEFORE UPDATE ON employees
-FOR EACH ROW
-BEGIN
-    IF EXISTS (SELECT 1 FROM employees WHERE NIC = NEW.NIC AND employee_id != NEW.employee_id) THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'NIC already exists for another employee.';
     END IF;
 END $$
 DELIMITER ;
