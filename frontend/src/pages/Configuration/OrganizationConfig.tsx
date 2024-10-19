@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Organization } from '../types/types';
+import { Organization } from '../../types/types';
 import {
   getOrganization,
   updateOrganization,
-} from '../services/organizationServices';
-import DefaultLayout from '../layout/DefaultLayout';
-import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import { notifyError, notifySuccess } from '../services/notify';
+} from '../../services/organizationServices';
+import DefaultLayout from '../../layout/DefaultLayout';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import { notifyError, notifySuccess } from '../../services/notify';
 import { ToastContainer } from 'react-toastify';
 
 const OrganizationConfig = () => {

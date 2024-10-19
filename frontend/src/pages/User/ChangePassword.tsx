@@ -1,9 +1,9 @@
 
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb"
-import DefaultLayout from "../layout/DefaultLayout"
-import { notifyError, notifySuccess } from "../services/notify"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "../../layout/DefaultLayout"
+import { notifyError, notifySuccess } from "../../services/notify"
 import { useState } from "react"
-import { changePassword } from "../services/userServices"
+import { changePassword } from "../../services/userServices"
 import { ToastContainer } from "react-toastify"
 import { useNavigate } from "react-router-dom"
 

@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom"
-import { Employee, LeaveApplication } from "../types/types";
+import { Employee, LeaveApplication } from "../../types/types";
 import { useEffect, useState } from "react";
-import { approveLeave, getLeaveApplicationByID, rejectLeave } from "../services/leaveServices";
-import DefaultLayout from "../layout/DefaultLayout";
-import { getEmployeeByID } from "../services/employeeServices";
-import { notifyError, notifySuccess } from "../services/notify";
+import { approveLeave, getLeaveApplicationByID, rejectLeave } from "../../services/leaveServices";
+import DefaultLayout from "../../layout/DefaultLayout";
+import { getEmployeeByID } from "../../services/employeeServices";
+import { notifyError, notifySuccess } from "../../services/notify";
 import { ToastContainer } from "react-toastify";
 
 const ViewLeave = () => {

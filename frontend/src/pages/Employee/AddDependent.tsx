@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb"
-import { Employee } from "../types/types";
-import { getEmployeeByID } from "../services/employeeServices";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import { Employee } from "../../types/types";
+import { getEmployeeByID } from "../../services/employeeServices";
 import { useEffect, useState } from "react";
-import { notifyError, notifySuccess } from "../services/notify";
+import { notifyError, notifySuccess } from "../../services/notify";
 import { ToastContainer } from "react-toastify";
-import { addDependent } from "../services/dependentServices";
-import DefaultLayout from "../layout/DefaultLayout";
+import { addDependent } from "../../services/dependentServices";
+import DefaultLayout from "../../layout/DefaultLayout";
 
 
 const AddDependent = () => {

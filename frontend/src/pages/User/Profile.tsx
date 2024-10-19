@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from "react-router-dom"
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb"
-import DefaultLayout from "../layout/DefaultLayout"
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "../../layout/DefaultLayout"
 import { useEffect, useState } from "react";
-import { Employee, LeaveBalance, UserInfo } from "../types/types";
-import { getUserInfoById } from "../services/userServices";
-import { getLeaveBalanceByID } from "../services/leaveServices";
-import { getEmployeeByID } from "../services/employeeServices";
+import { Employee, LeaveBalance, UserInfo } from "../../types/types";
+import { getUserInfoById } from "../../services/userServices";
+import { getLeaveBalanceByID } from "../../services/leaveServices";
+import { getEmployeeByID } from "../../services/employeeServices";
 
 
 const Profile = () => {

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { Branch, Department, JobTitle, EmploymentStatus, PayGrade, Supervisor } from "../types/types";
-import { getBranches } from "../services/branchService";
-import { getDepartments } from "../services/departmentServices";
-import { getEmploymentStatuses } from "../services/employmentStatusServices";
-import { getJobTitles } from "../services/jobTitleServices";
-import { getPayGrades } from "../services/payGradeServices";
-import { getSupervisors } from "../services/supervisorServices";
-import { addEmployee } from "../services/employeeServices";
+import { Branch, Department, JobTitle, EmploymentStatus, PayGrade, Supervisor } from "../../types/types";
+import { getBranches } from "../../services/branchService";
+import { getDepartments } from "../../services/departmentServices";
+import { getEmploymentStatuses } from "../../services/employmentStatusServices";
+import { getJobTitles } from "../../services/jobTitleServices";
+import { getPayGrades } from "../../services/payGradeServices";
+import { getSupervisors } from "../../services/supervisorServices";
+import { addEmployee } from "../../services/employeeServices";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { notifyError, notifySuccess } from "../services/notify";
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
-import DefaultLayout from "../layout/DefaultLayout";
+import { notifyError, notifySuccess } from "../../services/notify";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
+import DefaultLayout from "../../layout/DefaultLayout";
 
 const AddEmployee = () => {
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getEmployees } from '../services/employeeServices';
-import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
+import { getEmployees } from '../../services/employeeServices';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import {
   Branch,
   Department,
@@ -9,16 +9,16 @@ import {
   JobTitle,
   PayGrade,
   Supervisor,
-} from '../types/types';
-import EmployeeTable from '../components/Tables/EmployeeTable';
-import { getBranches } from '../services/branchService';
-import { getDepartments } from '../services/departmentServices';
-import { getEmploymentStatuses } from '../services/employmentStatusServices';
-import { getJobTitles } from '../services/jobTitleServices';
-import { getPayGrades } from '../services/payGradeServices';
+} from '../../types/types';
+import EmployeeTable from '../../components/Tables/EmployeeTable';
+import { getBranches } from '../../services/branchService';
+import { getDepartments } from '../../services/departmentServices';
+import { getEmploymentStatuses } from '../../services/employmentStatusServices';
+import { getJobTitles } from '../../services/jobTitleServices';
+import { getPayGrades } from '../../services/payGradeServices';
 import { Link } from 'react-router-dom';
-import { getSupervisors } from '../services/supervisorServices';
-import DefaultLayout from '../layout/DefaultLayout';
+import { getSupervisors } from '../../services/supervisorServices';
+import DefaultLayout from '../../layout/DefaultLayout';
 
 const Employees = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);

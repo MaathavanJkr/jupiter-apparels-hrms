@@ -1,8 +1,8 @@
 import { Link, useParams } from "react-router-dom";
-import DependentTable from "../components/Tables/DependentTable";
-import ContactTable from "../components/Tables/ContactTable";
+import DependentTable from "../../components/Tables/DependentTable";
+import ContactTable from "../../components/Tables/ContactTable";
 import { ToastContainer } from "react-toastify";
-import DefaultLayout from "../layout/DefaultLayout";
+import DefaultLayout from "../../layout/DefaultLayout";
 
 const EmployeeDetails = () => {
     const role = localStorage.getItem('role');

@@ -13,7 +13,7 @@ const deafultuserAccountData: userAccountData = {
   password: '',
 };
 
-const UserAccount = () => {
+const CreateUserAccount = () => {
   const [userAccountData, setuserAccountData] = useState<userAccountData>(
     deafultuserAccountData,
   );
@@ -82,4 +82,4 @@ const UserAccount = () => {
   );
 };
 
-export default UserAccount;
+export default CreateUserAccount;

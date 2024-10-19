@@ -15,7 +15,7 @@ const defaultleaveAppData: leaveAppData = {
   reason: '',
 };
 
-const Leaveapplication = () => {
+const UpdateLeaveApplicationData = () => {
   const [leaveAppData, setleaveAppData] =
     useState<leaveAppData>(defaultleaveAppData);
 
@@ -92,4 +92,4 @@ const Leaveapplication = () => {
   );
 };
 
-export default Leaveapplication;
+export default UpdateLeaveApplicationData;

@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom"
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb"
-import DefaultLayout from "../layout/DefaultLayout"
-import LeaveTable from "../components/Tables/LeaveTable";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
+import DefaultLayout from "../../layout/DefaultLayout"
+import LeaveTable from "../../components/Tables/LeaveTable";
 
 const LeaveHistory = () => {
   const { employee_id } = useParams<{ employee_id: string }>();
