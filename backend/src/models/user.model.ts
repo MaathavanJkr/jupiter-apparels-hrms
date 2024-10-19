@@ -1,4 +1,4 @@
-import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { RowDataPacket } from "mysql2";
 import db from "../database/database";
 import { hashPassword } from "../utils/hashPassword";
 import { Output } from "./output.model";
@@ -20,13 +20,18 @@ export const createUserModel = async (user: User): Promise<Output> => {
   const hashedPassword = hashPassword(password);
 
   try {
-    const [result] = await db
-        .promise()
-        .query("CALL CreateUser(?, ?, ?, ?)", [employee_id, role, username, hashedPassword]);
+    await db
+      .promise()
+      .query("CALL CreateUser(?, ?, ?, ?)", [
+        employee_id,
+        role,
+        username,
+        hashedPassword,
+      ]);
     return {
-      data: { id: (result as ResultSetHeader).insertId },
       message: "User created successfully",
       error: null,
+      data: user,
     };
   } catch (error) {
     return { error, message: "Database Query Failed", data: null };
@@ -34,17 +39,17 @@ export const createUserModel = async (user: User): Promise<Output> => {
 };
 
 export const getUserByUsernameModel = async (
-    username: string
+  username: string
 ): Promise<Output> => {
   try {
     const [result] = await db
-        .promise()
-        .query("CALL GetUserByUsername(?)", [username]);
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetUserByUsername(?)", [username]);
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "User not found", message: null };
     } else {
       return {
-        data: (result as User[])[0],
+        data: (result[0] as User[])[0],
         error: null,
         message: null,
       };

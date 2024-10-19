@@ -1,6 +1,5 @@
 import { RowDataPacket } from "mysql2";
 
-
 export interface UserInfo extends RowDataPacket {
     employee_id: string,
     user_id: string,
