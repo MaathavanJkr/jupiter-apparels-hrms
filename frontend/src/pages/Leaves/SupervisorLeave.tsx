@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import DefaultLayout from '../layout/DefaultLayout';
-import { Employee } from '../types/types';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import DefaultLayout from '../../layout/DefaultLayout';
+import { Employee } from '../../types/types';
 import { useEffect, useState } from 'react';
-import { getEmployeesUnder } from '../services/supervisorServices';
-import LeaveTable from '../components/Tables/LeaveTable';
+import { getEmployeesUnder } from '../../services/supervisorServices';
+import LeaveTable from '../../components/Tables/LeaveTable';
 
 const SupervisorLeave = () => {
   const { supervisor_id } = useParams<{ supervisor_id: string }>();

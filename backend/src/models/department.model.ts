@@ -10,7 +10,7 @@ export interface Department extends RowDataPacket {
 
 // Create Department using stored procedure
 export const createDepartmentModel = async (
-    department: Department
+  department: Department
 ): Promise<Output> => {
   const { name } = department;
 
@@ -21,9 +21,7 @@ export const createDepartmentModel = async (
   }
 
   try {
-    await db
-        .promise()
-        .query("CALL createDepartment(?)", [name]);
+    await db.promise().query("CALL createDepartment(?)", [name]);
 
     return {
       data: department,
@@ -36,17 +34,17 @@ export const createDepartmentModel = async (
 };
 
 // Get Department by ID using stored procedure
-export const getDepartmentByIDModel = async (
-    id: string
-): Promise<Output> => {
+export const getDepartmentByIDModel = async (id: string): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getDepartmentByID(?)", [id]);
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getDepartmentByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Department not found", message: null };
     } else {
       return {
-        data: (result as Department[])[0],
+        data: (result[0] as Department[])[0],
         error: null,
         message: null,
       };
@@ -63,8 +61,10 @@ export const getDepartmentByIDModel = async (
 // Get All Departments using stored procedure
 export const getAllDepartmentsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllDepartments()");
-    return { data: result as Department[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllDepartments()");
+    return { data: result[0] as Department[], error: null, message: null };
   } catch (error) {
     return {
       data: null,
@@ -76,7 +76,7 @@ export const getAllDepartmentsModel = async (): Promise<Output> => {
 
 // Update Department using stored procedure
 export const updateDepartmentModel = async (
-    department: Department
+  department: Department
 ): Promise<Output> => {
   const { department_id, name } = department;
 
@@ -86,8 +86,8 @@ export const updateDepartmentModel = async (
 
   try {
     await db
-        .promise()
-        .query("CALL updateDepartment(?, ?)", [department_id, name]);
+      .promise()
+      .query("CALL updateDepartment(?, ?)", [department_id, name]);
 
     return {
       message: "Department updated successfully",
@@ -101,7 +101,7 @@ export const updateDepartmentModel = async (
 
 // Delete Department using stored procedure
 export const deleteDepartmentModel = async (
-    department_id: string
+  department_id: string
 ): Promise<Output> => {
   if (!department_id) {
     return { error: "Missing required fields", data: null, message: null };

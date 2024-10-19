@@ -1,32 +1,32 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
-import Employees from './pages/Employees';
+import Employees from './pages/Employee/Employees';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import LogIn from './pages/Authentication/LogIn';
 
-import AddEmployee from './pages/AddEmployee';
-import EmployeeDetails from './pages/EmployeeDetails';
-import AddDependent from './pages/AddDependent';
-import AddContact from './pages/AddContact';
-import Profile from './pages/Profile';
-import ChangePassword from './pages/ChangePassword';
-import LeaveHistory from './pages/LeaveHistory';
-import ViewLeave from './pages/ViewLeave';
-import SupervisorLeave from './pages/SupervisorLeave';
+import AddEmployee from './pages/Employee/AddEmployee';
+import EmployeeDetails from './pages/Employee/EmployeeDetails';
+import AddDependent from './pages/Employee/AddDependent';
+import AddContact from './pages/Employee/AddContact';
+import Profile from './pages/User/Profile';
+import ChangePassword from './pages/User/ChangePassword';
+import LeaveHistory from './pages/Leaves/LeaveHistory';
+import ViewLeave from './pages/Leaves/ViewLeave';
+import SupervisorLeave from './pages/Leaves/SupervisorLeave';
 import Dashboard from './pages/Dashboard';
-import OrganizationConfig from './pages/OrganizationConfig';
+import OrganizationConfig from './pages/Configuration/OrganizationConfig';
 
-import Report from './pages/reportPage/Report';
-import UserAccount from './pages/user_account_creation/UserAccount';
-import Leaveapplication from './pages/leaveapplication/Leaveapplication';
-import Addcustomattribute from './pages/addcustomatrribute/Addcustomattribute';
-import Home from './pages/homepage/Home';
-import About from './pages/homepage/About';
-import Contact from './pages/homepage/Contact';
-import Features from './pages/homepage/Features';
+import Report from './pages/Reports/Report';
+import CreateUserAccount from './pages/User/CreateUserAccount';
+import ApplyLeave from './pages/Leaves/ApplyLeave';
+import Home from './pages/Home/Home';
+import About from './pages/Home/About';
+import Contact from './pages/Home/Contact';
+import Features from './pages/Home/Features';
+import EditCustomAttribute from './pages/Configuration/EditCustomAttribute';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,24 +44,24 @@ function App() {
     <Loader />
   ) : (
     <Routes>
-        <Route
-          path="/dashboard"
-          element={
-            <>
-              <PageTitle title="Dashboard | Jupiter Apparels" />
-              <Dashboard />
-            </>
-          }
-        />
-        <Route
-          path="/organization"
-          element={
-            <>
-              <PageTitle title="Organization | Jupiter Apparels" />
-              <OrganizationConfig />
-            </>
-          }
-        />
+      <Route
+        path="/dashboard"
+        element={
+          <>
+            <PageTitle title="Dashboard | Jupiter Apparels" />
+            <Dashboard />
+          </>
+        }
+      />
+      <Route
+        path="/organization"
+        element={
+          <>
+            <PageTitle title="Organization | Jupiter Apparels" />
+            <OrganizationConfig />
+          </>
+        }
+      />
       <Route
         path="/employees"
         element={
@@ -122,35 +122,35 @@ function App() {
         }
       />
       <Route
-        path="/createuseraccount"
+        path="/user/create"
         element={
           <>
             <PageTitle title="User Account Creation | Jupiter Apparels" />
-            <UserAccount />
+            <CreateUserAccount />
           </>
         }
       />
       <Route
-        path="/leaveapplication"
+        path="/leave/apply"
         element={
           <>
-            <PageTitle title="Leave Application Submission | Jupiter Apparels" />
-            <Leaveapplication />
+            <PageTitle title="Apply Leave | Jupiter Apparels" />
+            <ApplyLeave />
           </>
         }
       />
 
       <Route
-        path="/addcustomatrribute"
+        path="/customattribute/edit"
         element={
           <>
-            <PageTitle title="Add Custom Atrribute | Jupiter Apparels" />
-            <Addcustomattribute />
+            <PageTitle title="Edit Custom Atrribute | Jupiter Apparels" />
+            <EditCustomAttribute />
           </>
         }
       />
       <Route
-        path="/addEmployee"
+        path="/employee/add"
         element={
           <>
             <PageTitle title="Add Employee | Jupiter Apparels" />
@@ -212,15 +212,15 @@ function App() {
           </>
         }
       />
-        <Route
-          path="/supervisor/leaveview/:supervisor_id"
-          element={
-            <>
-              <PageTitle title= "Leave | Jupiter Apparels" />
-              <SupervisorLeave />
-            </>
-          }
-        />
+      <Route
+        path="/supervisor/leaveview/:supervisor_id"
+        element={
+          <>
+            <PageTitle title="Leave | Jupiter Apparels" />
+            <SupervisorLeave />
+          </>
+        }
+      />
       <Route
         path="/auth/changepassword/:user_id"
         element={

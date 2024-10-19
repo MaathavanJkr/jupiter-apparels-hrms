@@ -4,15 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
 
 export interface EmployeeDependent extends RowDataPacket {
-  dependent_id?: string,
-  employee_id: string,
-  name: string,
-  relationship_to_employee: string,
-  birth_date: Date,
+  dependent_id?: string;
+  employee_id: string;
+  name: string;
+  relationship_to_employee: string;
+  birth_date: Date;
 }
 
 export const createEmployeeDependentModel = async (
-    dependent: EmployeeDependent
+  dependent: EmployeeDependent
 ): Promise<Output> => {
   const { employee_id, name, relationship_to_employee, birth_date } = dependent;
 
@@ -24,10 +24,13 @@ export const createEmployeeDependentModel = async (
 
   try {
     await db
-        .promise()
-        .query("CALL createEmployeeDependent(?, ?, ?, ?)",
-            [employee_id, name, relationship_to_employee, birth_date]
-        );
+      .promise()
+      .query("CALL createEmployeeDependent(?, ?, ?, ?)", [
+        employee_id,
+        name,
+        relationship_to_employee,
+        birth_date,
+      ]);
     return {
       data: dependent,
       message: "Employee Dependent created successfully",
@@ -38,17 +41,21 @@ export const createEmployeeDependentModel = async (
   }
 };
 
-export const getEmployeeDependentByIDModel = async (dependent_id: string): Promise<Output> => {
+export const getEmployeeDependentByIDModel = async (
+  dependent_id: string
+): Promise<Output> => {
   try {
     const [result] = await db
-        .promise()
-        .query("CALL getEmployeeDependentByID(?)", [dependent_id]);
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmployeeDependentByID(?)", [
+        dependent_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Dependent not found", message: null };
     } else {
       return {
-        data: (result as EmployeeDependent[])[0],
+        data: (result[0] as EmployeeDependent[])[0],
         error: null,
         message: null,
       };
@@ -64,8 +71,14 @@ export const getEmployeeDependentByIDModel = async (dependent_id: string): Promi
 
 export const getAllEmployeeDependentsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllEmployeeDependents()");
-    return { data: result as EmployeeDependent[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllEmployeeDependents()");
+    return {
+      data: result[0] as EmployeeDependent[],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,
@@ -76,20 +89,36 @@ export const getAllEmployeeDependentsModel = async (): Promise<Output> => {
 };
 
 export const updateEmployeeDependentModel = async (
-    dependent: EmployeeDependent
+  dependent: EmployeeDependent
 ): Promise<Output> => {
-  const { dependent_id, employee_id, name, relationship_to_employee, birth_date } = dependent;
+  const {
+    dependent_id,
+    employee_id,
+    name,
+    relationship_to_employee,
+    birth_date,
+  } = dependent;
 
-  if (!dependent_id || !employee_id || !name || !relationship_to_employee || !birth_date) {
+  if (
+    !dependent_id ||
+    !employee_id ||
+    !name ||
+    !relationship_to_employee ||
+    !birth_date
+  ) {
     return { error: "Missing required fields", data: null, message: null };
   }
 
   try {
     await db
-        .promise()
-        .query("CALL updateEmployeeDependent(?, ?, ?, ?, ?)",
-            [dependent_id, employee_id, name, relationship_to_employee, birth_date]
-        );
+      .promise()
+      .query("CALL updateEmployeeDependent(?, ?, ?, ?, ?)", [
+        dependent_id,
+        employee_id,
+        name,
+        relationship_to_employee,
+        birth_date,
+      ]);
     return {
       message: "Employee Dependent updated successfully",
       error: null,
@@ -100,15 +129,15 @@ export const updateEmployeeDependentModel = async (
   }
 };
 
-export const deleteEmployeeDependentModel = async (dependent_id: string): Promise<Output> => {
+export const deleteEmployeeDependentModel = async (
+  dependent_id: string
+): Promise<Output> => {
   if (!dependent_id) {
     return { error: "Missing required fields", data: null, message: null };
   }
 
   try {
-    await db
-        .promise()
-        .query("CALL deleteEmployeeDependent(?)", [dependent_id]);
+    await db.promise().query("CALL deleteEmployeeDependent(?)", [dependent_id]);
     return {
       message: "Employee Dependent deleted successfully",
       error: null,
@@ -119,17 +148,21 @@ export const deleteEmployeeDependentModel = async (dependent_id: string): Promis
   }
 };
 
-export const getEmployeeDependentByEmployeeIDModel = async (emp_id: string): Promise<Output> => {
+export const getEmployeeDependentByEmployeeIDModel = async (
+  emp_id: string
+): Promise<Output> => {
   try {
     const [result] = await db
-        .promise()
-        .query("CALL getEmployeeDependentByEmployeeID(?)", [emp_id]);
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmployeeDependentByEmployeeID(?)", [
+        emp_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Dependent not found", message: null };
     } else {
       return {
-        data: (result as EmployeeDependent[])[0],
+        data: (result[0] as EmployeeDependent[])[0],
         error: null,
         message: null,
       };

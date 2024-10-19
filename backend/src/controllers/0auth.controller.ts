@@ -44,9 +44,7 @@ export const loginUser = async (req: Request, res: Response) => {
       user,
     });
   } else {
-    return res
-      .status(400)
-      .send({ error: "Incorrect password. Try again!" });
+    return res.status(400).send({ error: "Incorrect password. Try again!" });
   }
 
   //   const CheckUser = "SELECT * FROM users WHERE username = ?";

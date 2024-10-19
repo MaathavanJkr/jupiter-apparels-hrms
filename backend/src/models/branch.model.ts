@@ -23,13 +23,13 @@ export const createBranchModel = async (branch: Branch): Promise<Output> => {
 
   try {
     await db
-        .promise()
-        .query("CALL createBranch(?, ?, ?, ?)", [
-          name,
-          address,
-          contact_number,
-          manager_id || null,
-        ]);
+      .promise()
+      .query("CALL createBranch(?, ?, ?, ?)", [
+        name,
+        address,
+        contact_number,
+        manager_id || null,
+      ]);
 
     return {
       data: branch,
@@ -44,13 +44,15 @@ export const createBranchModel = async (branch: Branch): Promise<Output> => {
 // Get Branch by ID using stored procedure
 export const getBranchByIDModel = async (id: string): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getBranchByID(?)", [id]);
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getBranchByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Branch not found", message: null };
     } else {
       return {
-        data: (result as Branch[])[0],
+        data: (result[0] as Branch[])[0],
         error: null,
         message: null,
       };
@@ -67,8 +69,10 @@ export const getBranchByIDModel = async (id: string): Promise<Output> => {
 // Get All Branches using stored procedure
 export const getAllBranchesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllBranches()");
-    return { data: result as Branch[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllBranches()");
+    return { data: result[0] as Branch[], error: null, message: null };
   } catch (error) {
     return {
       data: null,
@@ -88,14 +92,14 @@ export const updateBranchModel = async (branch: Branch): Promise<Output> => {
 
   try {
     await db
-        .promise()
-        .query("CALL updateBranch(?, ?, ?, ?, ?)", [
-          branch_id,
-          name,
-          address,
-          contact_number,
-          manager_id || null,
-        ]);
+      .promise()
+      .query("CALL updateBranch(?, ?, ?, ?, ?)", [
+        branch_id,
+        name,
+        address,
+        contact_number,
+        manager_id || null,
+      ]);
 
     return {
       message: "Branch updated successfully",

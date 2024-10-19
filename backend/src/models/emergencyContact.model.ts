@@ -4,16 +4,16 @@ import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
 
 export interface EmergencyContact extends RowDataPacket {
-  emergency_id?: string,
-  employee_id: string,
-  name: string,
-  relationship: string,
-  contact_number: string,
-  address: string,
+  emergency_id?: string;
+  employee_id: string;
+  name: string;
+  relationship: string;
+  contact_number: string;
+  address: string;
 }
 
 export const createEmergencyContactModel = async (
-    contact: EmergencyContact
+  contact: EmergencyContact
 ): Promise<Output> => {
   const { employee_id, name, relationship, contact_number, address } = contact;
 
@@ -25,10 +25,14 @@ export const createEmergencyContactModel = async (
 
   try {
     await db
-        .promise()
-        .query("CALL createEmergencyContact(?, ?, ?, ?, ?)",
-            [employee_id, name, relationship, contact_number, address]
-        );
+      .promise()
+      .query("CALL createEmergencyContact(?, ?, ?, ?, ?)", [
+        employee_id,
+        name,
+        relationship,
+        contact_number,
+        address,
+      ]);
     return {
       data: contact,
       message: "Emergency contact created successfully",
@@ -39,17 +43,25 @@ export const createEmergencyContactModel = async (
   }
 };
 
-export const getEmergencyContactByIDModel = async (emergency_id: string): Promise<Output> => {
+export const getEmergencyContactByIDModel = async (
+  emergency_id: string
+): Promise<Output> => {
   try {
     const [result] = await db
-        .promise()
-        .query("CALL getEmergencyContactByID(?)", [emergency_id]);
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmergencyContactByID(?)", [
+        emergency_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Emergency contact not found", message: null };
+      return {
+        data: null,
+        error: "Emergency contact not found",
+        message: null,
+      };
     } else {
       return {
-        data: (result as EmergencyContact[])[0],
+        data: (result[0] as EmergencyContact[])[0],
         error: null,
         message: null,
       };
@@ -65,8 +77,14 @@ export const getEmergencyContactByIDModel = async (emergency_id: string): Promis
 
 export const getAllEmergencyContactsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllEmergencyContacts()");
-    return { data: result as EmergencyContact[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllEmergencyContacts()");
+    return {
+      data: result[0] as EmergencyContact[],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,
@@ -77,20 +95,39 @@ export const getAllEmergencyContactsModel = async (): Promise<Output> => {
 };
 
 export const updateEmergencyContactModel = async (
-    contact: EmergencyContact
+  contact: EmergencyContact
 ): Promise<Output> => {
-  const { emergency_id, employee_id, name, relationship, contact_number, address } = contact;
+  const {
+    emergency_id,
+    employee_id,
+    name,
+    relationship,
+    contact_number,
+    address,
+  } = contact;
 
-  if (!emergency_id || !employee_id || !name || !relationship || !contact_number || !address) {
+  if (
+    !emergency_id ||
+    !employee_id ||
+    !name ||
+    !relationship ||
+    !contact_number ||
+    !address
+  ) {
     return { error: "Missing required fields", data: null, message: null };
   }
 
   try {
     await db
-        .promise()
-        .query("CALL updateEmergencyContact(?, ?, ?, ?, ?, ?)",
-            [emergency_id, employee_id, name, relationship, contact_number, address]
-        );
+      .promise()
+      .query("CALL updateEmergencyContact(?, ?, ?, ?, ?, ?)", [
+        emergency_id,
+        employee_id,
+        name,
+        relationship,
+        contact_number,
+        address,
+      ]);
     return {
       message: "Emergency contact updated successfully",
       error: null,
@@ -101,15 +138,15 @@ export const updateEmergencyContactModel = async (
   }
 };
 
-export const deleteEmergencyContactModel = async (emergency_id: string): Promise<Output> => {
+export const deleteEmergencyContactModel = async (
+  emergency_id: string
+): Promise<Output> => {
   if (!emergency_id) {
     return { error: "Missing required fields", data: null, message: null };
   }
 
   try {
-    await db
-        .promise()
-        .query("CALL deleteEmergencyContact(?)", [emergency_id]);
+    await db.promise().query("CALL deleteEmergencyContact(?)", [emergency_id]);
     return {
       message: "Emergency contact deleted successfully",
       error: null,
@@ -120,17 +157,25 @@ export const deleteEmergencyContactModel = async (emergency_id: string): Promise
   }
 };
 
-export const getEmergencyContactByEmployeeIDModel = async (employee_id: string): Promise<Output> => {
+export const getEmergencyContactByEmployeeIDModel = async (
+  employee_id: string
+): Promise<Output> => {
   try {
     const [result] = await db
-        .promise()
-        .query("CALL getEmergencyContactByEmployeeID(?)", [employee_id]);
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmergencyContactByEmployeeID(?)", [
+        employee_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Emergency contact not found", message: null };
+      return {
+        data: null,
+        error: "Emergency contact not found",
+        message: null,
+      };
     } else {
       return {
-        data: (result as EmergencyContact[])[0],
+        data: (result[0] as EmergencyContact[])[0],
         error: null,
         message: null,
       };

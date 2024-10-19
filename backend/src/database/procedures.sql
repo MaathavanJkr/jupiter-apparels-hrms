@@ -1,4 +1,3 @@
-USE jupiter_apparels;
 -- drop procedures
 DROP PROCEDURE IF EXISTS createAllocatedLeaves;
 DROP PROCEDURE IF EXISTS createBranch;
@@ -326,29 +325,29 @@ END $$
 
 -- Procedure to update an emergency contact
 CREATE PROCEDURE updateEmergencyContact(
-    IN emergency_id VARCHAR(255),
-    IN employee_id VARCHAR(255),
-    IN name VARCHAR(255),
-    IN relationship VARCHAR(255),
-    IN contact_number VARCHAR(50),
+    IN p_emergency_id VARCHAR(255),
+    IN p_employee_id VARCHAR(255),
+    IN p_name VARCHAR(255),
+    IN p_relationship VARCHAR(255),
+    IN p_contact_number VARCHAR(50),
     IN address VARCHAR(255)
 )
 BEGIN
     UPDATE emergency_contacts
-    SET employee_id = employee_id,
-        name = name,
-        relationship = relationship,
-        contact_number = contact_number,
-        address = address
-    WHERE emergency_id = emergency_id;
+    SET employee_id = p_employee_id,
+        name = p_name,
+        relationship = p_relationship,
+        contact_number = p_contact_number,
+        address = p_address
+    WHERE emergency_id = p_emergency_id;
 END $$
 
 -- Procedure to delete an emergency contact
 CREATE PROCEDURE deleteEmergencyContact(
-    IN emergency_id VARCHAR(255)
+    IN p_emergency_id VARCHAR(255)
 )
 BEGIN
-    DELETE FROM emergency_contacts WHERE emergency_id = emergency_id;
+    DELETE FROM emergency_contacts WHERE emergency_id = p_emergency_id;
 END $$
 DELIMITER ;
 DELIMITER $$
@@ -709,9 +708,9 @@ BEGIN
 END $$
 
 -- Procedure to get a user by username
-CREATE PROCEDURE GetUserByUsername(IN username VARCHAR(50))
+CREATE PROCEDURE GetUserByUsername(IN p_username VARCHAR(50))
 BEGIN
-    SELECT * FROM users WHERE username = username;
+    SELECT * FROM users WHERE username = p_username;
 END $$
 
 

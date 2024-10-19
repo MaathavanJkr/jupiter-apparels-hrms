@@ -74,7 +74,7 @@ export const userAuth = (
           .status(401)
           .json({ success: false, message: "Not authorized" });
       }
-      
+
       req.user_id = (decodedToken as JwtPayload).user_id;
       next();
     });
