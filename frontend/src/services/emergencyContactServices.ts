@@ -11,7 +11,7 @@ export const getContactByID = async (employee_id: string) => {
         },
       },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     return error.response.data.error;
   }
@@ -92,7 +92,7 @@ export const deleteContact = async (emergency_id: string) => {
         },
       },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error('Error deleting contact: ', error);
     return error.response.data.error;

@@ -11,7 +11,7 @@ export const getDependentByID = async (employee_id: string) => {
         },
       },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     return error.response.data.error;
   }
@@ -85,7 +85,7 @@ export const deleteDependent = async (dependent_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error('Error deleting dependent: ', error);
     return error.response.data.error;

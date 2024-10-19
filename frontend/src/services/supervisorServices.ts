@@ -9,7 +9,7 @@ export const getSupervisors = async () => {
       },
     });
     console.log('Data', response.data);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error('Error fetching supervisors: ', error);
     return error.response.data.error;
@@ -27,7 +27,7 @@ export const getEmployeesUnder = async (supervisor_id: string) => {
         },
       },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     return error.response.data.error;
   }

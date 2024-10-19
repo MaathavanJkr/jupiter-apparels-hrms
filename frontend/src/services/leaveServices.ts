@@ -8,7 +8,7 @@ export const getLeaveBalanceByID = async (employee_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -21,7 +21,7 @@ export const getUsedLeavesByID = async (employee_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -35,7 +35,7 @@ export const getLeaveApplicationsByID = async (employee_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -48,7 +48,7 @@ export const getLatestLeaveApplicationsByID = async (employee_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -62,7 +62,7 @@ export const getLeaveApplicationByID = async (application_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -79,7 +79,7 @@ export const approveLeave = async (application_id: string) => {
         },
       },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -95,7 +95,7 @@ export const rejectLeave = async (application_id: string) => {
         },
       },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -109,7 +109,7 @@ export const getPendingLeavesByID = async (employee_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -123,7 +123,7 @@ export const getLeaveCount = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }

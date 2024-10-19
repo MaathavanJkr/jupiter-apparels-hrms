@@ -8,7 +8,7 @@ export const getBranches = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error('Error fetching branches:', error);
     return error.response.data.error;

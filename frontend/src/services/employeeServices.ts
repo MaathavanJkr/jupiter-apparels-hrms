@@ -128,7 +128,7 @@ export const getEmployees = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error('Error fetching employees:', error);
     return error.response.data.error;
@@ -143,7 +143,7 @@ export const getEmployeeByID = async (employee_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     return error.response.data.error;
   }
@@ -157,7 +157,7 @@ export const getEmployeeCount = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     return error.response.data.error;
   }

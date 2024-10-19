@@ -8,7 +8,7 @@ export const getUserInfoById = async (user_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -22,7 +22,7 @@ export const getUserByID = async (user_id: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }
@@ -47,7 +47,7 @@ export const changePassword = async (
         },
       },
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response ? error.response.data.message : error;
   }
