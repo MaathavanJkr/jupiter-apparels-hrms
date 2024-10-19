@@ -22,11 +22,11 @@ import OrganizationConfig from './pages/OrganizationConfig';
 import Report from './pages/reportPage/Report';
 import UserAccount from './pages/user_account_creation/UserAccount';
 import Leaveapplication from './pages/leaveapplication/Leaveapplication';
-import Addcustomattribute from './pages/addcustomatrribute/Addcustomattribute';
 import Home from './pages/homepage/Home';
 import About from './pages/homepage/About';
 import Contact from './pages/homepage/Contact';
 import Features from './pages/homepage/Features';
+import EditCustomAttribute from './pages/Configuration/EditCustomAttribute';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -141,11 +141,11 @@ function App() {
       />
 
       <Route
-        path="/addcustomatrribute"
+        path="/customattribute/edit"
         element={
           <>
-            <PageTitle title="Add Custom Atrribute | Jupiter Apparels" />
-            <Addcustomattribute />
+            <PageTitle title="Edit Custom Atrribute | Jupiter Apparels" />
+            <EditCustomAttribute />
           </>
         }
       />

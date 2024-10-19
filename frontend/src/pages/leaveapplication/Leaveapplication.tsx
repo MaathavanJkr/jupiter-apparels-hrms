@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import bgimg from '../../images/616972.jpg';
 import DefaultLayout from '../../layout/DefaultLayout';
 
 interface leaveAppData {
