@@ -12,3 +12,10 @@ This is the repository for the Jupiter Apparels HRMS (Human Resource Management 
 4. Configure the .env file.
 5. Run Database Migration: `npm run migrate`
 6. Start the server: `npm run dev`
+
+### Frontend
+
+1. Switch to the frontend directory: `cd frontend`
+2. Install dependencies: `npm install`
+3. Run the development server: `npm run dev`
+4. Access the app in your browser at `http://localhost:3000` (or the specified port).
