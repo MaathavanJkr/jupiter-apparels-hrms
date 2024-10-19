@@ -44,24 +44,24 @@ function App() {
     <Loader />
   ) : (
     <Routes>
-        <Route
-          path="/dashboard"
-          element={
-            <>
-              <PageTitle title="Dashboard | Jupiter Apparels" />
-              <Dashboard />
-            </>
-          }
-        />
-        <Route
-          path="/organization"
-          element={
-            <>
-              <PageTitle title="Organization | Jupiter Apparels" />
-              <OrganizationConfig />
-            </>
-          }
-        />
+      <Route
+        path="/dashboard"
+        element={
+          <>
+            <PageTitle title="Dashboard | Jupiter Apparels" />
+            <Dashboard />
+          </>
+        }
+      />
+      <Route
+        path="/organization"
+        element={
+          <>
+            <PageTitle title="Organization | Jupiter Apparels" />
+            <OrganizationConfig />
+          </>
+        }
+      />
       <Route
         path="/employees"
         element={
@@ -212,15 +212,15 @@ function App() {
           </>
         }
       />
-        <Route
-          path="/supervisor/leaveview/:supervisor_id"
-          element={
-            <>
-              <PageTitle title= "Leave | Jupiter Apparels" />
-              <SupervisorLeave />
-            </>
-          }
-        />
+      <Route
+        path="/supervisor/leaveview/:supervisor_id"
+        element={
+          <>
+            <PageTitle title="Leave | Jupiter Apparels" />
+            <SupervisorLeave />
+          </>
+        }
+      />
       <Route
         path="/auth/changepassword/:user_id"
         element={

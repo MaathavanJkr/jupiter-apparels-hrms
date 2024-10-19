@@ -7,9 +7,9 @@ const Dashboard = () => {
   const role = localStorage.getItem('role');
   return (
     <DefaultLayout>
-        <Breadcrumb pageName="" />
-        {role === 'Admin' && <AdminDashboard/>}
-        {role !== 'Admin' && <EmployeeDashboard/>}
+      <Breadcrumb pageName="" />
+      {role === 'Admin' && <AdminDashboard />}
+      {role !== 'Admin' && <EmployeeDashboard />}
     </DefaultLayout>
   )
 }
