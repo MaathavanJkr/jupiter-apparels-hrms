@@ -15,7 +15,9 @@ export interface UsedLeaves extends RowDataPacket {
 
 export const getAllUsedLeavesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query<RowDataPacket[][]>("CALL GetAllUsedLeaves()");
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetAllUsedLeaves()");
     return { data: result[0] as UsedLeaves[], error: null, message: null };
   } catch (error) {
     return {
@@ -32,7 +34,9 @@ export const getUsedLeavesByEmployeeIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>("CALL GetUsedLeavesByEmployeeID(?)", [employee_id]);
+      .query<RowDataPacket[][]>("CALL GetUsedLeavesByEmployeeID(?)", [
+        employee_id,
+      ]);
     return { data: (result[0] as UsedLeaves[])[0], error: null, message: null };
   } catch (error) {
     return {

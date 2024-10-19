@@ -10,22 +10,30 @@ export interface AllocatedLeaves extends RowDataPacket {
   no_pay_leaves: number;
 }
 
-export const createAllocatedLeavesModel = async (allocatedLeaves: AllocatedLeaves): Promise<Output> => {
-  const { annual_leaves, casual_leaves, maternity_leaves, no_pay_leaves } = allocatedLeaves;
+export const createAllocatedLeavesModel = async (
+  allocatedLeaves: AllocatedLeaves
+): Promise<Output> => {
+  const { annual_leaves, casual_leaves, maternity_leaves, no_pay_leaves } =
+    allocatedLeaves;
 
-  if (annual_leaves == null || casual_leaves == null || maternity_leaves == null || no_pay_leaves == null) {
+  if (
+    annual_leaves == null ||
+    casual_leaves == null ||
+    maternity_leaves == null ||
+    no_pay_leaves == null
+  ) {
     return { error: "Missing required fields", data: null, message: null };
   }
 
   try {
     await db
-        .promise()
-        .query("CALL createAllocatedLeaves(?, ?, ?, ?)", [
-          annual_leaves,
-          casual_leaves,
-          maternity_leaves,
-          no_pay_leaves,
-        ]);
+      .promise()
+      .query("CALL createAllocatedLeaves(?, ?, ?, ?)", [
+        annual_leaves,
+        casual_leaves,
+        maternity_leaves,
+        no_pay_leaves,
+      ]);
     return {
       data: allocatedLeaves,
       message: "Allocated leaves created successfully",
@@ -36,9 +44,13 @@ export const createAllocatedLeavesModel = async (allocatedLeaves: AllocatedLeave
   }
 };
 
-export const getAllocatedLeavesByPayGradeModel = async (pay_grade_id: string): Promise<Output> => {
+export const getAllocatedLeavesByPayGradeModel = async (
+  pay_grade_id: string
+): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllocatedLeavesByPayGrade(?)", [pay_grade_id]);
+    const [result] = await db
+      .promise()
+      .query("CALL getAllocatedLeavesByPayGrade(?)", [pay_grade_id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Allocated leaves not found", message: null };
@@ -71,20 +83,37 @@ export const getAllAllocatedLeavesModel = async (): Promise<Output> => {
   }
 };
 
-export const updateAllocatedLeavesModel = async (allocatedLeaves: AllocatedLeaves): Promise<Output> => {
-  const { pay_grade_id, annual_leaves, casual_leaves, maternity_leaves, no_pay_leaves } = allocatedLeaves;
+export const updateAllocatedLeavesModel = async (
+  allocatedLeaves: AllocatedLeaves
+): Promise<Output> => {
+  const {
+    pay_grade_id,
+    annual_leaves,
+    casual_leaves,
+    maternity_leaves,
+    no_pay_leaves,
+  } = allocatedLeaves;
 
-  if (!pay_grade_id || annual_leaves == null || casual_leaves == null || maternity_leaves == null || no_pay_leaves == null) {
+  if (
+    !pay_grade_id ||
+    annual_leaves == null ||
+    casual_leaves == null ||
+    maternity_leaves == null ||
+    no_pay_leaves == null
+  ) {
     return { error: "Missing required fields", data: null, message: null };
   }
 
   try {
     await db
-        .promise()
-        .query(
-            "CALL updateAllocatedLeaves(?, ?, ?, ?, ?)",
-            [pay_grade_id, annual_leaves, casual_leaves, maternity_leaves, no_pay_leaves]
-        );
+      .promise()
+      .query("CALL updateAllocatedLeaves(?, ?, ?, ?, ?)", [
+        pay_grade_id,
+        annual_leaves,
+        casual_leaves,
+        maternity_leaves,
+        no_pay_leaves,
+      ]);
     return {
       message: "Allocated leaves updated successfully",
       error: null,
@@ -95,7 +124,9 @@ export const updateAllocatedLeavesModel = async (allocatedLeaves: AllocatedLeave
   }
 };
 
-export const deleteAllocatedLeavesModel = async (pay_grade_id: string): Promise<Output> => {
+export const deleteAllocatedLeavesModel = async (
+  pay_grade_id: string
+): Promise<Output> => {
   if (!pay_grade_id) {
     return { error: "Missing required fields", data: null, message: null };
   }

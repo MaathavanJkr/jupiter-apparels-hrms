@@ -23,13 +23,13 @@ export const createBranchModel = async (branch: Branch): Promise<Output> => {
 
   try {
     await db
-        .promise()
-        .query("CALL createBranch(?, ?, ?, ?)", [
-          name,
-          address,
-          contact_number,
-          manager_id || null,
-        ]);
+      .promise()
+      .query("CALL createBranch(?, ?, ?, ?)", [
+        name,
+        address,
+        contact_number,
+        manager_id || null,
+      ]);
 
     return {
       data: branch,
@@ -88,14 +88,14 @@ export const updateBranchModel = async (branch: Branch): Promise<Output> => {
 
   try {
     await db
-        .promise()
-        .query("CALL updateBranch(?, ?, ?, ?, ?)", [
-          branch_id,
-          name,
-          address,
-          contact_number,
-          manager_id || null,
-        ]);
+      .promise()
+      .query("CALL updateBranch(?, ?, ?, ?, ?)", [
+        branch_id,
+        name,
+        address,
+        contact_number,
+        manager_id || null,
+      ]);
 
     return {
       message: "Branch updated successfully",

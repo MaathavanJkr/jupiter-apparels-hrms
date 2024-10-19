@@ -6,5 +6,5 @@ app.use(cors());
 
 const port = config.port;
 app.listen(port, () => {
-    console.log(`Server running on port http://localhost:${port}`);
+  console.log(`Server running on port http://localhost:${port}`);
 });

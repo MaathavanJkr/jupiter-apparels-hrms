@@ -1,42 +1,40 @@
 import { Request, Response } from "express";
 import {
-    EmergencyContact,
-    createEmergencyContactModel,
-    deleteEmergencyContactModel,
-    getAllEmergencyContactsModel,
-    getEmergencyContactByIDModel,
-    updateEmergencyContactModel,
-    getEmergencyContactByEmployeeIDModel,
-    
-} from "../models/emergencyContact.model"
+  EmergencyContact,
+  createEmergencyContactModel,
+  deleteEmergencyContactModel,
+  getAllEmergencyContactsModel,
+  getEmergencyContactByIDModel,
+  updateEmergencyContactModel,
+  getEmergencyContactByEmployeeIDModel,
+} from "../models/emergencyContact.model";
 
-export const createEmergencyContact = async (req:Request, res:Response) => {
-    const {employee_id, name, relationship, contact_number, address} = req.body;
-    
-    if (!employee_id || !name || !relationship || !contact_number || !address) {
-        return res.status(400).json({ error: "Missing required fields" });
-    }
+export const createEmergencyContact = async (req: Request, res: Response) => {
+  const { employee_id, name, relationship, contact_number, address } = req.body;
 
-    const emergencyContact: EmergencyContact = {
-        employee_id: employee_id as string,
-        name: name as string,
-        relationship: relationship as string,
-        contact_number: contact_number as string,
-        address: address as string,
-       
-      } as EmergencyContact;
-    
-      await createEmergencyContactModel(emergencyContact)
-        .then((result) => {
-          return res.status(201).json(result);
-        })
-        .catch((error) => {
-          return res.status(500).json({ error });
-        });
-    };
+  if (!employee_id || !name || !relationship || !contact_number || !address) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const emergencyContact: EmergencyContact = {
+    employee_id: employee_id as string,
+    name: name as string,
+    relationship: relationship as string,
+    contact_number: contact_number as string,
+    address: address as string,
+  } as EmergencyContact;
+
+  await createEmergencyContactModel(emergencyContact)
+    .then((result) => {
+      return res.status(201).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
 
 export const getAllEmergencyContacts = async (req: Request, res: Response) => {
-    await getAllEmergencyContactsModel()
+  await getAllEmergencyContactsModel()
     .then((result) => {
       return res.status(200).json(result);
     })
@@ -45,8 +43,8 @@ export const getAllEmergencyContacts = async (req: Request, res: Response) => {
     });
 };
 
-export const getEmergencyContactByID = async (req:Request, res:Response) => {
-    const { id } = req.params;
+export const getEmergencyContactByID = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
   await getEmergencyContactByIDModel(id)
     .then((result) => {
@@ -57,11 +55,11 @@ export const getEmergencyContactByID = async (req:Request, res:Response) => {
     });
 };
 
-export const updateEmergencyContact = async (req: Request, res:Response) => {
-    const { id } = req.params;
-    const { employee_id, name, relationship, contact_number, address} = req.body;
-    
-    await getEmergencyContactByIDModel(id)
+export const updateEmergencyContact = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { employee_id, name, relationship, contact_number, address } = req.body;
+
+  await getEmergencyContactByIDModel(id)
     .then(async (result) => {
       if (!result.data) {
         return res.status(404).json(result);
@@ -69,10 +67,9 @@ export const updateEmergencyContact = async (req: Request, res:Response) => {
       const contact = result.data;
       if (employee_id) contact.employee_id = employee_id;
       if (name) contact.name = name;
-      if(relationship) contact.relationship = relationship;
-      if(contact_number) contact.contact_number = contact_number;
+      if (relationship) contact.relationship = relationship;
+      if (contact_number) contact.contact_number = contact_number;
       if (address) contact.address = address;
-      
 
       await updateEmergencyContactModel(contact)
         .then((result) => {
@@ -87,8 +84,8 @@ export const updateEmergencyContact = async (req: Request, res:Response) => {
     });
 };
 
-export const deleteEmergencyContact = async (req:Request, res:Response) => {
-    const { id } = req.params;
+export const deleteEmergencyContact = async (req: Request, res: Response) => {
+  const { id } = req.params;
 
   await getEmergencyContactByIDModel(id)
     .then(async (result) => {
@@ -108,8 +105,11 @@ export const deleteEmergencyContact = async (req:Request, res:Response) => {
     });
 };
 
-export const getEmergencyContactByEmployeeID = async  (req:Request, res:Response) => {
-    const { id } = req.params;
+export const getEmergencyContactByEmployeeID = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.params;
 
   await getEmergencyContactByEmployeeIDModel(id)
     .then((result) => {

@@ -4,16 +4,16 @@ import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
 
 enum LeaveType {
-  annual = 'Annual',
-  casual = 'Casual',
-  maternity = 'Maternity',
-  nopay = 'Nopay'
+  annual = "Annual",
+  casual = "Casual",
+  maternity = "Maternity",
+  nopay = "Nopay",
 }
 
 enum Status {
-  pending = 'Pending',
-  approved = 'Approved',
-  rejected = 'Rejected'
+  pending = "Pending",
+  approved = "Approved",
+  rejected = "Rejected",
 }
 
 export interface LeaveApplication extends RowDataPacket {
@@ -29,15 +29,10 @@ export interface LeaveApplication extends RowDataPacket {
 }
 
 export const createLeaveApplicationModel = async (
-    leaveApplication: LeaveApplication
+  leaveApplication: LeaveApplication
 ): Promise<Output> => {
-  const {
-    employee_id,
-    leave_type,
-    start_date,
-    end_date,
-    reason
-  } = leaveApplication;
+  const { employee_id, leave_type, start_date, end_date, reason } =
+    leaveApplication;
 
   leaveApplication.application_id = uuidv4();
   leaveApplication.status = Status.pending; // Set status to 'Pending' by default
@@ -49,11 +44,14 @@ export const createLeaveApplicationModel = async (
 
   try {
     await db
-        .promise()
-        .query(
-            "CALL CreateLeaveApplication(?, ?, ?, ?, ?)",
-            [employee_id, leave_type, start_date, end_date, reason]
-        );
+      .promise()
+      .query("CALL CreateLeaveApplication(?, ?, ?, ?, ?)", [
+        employee_id,
+        leave_type,
+        start_date,
+        end_date,
+        reason,
+      ]);
     return {
       data: leaveApplication,
       message: "Leave application created successfully",
@@ -65,15 +63,19 @@ export const createLeaveApplicationModel = async (
 };
 
 export const getLeaveApplicationByIDModel = async (
-    id: string
+  id: string
 ): Promise<Output> => {
   try {
     const [result] = await db
-        .promise()
-        .query("CALL GetLeaveApplicationByID(?)", [id]);
+      .promise()
+      .query("CALL GetLeaveApplicationByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Leave application not found", message: null };
+      return {
+        data: null,
+        error: "Leave application not found",
+        message: null,
+      };
     } else {
       return {
         data: (result as LeaveApplication[])[0],
@@ -104,21 +106,41 @@ export const getAllLeaveApplicationsModel = async (): Promise<Output> => {
 };
 
 export const updateLeaveApplicationModel = async (
-    leaveApplication: LeaveApplication
+  leaveApplication: LeaveApplication
 ): Promise<Output> => {
-  const { application_id, leave_type, start_date, end_date, reason, status, response_date } = leaveApplication;
+  const {
+    application_id,
+    leave_type,
+    start_date,
+    end_date,
+    reason,
+    status,
+    response_date,
+  } = leaveApplication;
 
-  if (!application_id || !leave_type || !start_date || !end_date || !reason || !status) {
+  if (
+    !application_id ||
+    !leave_type ||
+    !start_date ||
+    !end_date ||
+    !reason ||
+    !status
+  ) {
     return { error: "Missing required fields", data: null, message: null };
   }
 
   try {
     await db
-        .promise()
-        .query(
-            "CALL UpdateLeaveApplication(?, ?, ?, ?, ?, ?, ?)",
-            [application_id, leave_type, start_date, end_date, reason, status, response_date]
-        );
+      .promise()
+      .query("CALL UpdateLeaveApplication(?, ?, ?, ?, ?, ?, ?)", [
+        application_id,
+        leave_type,
+        start_date,
+        end_date,
+        reason,
+        status,
+        response_date,
+      ]);
     return {
       message: "Leave application updated successfully",
       error: null,
@@ -130,7 +152,7 @@ export const updateLeaveApplicationModel = async (
 };
 
 export const deleteLeaveApplicationModel = async (
-    application_id: string
+  application_id: string
 ): Promise<Output> => {
   if (!application_id) {
     return { error: "Missing required fields", data: null, message: null };
@@ -138,8 +160,8 @@ export const deleteLeaveApplicationModel = async (
 
   try {
     await db
-        .promise()
-        .query("CALL DeleteLeaveApplication(?)", [application_id]);
+      .promise()
+      .query("CALL DeleteLeaveApplication(?)", [application_id]);
     return {
       message: "Leave application deleted successfully",
       error: null,
