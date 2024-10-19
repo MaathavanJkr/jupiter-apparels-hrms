@@ -21,9 +21,9 @@ export const getEmergencyMedicalDetailsModel = async (): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmergencyMedicalDetails()");
+      .query<RowDataPacket[][]>("CALL GetEmergencyMedicalDetails()");
     return {
-      data: result as EmergencyMedicalDetails[],
+      data: result[0] as EmergencyMedicalDetails[],
       error: null,
       message: null,
     };
@@ -43,9 +43,11 @@ export const getEmergencyMedicalDetailsByIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmergencyMedicalDetailsByID(?)", [employeeId]);
+      .query<RowDataPacket[][]>("CALL GetEmergencyMedicalDetailsByID(?)", [
+        employeeId,
+      ]);
     return {
-      data: result as EmergencyMedicalDetails[],
+      data: result[0] as EmergencyMedicalDetails[],
       error: null,
       message: null,
     };

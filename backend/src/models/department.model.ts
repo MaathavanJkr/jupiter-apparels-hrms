@@ -38,13 +38,13 @@ export const getDepartmentByIDModel = async (id: string): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query("CALL getDepartmentByID(?)", [id]);
+      .query<RowDataPacket[][]>("CALL getDepartmentByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Department not found", message: null };
     } else {
       return {
-        data: (result as Department[])[0],
+        data: (result[0] as Department[])[0],
         error: null,
         message: null,
       };
@@ -61,8 +61,10 @@ export const getDepartmentByIDModel = async (id: string): Promise<Output> => {
 // Get All Departments using stored procedure
 export const getAllDepartmentsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllDepartments()");
-    return { data: result as Department[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllDepartments()");
+    return { data: result[0] as Department[], error: null, message: null };
   } catch (error) {
     return {
       data: null,

@@ -35,13 +35,15 @@ export const createJobTitleModel = async (
 
 export const getJobTitleByIDModel = async (id: string): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetJobTitleByID(?)", [id]);
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetJobTitleByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Job title not found", message: null };
     } else {
       return {
-        data: (result as JobTitle[])[0],
+        data: (result[0] as JobTitle[])[0],
         error: null,
         message: null,
       };
@@ -57,8 +59,10 @@ export const getJobTitleByIDModel = async (id: string): Promise<Output> => {
 
 export const getAllJobTitlesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetAllJobTitles()");
-    return { data: result as JobTitle[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetAllJobTitles()");
+    return { data: result[0] as JobTitle[], error: null, message: null };
   } catch (error) {
     return {
       data: null,

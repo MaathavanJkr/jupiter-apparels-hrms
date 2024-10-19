@@ -47,13 +47,15 @@ export const getEmployeeDependentByIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL getEmployeeDependentByID(?)", [dependent_id]);
+      .query<RowDataPacket[][]>("CALL getEmployeeDependentByID(?)", [
+        dependent_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Dependent not found", message: null };
     } else {
       return {
-        data: (result as EmployeeDependent[])[0],
+        data: (result[0] as EmployeeDependent[])[0],
         error: null,
         message: null,
       };
@@ -71,8 +73,12 @@ export const getAllEmployeeDependentsModel = async (): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query("CALL getAllEmployeeDependents()");
-    return { data: result as EmployeeDependent[], error: null, message: null };
+      .query<RowDataPacket[][]>("CALL getAllEmployeeDependents()");
+    return {
+      data: result[0] as EmployeeDependent[],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,
@@ -148,13 +154,15 @@ export const getEmployeeDependentByEmployeeIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL getEmployeeDependentByEmployeeID(?)", [emp_id]);
+      .query<RowDataPacket[][]>("CALL getEmployeeDependentByEmployeeID(?)", [
+        emp_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Dependent not found", message: null };
     } else {
       return {
-        data: (result as EmployeeDependent[])[0],
+        data: (result[0] as EmployeeDependent[])[0],
         error: null,
         message: null,
       };

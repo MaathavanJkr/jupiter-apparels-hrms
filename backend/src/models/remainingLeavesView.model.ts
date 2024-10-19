@@ -14,8 +14,10 @@ export interface RemainingLeaves extends RowDataPacket {
 
 export const getAllRemainingLeavesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetAllRemainingLeaves()");
-    return { data: result as RemainingLeaves[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetAllRemainingLeaves()");
+    return { data: result[0] as RemainingLeaves[], error: null, message: null };
   } catch (error) {
     return {
       data: null,
@@ -31,7 +33,9 @@ export const getRemainingLeavesByEmployeeIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetRemainingLeavesByID(?)", [employee_id]);
+      .query<RowDataPacket[][]>("CALL GetRemainingLeavesByID(?)", [
+        employee_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return {
@@ -41,7 +45,7 @@ export const getRemainingLeavesByEmployeeIDModel = async (
       };
     } else {
       return {
-        data: result as RemainingLeaves[],
+        data: result[0] as RemainingLeaves[],
         error: null,
         message: null,
       };

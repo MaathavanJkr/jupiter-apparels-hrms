@@ -32,13 +32,13 @@ export const getEmployeeBasicInfoByIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmployeeBasicInfoByID(?)", [id]);
+      .query<RowDataPacket[][]>("CALL GetEmployeeBasicInfoByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Employee not found", message: null };
     } else {
       return {
-        data: (result as EmployeeBasicInfo[])[0],
+        data: (result[0] as EmployeeBasicInfo[])[0],
         error: null,
         message: null,
       };
@@ -56,8 +56,12 @@ export const getAllEmployeesBasicInfoModel = async (): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetAllEmployeeBasicInfos()");
-    return { data: result as EmployeeBasicInfo[], error: null, message: null };
+      .query<RowDataPacket[][]>("CALL GetAllEmployeeBasicInfos()");
+    return {
+      data: result[0] as EmployeeBasicInfo[],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,

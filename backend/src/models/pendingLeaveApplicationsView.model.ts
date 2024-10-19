@@ -20,9 +20,9 @@ export const getAllPendingLeaveApplicationsModel =
     try {
       const [result] = await db
         .promise()
-        .query("CALL GetAllPendingLeaveApplications()");
+        .query<RowDataPacket[][]>("CALL GetAllPendingLeaveApplications()");
       return {
-        data: result as PendingLeaveApplication[],
+        data: result[0] as PendingLeaveApplication[],
         error: null,
         message: null,
       };
@@ -41,12 +41,14 @@ export const getPendingLeaveApplicationByIdModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetPendingLeaveApplicationById(?)", [application_id]);
+      .query<RowDataPacket[][]>("CALL GetPendingLeaveApplicationById(?)", [
+        application_id,
+      ]);
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Application not found", message: null };
     }
     return {
-      data: result as PendingLeaveApplication[],
+      data: result[0] as PendingLeaveApplication[],
       error: null,
       message: null,
     };

@@ -15,9 +15,9 @@ export const getAllEmployeesGroupedByDepartmentModel =
     try {
       const [result] = await db
         .promise()
-        .query("CALL GetAllEmployeesGroupedByDepartment()");
+        .query<RowDataPacket[][]>("CALL GetAllEmployeesGroupedByDepartment()");
       return {
-        data: result as EmployeesGroupedByDepartment[],
+        data: result[0] as EmployeesGroupedByDepartment[],
         error: null,
         message: null,
       };
@@ -36,9 +36,11 @@ export const getEmployeesGroupedByDepartmentIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmployeesGroupedByDepartmentID(?)", [departmentId]);
+      .query<RowDataPacket[][]>("CALL GetEmployeesGroupedByDepartmentID(?)", [
+        departmentId,
+      ]);
     return {
-      data: result as EmployeesGroupedByDepartment[],
+      data: result[0] as EmployeesGroupedByDepartment[],
       error: null,
       message: null,
     };

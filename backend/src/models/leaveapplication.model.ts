@@ -68,7 +68,7 @@ export const getLeaveApplicationByIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetLeaveApplicationByID(?)", [id]);
+      .query<RowDataPacket[][]>("CALL GetLeaveApplicationByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return {
@@ -78,7 +78,7 @@ export const getLeaveApplicationByIDModel = async (
       };
     } else {
       return {
-        data: (result as LeaveApplication[])[0],
+        data: (result[0] as LeaveApplication[])[0],
         error: null,
         message: null,
       };
@@ -94,8 +94,14 @@ export const getLeaveApplicationByIDModel = async (
 
 export const getAllLeaveApplicationsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetAllLeaveApplications()");
-    return { data: result as LeaveApplication[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetAllLeaveApplications()");
+    return {
+      data: result[0] as LeaveApplication[],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,

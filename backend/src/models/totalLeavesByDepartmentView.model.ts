@@ -14,9 +14,9 @@ export const getTotalLeavesByDepartmentModel = async (): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetTotalLeavesByDepartment()");
+      .query<RowDataPacket[][]>("CALL GetTotalLeavesByDepartment()");
     return {
-      data: result as TotalLeavesByDepartment[],
+      data: result[0] as TotalLeavesByDepartment[],
       error: null,
       message: null,
     };
@@ -36,9 +36,11 @@ export const getTotalLeavesByDepartmentIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetTotalLeavesByDepartmentID(?)", [departmentId]);
+      .query<RowDataPacket[][]>("CALL GetTotalLeavesByDepartmentID(?)", [
+        departmentId,
+      ]);
     return {
-      data: result as TotalLeavesByDepartment[],
+      data: result[0] as TotalLeavesByDepartment[],
       error: null,
       message: null,
     };

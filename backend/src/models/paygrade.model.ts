@@ -40,13 +40,15 @@ export const createPayGradeModel = async (
 
 export const getPayGradeByIDModel = async (id: string): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetPayGradeByID(?)", [id]);
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetPayGradeByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Pay grade not found", message: null };
     } else {
       return {
-        data: (result as PayGrade[])[0],
+        data: (result[0] as PayGrade[])[0],
         error: null,
         message: null,
       };
@@ -62,8 +64,10 @@ export const getPayGradeByIDModel = async (id: string): Promise<Output> => {
 
 export const getAllPayGradesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetAllPayGrades()");
-    return { data: result as PayGrade[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetAllPayGrades()");
+    return { data: result[0] as PayGrade[], error: null, message: null };
   } catch (error) {
     return {
       data: null,

@@ -15,9 +15,9 @@ export const getEmployeesGroupedByJobTitleModel = async (): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmployeesGroupedByJobTitle()");
+      .query<RowDataPacket[][]>("CALL GetEmployeesGroupedByJobTitle()");
     return {
-      data: result as EmployeesGroupedByJobTitle[],
+      data: result[0] as EmployeesGroupedByJobTitle[],
       error: null,
       message: null,
     };
@@ -37,9 +37,11 @@ export const getEmployeesGroupedByJobTitleIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmployeesGroupedByJobTitleID(?)", [jobTitle]);
+      .query<RowDataPacket[][]>("CALL GetEmployeesGroupedByJobTitleID(?)", [
+        jobTitle,
+      ]);
     return {
-      data: result as EmployeesGroupedByJobTitle[],
+      data: result[0] as EmployeesGroupedByJobTitle[],
       error: null,
       message: null,
     };

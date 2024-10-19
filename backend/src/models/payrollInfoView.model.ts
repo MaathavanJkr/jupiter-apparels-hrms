@@ -13,8 +13,10 @@ export interface PayrollInfo extends RowDataPacket {
 
 export const getAllPayrollInfoModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetAllPayrollInfo()");
-    return { data: result as PayrollInfo[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetAllPayrollInfo()");
+    return { data: result[0] as PayrollInfo[], error: null, message: null };
   } catch (error) {
     return {
       data: null,
@@ -30,8 +32,14 @@ export const getPayrollInfoByEmployeeIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetPayrollInfoByEmployeeID(?)", [employee_id]);
-    return { data: (result as PayrollInfo[])[0], error: null, message: null };
+      .query<RowDataPacket[][]>("CALL GetPayrollInfoByEmployeeID(?)", [
+        employee_id,
+      ]);
+    return {
+      data: (result[0] as PayrollInfo[])[0],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,

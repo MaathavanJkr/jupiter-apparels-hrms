@@ -22,7 +22,7 @@ export const getEmploymentStatusByIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmploymentStatusByID(?)", [id]);
+      .query<RowDataPacket[][]>("CALL GetEmploymentStatusByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
       return {
@@ -32,7 +32,7 @@ export const getEmploymentStatusByIDModel = async (
       };
     } else {
       return {
-        data: (result as EmploymentStatus[])[0],
+        data: (result[0] as EmploymentStatus[])[0],
         error: null,
         message: null,
       };
@@ -50,8 +50,12 @@ export const getAllEmploymentStatusesModel = async (): Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetAllEmploymentStatuses()");
-    return { data: result as EmploymentStatus[], error: null, message: null };
+      .query<RowDataPacket[][]>("CALL GetAllEmploymentStatuses()");
+    return {
+      data: result[0] as EmploymentStatus[],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,

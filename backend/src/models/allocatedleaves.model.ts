@@ -50,13 +50,15 @@ export const getAllocatedLeavesByPayGradeModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL getAllocatedLeavesByPayGrade(?)", [pay_grade_id]);
+      .query<RowDataPacket[][]>("CALL getAllocatedLeavesByPayGrade(?)", [
+        pay_grade_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "Allocated leaves not found", message: null };
     } else {
       return {
-        data: (result as AllocatedLeaves[])[0],
+        data: (result[0] as AllocatedLeaves[])[0],
         error: null,
         message: null,
       };
@@ -72,8 +74,10 @@ export const getAllocatedLeavesByPayGradeModel = async (
 
 export const getAllAllocatedLeavesModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllAllocatedLeaves()");
-    return { data: result as AllocatedLeaves[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllAllocatedLeaves()");
+    return { data: result[0] as AllocatedLeaves[], error: null, message: null };
   } catch (error) {
     return {
       data: null,

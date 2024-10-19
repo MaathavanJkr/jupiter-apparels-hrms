@@ -12,9 +12,11 @@ export interface EmployeeDemographics extends RowDataPacket {
 // Function to get employee demographics grouped by nationality and preferred language
 export const getEmployeeDemographicsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL GetEmployeeDemographics()");
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetEmployeeDemographics()");
     return {
-      data: result as EmployeeDemographics[],
+      data: result[0] as EmployeeDemographics[],
       error: null,
       message: null,
     };
@@ -35,12 +37,12 @@ export const getEmployeeDemographicsByLangAndNatModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL GetEmployeeDemographicsByLangAndNat(?, ?)", [
-        nationality,
-        language,
-      ]);
+      .query<RowDataPacket[][]>(
+        "CALL GetEmployeeDemographicsByLangAndNat(?, ?)",
+        [nationality, language]
+      );
     return {
-      data: result as EmployeeDemographics[],
+      data: result[0] as EmployeeDemographics[],
       error: null,
       message: null,
     };

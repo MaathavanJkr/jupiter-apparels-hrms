@@ -49,7 +49,9 @@ export const getEmergencyContactByIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL getEmergencyContactByID(?)", [emergency_id]);
+      .query<RowDataPacket[][]>("CALL getEmergencyContactByID(?)", [
+        emergency_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return {
@@ -59,7 +61,7 @@ export const getEmergencyContactByIDModel = async (
       };
     } else {
       return {
-        data: (result as EmergencyContact[])[0],
+        data: (result[0] as EmergencyContact[])[0],
         error: null,
         message: null,
       };
@@ -75,8 +77,14 @@ export const getEmergencyContactByIDModel = async (
 
 export const getAllEmergencyContactsModel = async (): Promise<Output> => {
   try {
-    const [result] = await db.promise().query("CALL getAllEmergencyContacts()");
-    return { data: result as EmergencyContact[], error: null, message: null };
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllEmergencyContacts()");
+    return {
+      data: result[0] as EmergencyContact[],
+      error: null,
+      message: null,
+    };
   } catch (error) {
     return {
       data: null,
@@ -155,7 +163,9 @@ export const getEmergencyContactByEmployeeIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query("CALL getEmergencyContactByEmployeeID(?)", [employee_id]);
+      .query<RowDataPacket[][]>("CALL getEmergencyContactByEmployeeID(?)", [
+        employee_id,
+      ]);
 
     if (Array.isArray(result) && result.length === 0) {
       return {
@@ -165,7 +175,7 @@ export const getEmergencyContactByEmployeeIDModel = async (
       };
     } else {
       return {
-        data: (result as EmergencyContact[])[0],
+        data: (result[0] as EmergencyContact[])[0],
         error: null,
         message: null,
       };
