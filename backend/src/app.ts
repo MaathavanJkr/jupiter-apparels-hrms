@@ -33,5 +33,6 @@ app.use("/employmentstatus", employmentStatusRoutes);
 app.use("/jobtitle", jobtitleRoutes);
 app.use("/paygrade", paygradeRoutes);
 app.use("/remainingLeavesView", remainingLeavesViewRoute);
+app.use("/leave", leaveRoutes);
 
 export default app;

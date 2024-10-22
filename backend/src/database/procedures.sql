@@ -330,7 +330,7 @@ CREATE PROCEDURE updateEmergencyContact(
     IN p_name VARCHAR(255),
     IN p_relationship VARCHAR(255),
     IN p_contact_number VARCHAR(50),
-    IN address VARCHAR(255)
+    IN p_address VARCHAR(255)
 )
 BEGIN
     UPDATE emergency_contacts
@@ -390,7 +390,7 @@ BEGIN
         supervisor_id,
         first_name,
         last_name,
-        birthday,
+        birth_date,
         gender,
         marital_status,
         address,
@@ -398,7 +398,7 @@ BEGIN
         NIC,
         job_title_id,
         pay_grade_id,
-        employee_status_id,
+        employment_status_id,
         contact_number,
         cust_attr_1_value,
         cust_attr_2_value,
@@ -469,7 +469,7 @@ BEGIN
         supervisor_id = supervisorID,
         first_name = firstName,
         last_name = lastName,
-        birthday = birthday,
+        birth_date = birthday,
         gender = gender,
         marital_status = maritalStatus,
         address = address,
@@ -477,7 +477,7 @@ BEGIN
         NIC = NIC,
         job_title_id = jobTitleID,
         pay_grade_id = payGradeID,
-        employee_status_id = employeeStatusID,
+        employment_status_id = employeeStatusID,
         contact_number = contactNumber,
         cust_attr_1_value = custAttr1Value,
         cust_attr_2_value = custAttr2Value,
@@ -836,6 +836,6 @@ END $$
 CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_nationality VARCHAR(50), IN p_language VARCHAR(50))
 BEGIN
     SELECT * FROM employee_demographics_language_nationality
-    WHERE cust_attr_1_value = p_nationality AND cust_attr_3_value = p_language;
+    WHERE nationality = p_nationality AND preferred_language = p_language;
 END $$
 DELIMITER ;
