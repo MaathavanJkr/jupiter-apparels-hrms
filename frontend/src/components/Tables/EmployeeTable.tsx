@@ -1,29 +1,15 @@
 import { useState } from "react";
 import { Employee, Branch, Department, JobTitle, EmploymentStatus, PayGrade, Supervisor } from "../../types/types";
-import ReactPaginate from "react-paginate";
 import { updateEmployee, deleteEmployee, getEmployeeByID } from "../../services/employeeServices";
-import { filterIt } from "../../services/filter";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { notifyError, notifySuccess } from "../../services/notify";
 import { useNavigate } from "react-router-dom";
 
-const EmployeeTable = ({ employeeData, itemsPerPage, nameSearchKey, branchData, departmentData, payGradeData, jobTitleData, statusData, supervisorData }: { employeeData: Employee[], itemsPerPage: number, nameSearchKey: string, branchData: Branch[], departmentData: Department[], payGradeData: PayGrade[], jobTitleData: JobTitle[], statusData: EmploymentStatus[], supervisorData: Supervisor[] }) => {
-  const items: Employee[] = Array.isArray(employeeData) ? (nameSearchKey !== "" ? filterIt(employeeData, nameSearchKey) : employeeData) : [];
+const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData, jobTitleData, statusData, supervisorData }: { employeeData: Employee[], branchData: Branch[], departmentData: Department[], payGradeData: PayGrade[], jobTitleData: JobTitle[], statusData: EmploymentStatus[], supervisorData: Supervisor[] }) => {
+  const items: Employee[] = Array.isArray(employeeData) ?  employeeData : [];
 
-  const itemsLength = items.length;
-  const [itemOffset, setItemOffset] = useState(0);
 
-  const endOffset = itemOffset + itemsPerPage;
-  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
-
-  const currentItems = Array.isArray(items) ? items.slice(itemOffset, endOffset) : [];
-  const pageCount = Math.ceil(itemsLength / itemsPerPage);
-
-  const handlePageClick = (event: { selected: number }) => {
-    const newOffset = (event.selected * itemsPerPage) % itemsLength;
-    setItemOffset(newOffset);
-  };
 
   const navigate = useNavigate();
 
@@ -222,8 +208,8 @@ const EmployeeTable = ({ employeeData, itemsPerPage, nameSearchKey, branchData, 
           </thead>
           <tbody>
             <>
-              {currentItems &&
-                currentItems.map((employee, key) => {
+              {items &&
+                items.map((employee, key) => {
 
 
 
@@ -305,29 +291,7 @@ const EmployeeTable = ({ employeeData, itemsPerPage, nameSearchKey, branchData, 
           </tbody>
         </table>
       </div>
-      <div className="flex flex-wrap justify-between my-2">
-        <div className="flex items-center my-2">
-          Showing {itemOffset + 1} to {endOffset < itemsLength ? endOffset : itemsLength} out of {itemsLength}
-        </div>
-        <div className="overflow-x-auto my-2">
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel=">"
-            onPageChange={handlePageClick}
-            pageRangeDisplayed={1}
-            pageCount={pageCount}
-            previousLabel="<"
-            renderOnZeroPageCount={null}
-            containerClassName={"isolate inline-flex -space-x-px rounded-md shadow-sm"}
-            pageLinkClassName={"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0"}
-            breakLinkClassName={"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0"}
-            activeLinkClassName={"z-10 bg-secondary text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"}
-            previousLinkClassName={"relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0"}
-            nextLinkClassName={"relative inline-flex items-center rounded-r-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-400"}
-            disabledLinkClassName={"text-black-100"}
-          />
-        </div>
-      </div>
+      
       <div className={`fixed left-0 top-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/90 px-4 py-5 overflow-y-auto ${!modalOpen && 'hidden'}`}
       >
         <div className="w-full max-w-142.5 rounded-lg bg-white px-8 py-12 dark:bg-boxdark md:px-17.5 md:py-15 max-h-screen overflow-y-auto">
