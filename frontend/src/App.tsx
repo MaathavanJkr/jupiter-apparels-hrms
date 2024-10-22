@@ -45,34 +45,6 @@ function App() {
   ) : (
     <Routes>
       <Route
-        path="/dashboard"
-        element={
-          <>
-            <PageTitle title="Dashboard | Jupiter Apparels" />
-            <Dashboard />
-          </>
-        }
-      />
-      <Route
-        path="/organization"
-        element={
-          <>
-            <PageTitle title="Organization | Jupiter Apparels" />
-            <OrganizationConfig />
-          </>
-        }
-      />
-      <Route
-        path="/employees"
-        element={
-          <>
-            <PageTitle title="Employees | Jupiter Apparels" />
-            <Employees />
-          </>
-        }
-      />
-
-      <Route
         path="/"
         element={
           <>
@@ -111,41 +83,21 @@ function App() {
           </>
         }
       />
-
       <Route
-        path="/report"
+        path="/dashboard"
         element={
           <>
-            <PageTitle title="Report | Jupiter Apparels" />
-            <Report />
+            <PageTitle title="Dashboard | Jupiter Apparels" />
+            <Dashboard />
           </>
         }
       />
       <Route
-        path="/user/create"
+        path="/employee/all"
         element={
           <>
-            <PageTitle title="User Account Creation | Jupiter Apparels" />
-            <CreateUserAccount />
-          </>
-        }
-      />
-      <Route
-        path="/leave/apply"
-        element={
-          <>
-            <PageTitle title="Apply Leave | Jupiter Apparels" />
-            <ApplyLeave />
-          </>
-        }
-      />
-
-      <Route
-        path="/customattribute/edit"
-        element={
-          <>
-            <PageTitle title="Edit Custom Atrribute | Jupiter Apparels" />
-            <EditCustomAttribute />
+            <PageTitle title="Employees | Jupiter Apparels" />
+            <Employees />
           </>
         }
       />
@@ -185,12 +137,59 @@ function App() {
           </>
         }
       />
+
+      <Route
+        path="/report"
+        element={
+          <>
+            <PageTitle title="Report | Jupiter Apparels" />
+            <Report />
+          </>
+        }
+      />
+      <Route
+        path="/user/create"
+        element={
+          <>
+            <PageTitle title="User Account Creation | Jupiter Apparels" />
+            <CreateUserAccount />
+          </>
+        }
+      />
+      <Route
+        path="/config/organization"
+        element={
+          <>
+            <PageTitle title="Organization | Jupiter Apparels" />
+            <OrganizationConfig />
+          </>
+        }
+      />
+      <Route
+        path="/config/customattribute/edit"
+        element={
+          <>
+            <PageTitle title="Edit Custom Atrribute | Jupiter Apparels" />
+            <EditCustomAttribute />
+          </>
+        }
+      />
       <Route
         path="/profile/:user_id"
         element={
           <>
             <PageTitle title="Profile | Jupiter Apparels" />
             <Profile />
+          </>
+        }
+      />
+
+      <Route
+        path="/leave/apply"
+        element={
+          <>
+            <PageTitle title="Apply Leave | Jupiter Apparels" />
+            <ApplyLeave />
           </>
         }
       />

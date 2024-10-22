@@ -70,7 +70,7 @@ const AddEmployee = () => {
     ) {
       addEmployee(departmentId, branchId, supervisorId, firstName, lastName, birthday, gender, maritalStatus, address, email, nic, jobTitleId, payGradeId, employeeStatusId, contactNumber).then(() => {
         notifySuccess("Employee Added Sucessfully");
-        navigate("/employees");
+        navigate("/employee");
       }).catch((error) => {
         notifyError(`Failed to Add Employee: ${error}`);
       })
@@ -327,7 +327,7 @@ const AddEmployee = () => {
             </button>
           </div>
           <div className="w-full px-3 2xsm:w-1/2">
-            <button onClick={() => { navigate("/employees") }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+            <button onClick={() => { navigate('/employee/all') }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
               Cancel
             </button>
           </div>
