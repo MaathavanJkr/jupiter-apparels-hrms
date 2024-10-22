@@ -73,6 +73,9 @@ DROP PROCEDURE IF EXISTS UpdateJobTitle;
 DROP PROCEDURE IF EXISTS UpdateLeaveApplication;
 DROP PROCEDURE IF EXISTS UpdateOrganization;
 DROP PROCEDURE IF EXISTS UpdatePayGrade;
+DROP PROCEDURE IF EXISTS GetFilteredEmployees;
+DROP PROCEDURE IF EXISTS getEmployeeDependentByEmployeeID;
+DROP PROCEDURE IF EXISTS getEmergencyContactByEmployeeID;
 
 -- Procedure for creating allocated leaves
 DELIMITER $$
@@ -439,6 +442,55 @@ BEGIN
     SELECT * FROM employees;
 END $$
 
+-- procedure to get filtered employees
+DELIMITER $$
+
+CREATE PROCEDURE GetFilteredEmployees(
+    IN name VARCHAR(255), 
+    IN department_id VARCHAR(36),
+    IN branch_id VARCHAR(36),
+    IN start INT,
+    IN end INT
+)
+BEGIN 
+    SET @query = 'SELECT * FROM employees';
+    SET @where_clause = '';
+    SET @name_param = CONCAT('%', name, '%');
+
+    IF name IS NOT NULL AND name != '' THEN
+        SET @where_clause = CONCAT(@where_clause, ' (first_name LIKE "%', name, '%" OR last_name LIKE "%', name, '%")');
+    END IF; 
+
+    IF department_id IS NOT NULL AND department_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND department_id = "', department_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' department_id = "', department_id, '"');
+        END IF;
+    END IF;
+
+    IF branch_id IS NOT NULL AND branch_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND branch_id = "', branch_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' branch_id = "', branch_id, '"');
+        END IF;
+    END IF;
+
+    IF LENGTH(@where_clause) > 0 THEN
+        SET @query = CONCAT(@query, ' WHERE ', @where_clause);
+    END IF;
+
+    SET @query = CONCAT(@query, ' LIMIT ', start, ', ', end);
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
 -- Procedure to update an employee
 CREATE PROCEDURE UpdateEmployee(
     IN employeeID VARCHAR(255),

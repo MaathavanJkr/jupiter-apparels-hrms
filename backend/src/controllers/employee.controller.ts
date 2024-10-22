@@ -6,6 +6,7 @@ import {
   deleteEmployeeModel,
   getAllEmployeesModel,
   getEmployeeByIDModel,
+  getFilteredEmployeesModel,
   updateEmployeeModel,
 } from "../models/employee.model";
 
@@ -74,6 +75,16 @@ export const createEmployee = async (req: Request, res: Response) => {
       return res.status(500).json({ error });
     });
 };
+export const getFilteredEmployees = async (req:Request, res:Response) => {
+  const {name, department_id, branch_id, start, end} = req.body;
+  await getFilteredEmployeesModel(name, department_id, branch_id, start, end)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+}
 
 export const getAllEmployees = async (req: Request, res: Response) => {
   await getAllEmployeesModel()
