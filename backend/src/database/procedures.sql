@@ -481,7 +481,7 @@ BEGIN
         SET @query = CONCAT(@query, ' WHERE ', @where_clause);
     END IF;
 
-    IF start IS NOT NULL AND start != 0 AND end IS NOT NULL AND end != 0 THEN
+    IF start IS NOT NULL AND end IS NOT NULL AND end != 0 THEN
         SET @query = CONCAT(@query, ' LIMIT ', start, ', ', end);
     END IF;
 
