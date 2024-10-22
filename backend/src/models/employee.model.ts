@@ -160,7 +160,7 @@ export const getFilteredEmployeesModel = async(
     try {
       const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [name, department_id, branch_id, start, end]);
+      .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [name, department_id, branch_id, start, end-start]);
       return { data: result[0] as Employee[], error: null, message: null };
     } catch (error) {
       return {
