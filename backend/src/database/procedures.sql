@@ -455,10 +455,9 @@ CREATE PROCEDURE GetFilteredEmployees(
 BEGIN 
     SET @query = 'SELECT * FROM employees';
     SET @where_clause = '';
-    SET @name_param = CONCAT('%', name, '%');
 
     IF name IS NOT NULL AND name != '' THEN
-        SET @where_clause = CONCAT(@where_clause, ' (first_name LIKE "%', name, '%" OR last_name LIKE "%', name, '%")');
+        SET @where_clause = CONCAT(@where_clause, ' first_name LIKE "', name, '%" OR last_name LIKE "', name, '%"');
     END IF; 
 
     IF department_id IS NOT NULL AND department_id != '' THEN
