@@ -7,6 +7,7 @@ import {
   updateEmployee,
   deleteEmployee,
   getFilteredEmployees,
+  getFilteredCount,
 } from "../controllers/employee.controller";
 
 const router = Router();
@@ -14,6 +15,7 @@ const router = Router();
 router.post("/", createEmployee);
 router.get("/", getAllEmployees);
 router.post("/search", getFilteredEmployees);
+router.post("/search/count", getFilteredCount);
 router.get("/:id", getEmployeeByID);
 router.put("/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
