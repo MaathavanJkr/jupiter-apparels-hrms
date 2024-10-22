@@ -167,7 +167,7 @@ const EmployeeDashboard = () => {
         {(role === 'Manager' || true) && (
           <button
             onClick={() =>
-              navigate('/employees')
+              navigate('/employee/all')
             }
             className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
