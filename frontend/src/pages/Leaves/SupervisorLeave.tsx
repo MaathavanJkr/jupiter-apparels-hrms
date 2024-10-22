@@ -1,26 +1,28 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { Employee } from '../../types/types';
+import { Employee, LeaveApplication } from '../../types/types'; // Ensure LeaveApplication is defined
 import { useEffect, useState } from 'react';
-//import { getEmployeesUnder } from '../../services/supervisorServices';
 import LeaveTable from '../../components/Tables/LeaveTable';
 
 const SupervisorLeave = () => {
-  //const { supervisor_id } = useParams<{ supervisor_id: string }>();
-  //condolr
-  const [employees, setEmployeees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [leaveApplications, setLeaveApplications] = useState<LeaveApplication[]>([]);
   const navigate = useNavigate();
-  const isSupervisor = true; //implement logic
+  const isSupervisor = true; // Implement your logic to check if the user is a supervisor
 
-  if (!isSupervisor) {
-    navigate('/');
-  }
+  // Redirect if not a supervisor
+  useEffect(() => {
+    if (!isSupervisor) {
+      navigate('/');
+    }
+  }, [isSupervisor, navigate]);
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const employees: Employee[] = [
+        // Mock data fetching for demonstration purposes
+        const fetchedEmployees: Employee[] = [
           {
             employee_id: "EMP001",
             department_id: "DEP001",
@@ -40,7 +42,7 @@ const SupervisorLeave = () => {
             contact_number: "123-456-7890",
             cust_attr_1_value: "Attr1",
             cust_attr_2_value: "Attr2",
-            cust_attr_3value: "Attr3"
+            cust_attr_3_value: "Attr3", // Corrected typo
           },
           {
             employee_id: "EMP002",
@@ -61,11 +63,11 @@ const SupervisorLeave = () => {
             contact_number: "987-654-3210",
             cust_attr_1_value: "Attr1",
             cust_attr_2_value: "Attr2",
-            cust_attr_3value: "Attr3"
+            cust_attr_3_value: "Attr3", // Corrected typo
           }
         ];
 
-        setEmployeees(employees);
+        setEmployees(fetchedEmployees);
       } catch (error) {
         console.log('Error Fetching employees:', error);
       }
@@ -74,16 +76,68 @@ const SupervisorLeave = () => {
     fetchEmployees();
   }, []);
 
+  // Mock function to fetch leave applications for an employee
+  const fetchLeaveApplications = async (employee_id: string) => {
+    try {
+      // Mock data fetching for demonstration purposes
+      const applications: LeaveApplication[] = [
+        {
+          application_id: "LA001",
+          employee_id,
+          leave_type: "Sick",
+          start_date: "2024-10-01",
+          end_date: "2024-10-05",
+          reason: "Flu",
+          submission_date: "2024-09-30",
+          status: "Approved",
+          response_date: "2024-09-30",
+        },
+        {
+          application_id: "LA002",
+          employee_id,
+          leave_type: "Annual",
+          start_date: "2024-10-10",
+          end_date: "2024-10-15",
+          reason: "Vacation",
+          submission_date: "2024-10-01",
+          status: "Pending",
+          response_date: null, // This can remain as null if your type definition allows it
+        },
+      ];
+
+      // Set leave applications for the given employee
+      setLeaveApplications((prev) => [...prev, ...applications]);
+    } catch (error) {
+      console.log('Error Fetching leave applications:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch leave applications for each employee
+    employees.forEach(employee => {
+      fetchLeaveApplications(employee.employee_id);
+    });
+  }, [employees]);
+
   return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Leaves" />
-      {employees!.map((employee) => (
-        <>
-          {employee.first_name + ' ' + employee.last_name}
-          <LeaveTable employee_id={employee.employee_id} pending={true} latest={false} />
-        </>
-      ))}
-    </DefaultLayout>
+      <DefaultLayout>
+        <Breadcrumb pageName="Leaves" />
+        <h2>Employee Leaves</h2>
+        {employees.length > 0 ? (
+            employees.map((employee) => (
+                <div key={employee.employee_id} style={{ marginBottom: '20px' }}>
+                  <h3>
+                    {employee.first_name} {employee.last_name}
+                  </h3>
+                  <LeaveTable
+                      leaveApplications={leaveApplications.filter(app => app.employee_id === employee.employee_id)}
+                  />
+                </div>
+            ))
+        ) : (
+            <p>No employees found.</p>
+        )}
+      </DefaultLayout>
   );
 };
 
