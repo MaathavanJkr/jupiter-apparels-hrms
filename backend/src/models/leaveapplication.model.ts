@@ -92,6 +92,41 @@ export const getLeaveApplicationByIDModel = async (
   }
 };
 
+export const getLeaveApplicationsByEmployeeIDModel = async (
+    employeeID: string
+): Promise<Output> => {
+  if (!employeeID) {
+    return { error: "Missing required fields", data: null, message: null };
+  }
+
+  try {
+    const [result] = await db
+        .promise()
+        .query<RowDataPacket[][]>("CALL GetLeaveApplicationByEmployeeID(?)", [employeeID]);
+
+    if (Array.isArray(result) && result[0].length === 0) {
+      return {
+        data: null,
+        error: "No leave applications found for this employee",
+        message: null,
+      };
+    } else {
+      return {
+        data: result[0] as LeaveApplication[], // Return all leave applications for the employee
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+      message: "Database Query Failed",
+    };
+  }
+};
+
+
 export const getAllLeaveApplicationsModel = async (): Promise<Output> => {
   try {
     const [result] = await db

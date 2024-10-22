@@ -14,6 +14,7 @@ import employeeRoutes from "./routes/employee.route";
 import jobtitleRoutes from "./routes/jobtitle.route";
 import paygradeRoutes from "./routes/paygrade.route";
 import remainingLeavesViewRoute from "./routes/remainingLeavesView.route";
+import leaveRoutes from "./routes/leave.route";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));

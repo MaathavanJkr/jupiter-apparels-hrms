@@ -2,13 +2,15 @@
 import express from 'express';
 import {
     createLeaveApplication,
-
-} from '../controllers/leaveapplication.controller'; // Import your leave controller functions
+    getLeaveApplicationsByEmployeeID
+} from '../controllers/leaveapplication.controller';
 
 const router = express.Router();
 
 // Leave application routes
 router.post('/application/', createLeaveApplication); // Create a leave application
+router.get('/employee/:employee_id', getLeaveApplicationsByEmployeeID); //get employee leaves by employee id
+
 // router.get('/balance/:employee_id', getLeaveBalanceByID); // Get leave balance by employee ID
 // router.get('/used/:employee_id', getUsedLeavesByID); // Get used leaves by employee ID
 // router.get('/pending/:employee_id', getPendingLeavesByID); // Get pending leaves by employee ID

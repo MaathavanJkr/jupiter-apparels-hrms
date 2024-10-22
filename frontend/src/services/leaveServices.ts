@@ -1,7 +1,9 @@
 import axiosInstance from '../axiosConfig';
 
+
 export const createLeaveApplication = async (
     employee_id: string,
+    leaveType: string,
     start_date: string,
     end_date: string,
     reason: string
@@ -12,6 +14,7 @@ export const createLeaveApplication = async (
             '/leave/application',
             {
                 employee_id,
+                leave_type: leaveType, // Changed to leave_type to match API
                 start_date,
                 end_date,
                 reason,
@@ -29,6 +32,7 @@ export const createLeaveApplication = async (
         throw error.response.data.error;  // Throw error if request fails
     }
 };
+
 
 
 export const getLeaveBalanceByID = async (employee_id: string) => {
@@ -66,6 +70,7 @@ export const getLeaveApplicationsByID = async (employee_id: string) => {
                 Authorization: `Bearer ${token}`,
             },
         });
+        console.log('Fetched Leave Applications:', response.data.data);
         return response.data.data;
     } catch (error) {
         throw error.response.data.error;

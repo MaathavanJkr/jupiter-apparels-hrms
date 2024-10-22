@@ -1,12 +1,12 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
 import {
-  LeaveApplication,
-  createLeaveApplicationModel,
-  deleteLeaveApplicationModel,
-  getAllLeaveApplicationsModel,
-  getLeaveApplicationByIDModel,
-  updateLeaveApplicationModel,
+    LeaveApplication,
+    createLeaveApplicationModel,
+    deleteLeaveApplicationModel,
+    getAllLeaveApplicationsModel,
+    getLeaveApplicationByIDModel,
+    updateLeaveApplicationModel, getLeaveApplicationsByEmployeeIDModel,
 } from "../models/leaveapplication.model";
 
 export const createLeaveApplication = async (req: Request, res: Response) => {
@@ -53,6 +53,21 @@ export const getLeaveApplicationByID = async (req: Request, res: Response) => {
     .catch((error) => {
       return res.status(500).json({ error });
     });
+};
+
+export const getLeaveApplicationsByEmployeeID = async (req: Request, res: Response) => {
+    const { employee_id } = req.params;
+
+    if (!employee_id) {
+        return res.status(400).json({ error: "Missing employee ID" });
+    }
+
+    try {
+        const result = await getLeaveApplicationsByEmployeeIDModel(employee_id);
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({ error });
+    }
 };
 
 export const updateLeaveApplication = async (req: Request, res: Response) => {

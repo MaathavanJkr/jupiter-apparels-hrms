@@ -586,6 +586,12 @@ BEGIN
     SELECT * FROM leave_applications WHERE application_id = applicationID;
 END $$
 
+-- Procedure to get a leave application by employee ID
+CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
+BEGIN
+    SELECT * FROM leave_applications WHERE employee_id = employeeID;
+END $$
+
 -- Procedure to get all leave applications
 CREATE PROCEDURE GetAllLeaveApplications()
 BEGIN

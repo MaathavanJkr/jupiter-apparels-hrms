@@ -5,15 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3f3c5b29-15dc-4cee-8af7-430d880f01d1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/pages/EmployeeDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/controllers/leaveapplication.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/controllers/leaveapplication.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/database/procedures.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/database/procedures.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/models/leaveapplication.model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/models/leaveapplication.model.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/leave.route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/leave.route.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Dashboard/AdminDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Dashboard/AdminDashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Dashboard/EmployeeDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Dashboard/EmployeeDashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Sidebar/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Sidebar/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Authentication/LogIn.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Authentication/LogIn.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Dashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Dashboard.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Employee/AddEmployee.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Employee/AddEmployee.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Reports/Report.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Reports/Report.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Tables/LeaveTable.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Tables/LeaveTable.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Leaves/ApplyLeave.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Leaves/ApplyLeave.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Leaves/LeaveHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Leaves/LeaveHistory.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Leaves/SupervisorLeave.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Leaves/SupervisorLeave.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/services/leaveServices.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/services/leaveServices.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +57,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Merging main",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -82,7 +85,7 @@
       <updated>1729574105038</updated>
       <workItem from="1729574106454" duration="94000" />
       <workItem from="1729574210867" duration="5060000" />
-      <workItem from="1729586244339" duration="6772000" />
+      <workItem from="1729586244339" duration="17281000" />
     </task>
     <servers />
   </component>
@@ -99,12 +102,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/frontend/src/App.tsx</url>
-          <line>215</line>
+          <line>216</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/frontend/src/App.tsx</url>
-          <line>224</line>
+          <line>225</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
