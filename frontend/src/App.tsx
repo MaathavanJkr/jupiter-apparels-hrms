@@ -27,6 +27,7 @@ import About from './pages/Home/About';
 import Contact from './pages/Home/Contact';
 import Features from './pages/Home/Features';
 import EditCustomAttribute from './pages/Configuration/EditCustomAttribute';
+import EmployeeDashboardPage from './pages/EmployeeDashboard';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -89,6 +90,15 @@ function App() {
           <>
             <PageTitle title="Dashboard | Jupiter Apparels" />
             <Dashboard />
+          </>
+        }
+      />
+      <Route
+        path="/dashboard/employee"
+        element={
+          <>
+            <PageTitle title="Dashboard | Jupiter Apparels" />
+            <EmployeeDashboardPage />
           </>
         }
       />
