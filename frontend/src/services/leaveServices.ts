@@ -84,6 +84,7 @@ export const getLatestLeaveApplicationsByID = async (employee_id: string) => {
                 Authorization: `Bearer ${token}`,
             },
         });
+
         return response.data.data;
     } catch (error) {
         throw error.response.data.error;
@@ -93,13 +94,15 @@ export const getLatestLeaveApplicationsByID = async (employee_id: string) => {
 export const getLeaveApplicationByID = async (application_id: string) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await axiosInstance.get('leave/' + application_id, {
+        const response = await axiosInstance.get('leave/view/' + application_id, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
+        console.log('Fetched Leave Application:', response.data.data);
         return response.data.data;
     } catch (error) {
+        console.log("Error in services");
         throw error.response.data.error;
     }
 };
@@ -120,22 +123,46 @@ export const approveLeave = async (application_id: string) => {
         throw error.response.data.error;
     }
 };
+// export const rejectLeave = async (application_id: string) => {
+//     try {
+//         const token = localStorage.getItem('token');
+//         const response = await axiosInstance.put(
+//             '/leave/reject/' + application_id,
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${token}`,
+//                 },
+//             },
+//         );
+//         return response.data.data;
+//     } catch (error) {
+//         throw error.response.data.error;
+//     }
+// };
+
 export const rejectLeave = async (application_id: string) => {
     try {
         const token = localStorage.getItem('token');
         const response = await axiosInstance.put(
             '/leave/reject/' + application_id,
             {
+                status: 'Rejected',
+                response_date: new Date().toISOString().split('T')[0],
+            },
+            {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             },
-        );
+        )
+        console.log(new Date().toISOString().split('T')[0]);
+        console.log('succeed');
         return response.data.data;
     } catch (error) {
         throw error.response.data.error;
     }
 };
+
 
 export const getPendingLeavesByID = async (employee_id: string) => {
     try {

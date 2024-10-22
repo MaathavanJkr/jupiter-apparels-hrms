@@ -2,6 +2,7 @@ import { RowDataPacket } from "mysql2";
 import db from "../database/database";
 import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
+import logger from "../utils/logger";
 
 enum LeaveType {
   annual = "Annual",
@@ -63,14 +64,18 @@ export const createLeaveApplicationModel = async (
 };
 
 export const getLeaveApplicationByIDModel = async (
-  id: string
+  application_id: string
 ): Promise<Output> => {
+  if(!application_id) {
+    return {error: "Missing application ID", data: null, message: null };
+  }
+
   try {
     const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>("CALL GetLeaveApplicationByID(?)", [id]);
+      .query<RowDataPacket[][]>("CALL GetLeaveApplicationByID(?)", [application_id]);
 
-    if (Array.isArray(result) && result.length === 0) {
+    if (Array.isArray(result) && result[0].length === 0) {
       return {
         data: null,
         error: "Leave application not found",
@@ -78,7 +83,7 @@ export const getLeaveApplicationByIDModel = async (
       };
     } else {
       return {
-        data: (result[0] as LeaveApplication[])[0],
+        data: result[0] as LeaveApplication[],
         error: null,
         message: null,
       };
@@ -146,34 +151,175 @@ export const getAllLeaveApplicationsModel = async (): Promise<Output> => {
   }
 };
 
+// export const updateLeaveApplicationModel = async (
+//   leaveApplication: LeaveApplication
+// ): Promise<Output> => {
+//   const {
+//     application_id,
+//     leave_type,
+//     start_date,
+//     end_date,
+//     reason,
+//     status,
+//     response_date,
+//   } = leaveApplication;
+//
+//   if (
+//     !application_id ||
+//     !leave_type ||
+//     !start_date ||
+//     !end_date ||
+//     !reason ||
+//     !status
+//   ) {
+//     return { error: "Missing required fields", data: null, message: null };
+//   }
+//
+//   try {
+//     await db
+//       .promise()
+//       .query("CALL UpdateLeaveApplication(?, ?, ?, ?, ?, ?, ?)", [
+//         application_id,
+//         leave_type,
+//         start_date,
+//         end_date,
+//         reason,
+//         status,
+//         response_date,
+//       ]);
+//     return {
+//       message: "Leave application updated successfully",
+//       error: null,
+//       data: leaveApplication,
+//     };
+//   } catch (error) {
+//     return { error, message: "Database Query Failed", data: null };
+//   }
+// };
+
+// export const updateLeaveApplicationModel = async (
+//     leaveApplication: LeaveApplication
+// ): Promise<Output> => {
+//   const {
+//     application_id,
+//     leave_type,
+//     start_date,
+//     end_date,
+//     reason,
+//     status,
+//     response_date,
+//   } = leaveApplication;
+//
+//   if (
+//       !application_id ||
+//       !leave_type ||
+//       !start_date ||
+//       !end_date ||
+//       !reason ||
+//       !status
+//   ) {
+//     return { error: "Missing required fields", data: null, message: null };
+//   }
+//
+//   try {
+//     await db
+//         .promise()
+//         .query("CALL UpdateLeaveApplication(?, ?, ?, ?, ?, ?, ?)", [
+//           application_id,
+//           leave_type,
+//           start_date,
+//           end_date,
+//           reason,
+//           status,
+//           response_date,
+//         ]);
+//     return {
+//       message: "Leave application updated successfully",
+//       error: null,
+//       data: leaveApplication,
+//     };
+//   } catch (error) {
+//     return { error, message: "Database Query Failed", data: null };
+//   }
+// };
+
+// export const updateLeaveApplicationModel = async (
+//     leaveApplication: LeaveApplication
+// ): Promise<Output> => {
+//   const {
+//     application_id,
+//     leave_type,
+//     start_date,
+//     end_date,
+//     reason,
+//     status,
+//     response_date,
+//   } = leaveApplication;
+//
+//   const missingFields = [];
+//
+//   if (!application_id) missingFields.push('application_id');
+//   if (!leave_type) missingFields.push('leave_type');
+//   if (!start_date) missingFields.push('start_date');
+//   if (!end_date) missingFields.push('end_date');
+//   if (!reason) missingFields.push('reason');
+//   if (!status) missingFields.push('status');
+//   if (!response_date) missingFields.push('response_date');
+//
+//   if (missingFields.length > 0) {
+//     logger.error(`Missing required fields: ${missingFields.join(', ')}`);
+//     return { error: "Missing required fields", data: null, message: null };
+//   }
+//
+//   try {
+//     await db
+//         .promise()
+//         .query("CALL UpdateLeaveApplication(?, ?, ?, ?, ?, ?, ?)", [
+//           application_id,
+//           leave_type,
+//           start_date,
+//           end_date,
+//           reason,
+//           status,
+//           response_date,
+//         ]);
+//     return {
+//       message: "Leave application updated successfully",
+//       error: null,
+//       data: leaveApplication,
+//     };
+//   } catch (error) {
+//     logger.error(`Database Query Failed: ${error}`);
+//     return { error, message: "Database Query Failed", data: null };
+//   }
+// };
+
 export const updateLeaveApplicationModel = async (
-  leaveApplication: LeaveApplication
+    application_id: string,
+    leave_type: string,
+    start_date: string,
+    end_date: string,
+    reason: string,
+    status: string,
+    response_date: string
 ): Promise<Output> => {
-  const {
-    application_id,
-    leave_type,
-    start_date,
-    end_date,
-    reason,
-    status,
-    response_date,
-  } = leaveApplication;
-
-  if (
-    !application_id ||
-    !leave_type ||
-    !start_date ||
-    !end_date ||
-    !reason ||
-    !status
-  ) {
-    return { error: "Missing required fields", data: null, message: null };
-  }
-
   try {
     await db
-      .promise()
-      .query("CALL UpdateLeaveApplication(?, ?, ?, ?, ?, ?, ?)", [
+        .promise()
+        .query("CALL UpdateLeaveApplication(?, ?, ?, ?, ?, ?, ?)", [
+          application_id,
+          leave_type,
+          start_date,
+          end_date,
+          reason,
+          status,
+          response_date,
+        ]);
+
+    return {
+      message: "Leave application updated successfully",
+      error: null,
+      data: {
         application_id,
         leave_type,
         start_date,
@@ -181,16 +327,15 @@ export const updateLeaveApplicationModel = async (
         reason,
         status,
         response_date,
-      ]);
-    return {
-      message: "Leave application updated successfully",
-      error: null,
-      data: leaveApplication,
+      },
     };
   } catch (error) {
+    logger.error(`Database Query Failed: ${error}`);
     return { error, message: "Database Query Failed", data: null };
   }
 };
+
+
 
 export const deleteLeaveApplicationModel = async (
   application_id: string

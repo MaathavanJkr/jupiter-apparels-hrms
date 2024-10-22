@@ -15,6 +15,7 @@ const LeaveHistory = () => {
             try {
                 const applications = await getLeaveApplicationsByID(employee_id);
                 setLeaveApplications(applications);
+                console.log(applications);
 
             } catch (err) {
                 console.log("fetching failed");

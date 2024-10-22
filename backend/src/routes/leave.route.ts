@@ -2,7 +2,8 @@
 import express from 'express';
 import {
     createLeaveApplication,
-    getLeaveApplicationsByEmployeeID
+    getLeaveApplicationsByEmployeeID,
+    getLeaveApplicationByID, updateLeaveApplication
 } from '../controllers/leaveapplication.controller';
 
 const router = express.Router();
@@ -10,6 +11,9 @@ const router = express.Router();
 // Leave application routes
 router.post('/application/', createLeaveApplication); // Create a leave application
 router.get('/employee/:employee_id', getLeaveApplicationsByEmployeeID); //get employee leaves by employee id
+router.get('/view/:application_id', getLeaveApplicationByID); // get a specific leave application for supervisor to view
+router.put('/reject/:application_id', updateLeaveApplication); // reject leaves
+
 
 // router.get('/balance/:employee_id', getLeaveBalanceByID); // Get leave balance by employee ID
 // router.get('/used/:employee_id', getUsedLeavesByID); // Get used leaves by employee ID

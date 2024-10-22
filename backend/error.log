@@ -1,0 +1,9 @@
+error: Missing required fields: status or response_date {"timestamp":"2024-10-22T19:33:21.971Z"}
+error: Missing required fields: status or response_date {"timestamp":"2024-10-22T19:35:51.173Z"}
+error: Missing required fields: status or response_date {"timestamp":"2024-10-22T19:36:05.700Z"}
+error: Missing required fields: status or response_date {"timestamp":"2024-10-22T19:36:23.403Z"}
+error: Missing required fields: application_id, leave_type, start_date, end_date, reason {"timestamp":"2024-10-22T19:59:57.384Z"}
+error: Missing required fields: application_id, leave_type, start_date, end_date, reason {"timestamp":"2024-10-22T20:08:40.590Z"}
+error: Missing required fields: application_id, leave_type, start_date, end_date, reason {"timestamp":"2024-10-22T20:11:16.710Z"}
+error: Missing required fields: application_id, leave_type, start_date, end_date, reason {"timestamp":"2024-10-22T20:12:06.048Z"}
+error: Missing required fields: application_id, leave_type, start_date, end_date, reason {"timestamp":"2024-10-22T20:16:12.052Z"}
