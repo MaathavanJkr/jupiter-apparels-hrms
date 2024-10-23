@@ -1,36 +1,59 @@
+
 import { useEffect, useState } from 'react';
 import { LeaveApplication } from '../../types/types';
 import {
   getLatestLeaveApplicationsByID as getLatestLeaveApplicationsByID,
-  getLeaveApplicationsByID,
-  getPendingLeavesByID,
 } from '../../services/leaveServices';
-import { useNavigate } from 'react-router-dom';
+
 
 const LeaveTable = ({
-  employee_id,
-  pending,
-  latest,
+  employee_id
 }: {
-  employee_id: string;
-  pending: boolean;
-  latest: boolean;
+  employee_id: string
 }) => {
   const [leaves, setLeaves] = useState<LeaveApplication[]>([]);
-  const isSuperviosr = true;
-  const navigate = useNavigate();
-
+  
   useEffect(() => {
     const fetchLeaves = async () => {
       try {
         let leaves: LeaveApplication[];
-        if (pending) {
-          leaves = await getPendingLeavesByID(employee_id);
-        } else if (latest) {
-          leaves = await getLatestLeaveApplicationsByID(employee_id);
-        } else {
-          leaves = await getLeaveApplicationsByID(employee_id);
-        }
+        leaves = [
+          {
+            application_id: '1',
+            employee_id: 'E123',
+            leave_type: 'Sick Leave',
+            start_date: '2024-09-10',
+            end_date: '2024-09-12',
+            submission_date:'2024-09-05',
+            status: 'Pending',
+            reason: 'Flu',
+            response_date:'-',
+          },
+          {
+            application_id: '2',
+            employee_id: 'E123',
+            leave_type: 'Casual Leave',
+            start_date: '2024-09-20',
+            end_date: '2024-09-22',
+            submission_date:'2024-09-05',
+            status: 'Approved',
+            reason: 'Personal work',
+            response_date:'-',
+          },
+          {
+            application_id: '3',
+            employee_id: 'E123',
+            leave_type: 'Maternity Leave',
+            start_date: '2024-10-01',
+            end_date: '2025-01-01',
+            submission_date:'2024-09-05',
+            status: 'Approved',
+            reason: 'Childbirth',
+            response_date:'-',
+          },
+        ];
+
+        //= await getLatestLeaveApplicationsByID(employee_id);
         setLeaves(leaves);
       } catch (error) {
         console.log('Error fetching leaves:', error);
@@ -58,13 +81,6 @@ const LeaveTable = ({
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Status
               </th>
-              {isSuperviosr && (
-                <>
-                  <th className="py-4 px-4 font-medium text-black text-center dark:text-white">
-                    Actions
-                  </th>
-                </>
-              )}
             </tr>
           </thead>
           <tbody>
@@ -94,36 +110,14 @@ const LeaveTable = ({
                           {new Date(leave.end_date).toLocaleDateString()}
                         </p>
                       </td>
-                      {isSuperviosr && (
-                        <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                          <button
-                            onClick={() =>
-                              navigate('/leave/view/' + leave.application_id)
-                            }
-                            className="hover:text-primary"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="size-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                              />
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                              />
-                            </svg>
-                          </button>
-                        </td>
-                      )}
+                      <td
+                        rowSpan={1}
+                        className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
+                      >
+                        <h5 className="font-medium text-black dark:text-white">
+                          {leave.status}
+                        </h5>
+                      </td>
                     </tr>
                   );
                 })}

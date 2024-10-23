@@ -40,6 +40,8 @@ export const getLeaveApplicationsByID = async (employee_id: string) => {
     throw error.response.data.error;
   }
 };
+
+// this function should return latest leave applications  and all pending leave applications using employee_id
 export const getLatestLeaveApplicationsByID = async (employee_id: string) => {
   try {
     const token = localStorage.getItem('token');
@@ -126,5 +128,20 @@ export const getLeaveCount = async () => {
     return response.data.data;
   } catch (error) {
     throw error.response.data.error;
+  }
+};
+
+// to display the pending leave applications in the suppervisor dashboard
+export const getPendingLeavesBySupervisorID = async (supervisor_id: string) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get(`/leave/pending/supervisor/${supervisor_id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    throw error.response ? error.response.data.error : error.message;
   }
 };

@@ -14,6 +14,7 @@ import {
 import LeaveChart from '../Charts/LeaveChart';
 import LeaveTable from '../Tables/LeaveTable';
 import { useNavigate } from 'react-router-dom';
+import PendingleaveTable from '../Tables/PendingleaveTable'; // Import LeaveTable
 
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
@@ -121,6 +122,12 @@ const EmployeeDashboard = () => {
 
       <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
         <h2 className="text-2xl text-primary font-bold mb-3.5">
+          Leave Heastory
+        </h2>
+        <LeaveTable
+          employee_id={userInfo?.employee_id!}
+        />
+        <h2 className="text-2xl text-primary font-bold mb-3.5">
           Leave Overview
         </h2>
         <LeaveChart
@@ -128,15 +135,18 @@ const EmployeeDashboard = () => {
           remainingLeaves={remaining}
           usedLeaves={used}
         />
-        <h2 className="text-2xl text-primary font-bold mb-3.5">
-          Recent Leave Applications
-        </h2>
-        <LeaveTable
-          employee_id={userInfo?.employee_id!}
-          pending={false}
-          latest={true}
-        />
       </div>
+      {/* Add Supervisor Pending Leave Table */}
+      {isSupervisor && (
+        <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
+          <h2 className="text-2xl text-primary font-bold mb-3.5">
+            Pending Leave Applications
+          </h2>
+          <PendingleaveTable
+            supervisor_id={userInfo?.supervisor_id!} // Pass the supervisor's ID
+          />
+        </div>
+      )}
       <div className="flex gap-6">
         <button
           onClick={() =>
@@ -164,7 +174,7 @@ const EmployeeDashboard = () => {
             Manage Subordinates
           </button>
         )}
-        {(role === 'Manager' || true) && (
+        {isSupervisor && (
           <button
             onClick={() =>
               navigate('/employee/all')
