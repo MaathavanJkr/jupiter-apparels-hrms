@@ -835,10 +835,10 @@ BEGIN
 END $$
 
 -- Procedure to get employee demographics by nationality and preferred language
-CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_nationality VARCHAR(50), IN p_language VARCHAR(50))
+CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_cust_attr_1_value VARCHAR(50), IN p_cust_attr_3_value VARCHAR(50))
 BEGIN
     SELECT * FROM employee_demographics_language_nationality
-    WHERE nationality = p_nationality AND preferred_language = p_language;
+    WHERE cust_attr_1_value = p_cust_attr_1_value AND cust_attr_3_value = p_cust_attr_3_value;
 END $$
 DELIMITER ;
 
