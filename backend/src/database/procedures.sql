@@ -1,3 +1,4 @@
+-- ---------------------------------------------------------------------------------
 -- drop procedures
 DROP PROCEDURE IF EXISTS createAllocatedLeaves;
 DROP PROCEDURE IF EXISTS createBranch;
@@ -73,7 +74,8 @@ DROP PROCEDURE IF EXISTS UpdateJobTitle;
 DROP PROCEDURE IF EXISTS UpdateLeaveApplication;
 DROP PROCEDURE IF EXISTS UpdateOrganization;
 DROP PROCEDURE IF EXISTS UpdatePayGrade;
-
+DROP PROCEDURE IF EXISTS getEmployeeDependentByEmployeeID;
+DROP PROCEDURE IF EXISTS getEmergencyContactByEmployeeID;
 -- Procedure for creating allocated leaves
 DELIMITER $$
 CREATE PROCEDURE createAllocatedLeaves(
@@ -586,12 +588,6 @@ BEGIN
     SELECT * FROM leave_applications WHERE application_id = applicationID;
 END $$
 
--- Procedure to get a leave application by employee ID
-CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
-BEGIN
-    SELECT * FROM leave_applications WHERE employee_id = employeeID;
-END $$
-
 -- Procedure to get all leave applications
 CREATE PROCEDURE GetAllLeaveApplications()
 BEGIN
@@ -844,4 +840,13 @@ BEGIN
     SELECT * FROM employee_demographics_language_nationality
     WHERE nationality = p_nationality AND preferred_language = p_language;
 END $$
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
+BEGIN
+    SELECT * FROM leave_applications WHERE employee_id = employeeID;
+END $$
+
 DELIMITER ;

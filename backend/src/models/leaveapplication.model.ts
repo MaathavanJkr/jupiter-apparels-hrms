@@ -2,7 +2,7 @@ import { RowDataPacket } from "mysql2";
 import db from "../database/database";
 import { v4 as uuidv4 } from "uuid";
 import { Output } from "./output.model";
-import logger from "../utils/logger";
+
 
 enum LeaveType {
   annual = "Annual",
@@ -330,7 +330,6 @@ export const updateLeaveApplicationModel = async (
       },
     };
   } catch (error) {
-    logger.error(`Database Query Failed: ${error}`);
     return { error, message: "Database Query Failed", data: null };
   }
 };

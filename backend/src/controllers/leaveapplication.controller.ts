@@ -1,6 +1,6 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
-import logger from '../../src/utils/logger';
+
 import {
     LeaveApplication,
     createLeaveApplicationModel,
@@ -193,19 +193,18 @@ export const updateLeaveApplication = async (req: Request, res: Response) => {
     const { application_id } = req.params;
     const { status, response_date } = req.body;
 
-    logger.info(`This is Status: ${status}`);
-    logger.info(`This is Date: ${response_date}`);
+
 
     // Check for required fields
     if (!status || !response_date) {
-        logger.error('Missing required fields: status or response_date');
+
         return res.status(400).json({ error: "Missing required fields: status and response_date" });
     }
 
     try {
-        logger.info(`We are here`); // Log to indicate the function is progressing
+
         const result = await getLeaveApplicationByIDModel(application_id);
-        logger.info(`Fetched Leave Application: ${JSON.stringify(result.data)}`); // Log the fetched result
+
 
         // Check if leave application was found
         if (!result.data) {
@@ -214,8 +213,6 @@ export const updateLeaveApplication = async (req: Request, res: Response) => {
 
         const leaveApplication = result.data;
 
-        // Log the leave application content before updating
-        logger.info(`Leave Application before update: ${JSON.stringify(leaveApplication)}`);
 
         // Call the update model with individual parameters
         const updateResult = await updateLeaveApplicationModel(
@@ -228,12 +225,10 @@ export const updateLeaveApplication = async (req: Request, res: Response) => {
             response_date // Set new response date from request body
         );
 
-        logger.info(`Updated Leave Application!!!: ${JSON.stringify(updateResult)}`); // Log the update result
-
         return res.status(200).json(updateResult);
 
-    } catch (error) {
-        logger.error(`Error updating leave application: ${error}`);
+    } catch{
+
         return res.status(500).json({ error: "Internal server error" });
     }
 };
