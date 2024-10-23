@@ -839,3 +839,17 @@ BEGIN
     WHERE cust_attr_1_value = p_nationality AND cust_attr_3_value = p_language;
 END $$
 DELIMITER ;
+
+--Procedure to get all the leave applications for a supervisor
+DELIMITER $$
+CREATE PROCEDURE getAllLeaveApplicationsForSupervisor(
+IN super_id VARCHAR(36))
+BEGIN
+
+	SELECT * FROM leave_applications WHERE application_id IN (
+	SELECT application_id FROM leave_applications JOIN employees 
+    ON leave_applications.employee_id = employees.employee_id 
+    WHERE employees.supervisor_id = super_id);
+
+END$$ 
+DELIMITER ;

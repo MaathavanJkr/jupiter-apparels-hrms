@@ -7,6 +7,7 @@ import {
   getAllLeaveApplicationsModel,
   getLeaveApplicationByIDModel,
   updateLeaveApplicationModel,
+  getLeaveApplicationsForSupervisorModel,
 } from "../models/leaveapplication.model";
 
 export const createLeaveApplication = async (req: Request, res: Response) => {
@@ -114,5 +115,18 @@ export const deleteLeaveApplication = async (req: Request, res: Response) => {
     })
     .catch((error) => {
       return res.status(500).json({ error });
+    });
+};
+
+
+export const getLeaveApplicationsForSupervisor = async (req:Request, res:Response)=>{
+  const { id } = req.params;
+
+  await getLeaveApplicationsForSupervisorModel(id)
+    .then((result)=>{
+      return res.status(200).json(result);
+    })
+    .catch((error)=>{
+      return res.status(500).json({error});
     });
 };
