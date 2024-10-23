@@ -75,7 +75,7 @@ export const getLeaveApplicationByIDModel = async (
             .promise()
             .query<RowDataPacket[][]>("CALL GetLeaveApplicationByID(?)", [application_id]);
 
-        if (Array.isArray(result) && result[0].length === 0) {
+        if (Array.isArray(result) && result.length === 0) {
             return {
                 data: null,
                 error: "Leave application not found",
@@ -83,7 +83,8 @@ export const getLeaveApplicationByIDModel = async (
             };
         } else {
             return {
-                data: result[0] as LeaveApplication[],
+                //data: result[0] as LeaveApplication[],
+                data: (result[0] as LeaveApplication[])[0],
                 error: null,
                 message: null,
             };
