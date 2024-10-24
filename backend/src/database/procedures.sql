@@ -450,8 +450,8 @@ CREATE PROCEDURE GetFilteredEmployees(
     IN name VARCHAR(255), 
     IN department_id VARCHAR(36),
     IN branch_id VARCHAR(36),
-    IN start INT,
-    IN end INT
+    IN offset INT,
+    IN itemsPerPage INT
 )
 BEGIN 
     SET @query = 'SELECT * FROM employees';
@@ -481,8 +481,8 @@ BEGIN
         SET @query = CONCAT(@query, ' WHERE ', @where_clause);
     END IF;
 
-    IF start IS NOT NULL AND end IS NOT NULL AND end != 0 THEN
-        SET @query = CONCAT(@query, ' LIMIT ', start, ', ', end);
+    IF offset IS NOT NULL AND itemsPerPage IS NOT NULL AND itemsPerPage != 0 THEN
+        SET @query = CONCAT(@query, ' LIMIT ', offset, ', ', itemsPerPage);
     END IF;
 
     PREPARE stmt FROM @query;

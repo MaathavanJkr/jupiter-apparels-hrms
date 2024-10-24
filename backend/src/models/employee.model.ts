@@ -154,13 +154,13 @@ export const getFilteredEmployeesModel = async(
   name: string,
   department_id: string,
   branch_id: string,
-  start: number,
-  end: number
+  offset: number,
+  itemPerPage: number
 ) : Promise<Output> => {
     try {
       const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [name, department_id, branch_id, start, end-start]);
+      .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [name, department_id, branch_id, offset, itemPerPage]);
       return { data: result[0] as Employee[], error: null, message: null };
     } catch (error) {
       return {

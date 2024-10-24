@@ -77,8 +77,8 @@ export const createEmployee = async (req: Request, res: Response) => {
     });
 };
 export const getFilteredEmployees = async (req: Request, res: Response) => {
-  const { name, department_id, branch_id, start, end } = req.body;
-  await getFilteredEmployeesModel(name, department_id, branch_id, start, end)
+  const { name, department_id, branch_id, offset, itemsPerPage } = req.body;
+  await getFilteredEmployeesModel(name, department_id, branch_id, offset, itemsPerPage)
     .then((result) => {
       return res.status(200).json(result);
     })
