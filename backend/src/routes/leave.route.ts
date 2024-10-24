@@ -16,6 +16,7 @@ router.put('/reject/:application_id', updateLeaveApplication); // reject leaves
 router.put('/approve/:application_id', updateLeaveApplication); // approve leaves
 
 
+
 // router.get('/balance/:employee_id', getLeaveBalanceByID); // Get leave balance by employee ID
 // router.get('/used/:employee_id', getUsedLeavesByID); // Get used leaves by employee ID
 // router.get('/pending/:employee_id', getPendingLeavesByID); // Get pending leaves by employee ID

@@ -59,7 +59,7 @@ const ViewLeave = () => {
                 notifySuccess('Successfully Rejected');
                 setTimeout(() => {
                     //navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
-                    navigate(0); //Refreshes the page after the rejection.
+                    navigate(-1); //Refreshes the page after the rejection.
                 }, 1500);
             })
             .catch((error) => {
@@ -74,7 +74,7 @@ const ViewLeave = () => {
                 notifySuccess('Successfully Approved');
                 setTimeout(() => {
                    // navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
-                    navigate(0); //Refreshes the page after the
+                    navigate(-1); //Refreshes the page after the
                 }, 1500);
             })
             .catch((error) => {

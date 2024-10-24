@@ -33,7 +33,8 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
 
-  useEffect(() => {
+
+    useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
@@ -205,7 +206,7 @@ function App() {
       />
       <Route
          path="/leave/history/:employee_id"
-        //   path="/leave/history/test"
+
         element={
           <>
             <PageTitle title="Leave History | Jupiter Apparels" />
@@ -223,7 +224,8 @@ function App() {
         }
       />
       <Route
-        path="/supervisor/leaveview/:supervisor_id"
+        //path="/supervisor/leaveview/:supervisor_id"
+          path="/employee/supervisor/employees/:supervisor_id"
         element={
           <>
             <PageTitle title="Leave | Jupiter Apparels" />

@@ -19,9 +19,6 @@ const LeaveHistory = () => {
 
             } catch (err) {
                 console.log("fetching failed");
-            } finally {
-                console.log("Finally")
-
             }
         };
 

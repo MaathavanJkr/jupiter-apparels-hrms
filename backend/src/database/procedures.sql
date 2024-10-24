@@ -85,6 +85,8 @@ DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
 DROP PROCEDURE IF EXISTS getReportByDepartment;
 DROP PROCEDURE IF EXISTS getReportByJobTitle;
 DROP PROCEDURE IF EXISTS getReportByPayGrade;
+DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
+DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
 -- ---------------------------------------------------------------------------------
 
 
@@ -996,6 +998,22 @@ DELIMITER $$
 CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
 BEGIN
     SELECT * FROM leave_applications WHERE employee_id = employeeID;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetEmployeesUnderSupervisor(IN supervisorID VARCHAR(255))
+BEGIN
+    SELECT * FROM employees WHERE supervisor_id = supervisorID;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetEmployeeIdByUserId(IN userID VARCHAR(255))
+BEGIN
+    SELECT employee_id FROM users WHERE user_id = userID;
 END $$
 
 DELIMITER ;
