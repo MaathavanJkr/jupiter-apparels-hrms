@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import ContactTable from '../../components/Tables/ContactTable';
 
 interface GERData {
   department: string;

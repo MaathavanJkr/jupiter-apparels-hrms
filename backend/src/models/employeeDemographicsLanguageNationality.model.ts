@@ -4,8 +4,8 @@ import db from "../database/database";
 import { Output } from "./output.model";
 
 export interface EmployeeDemographics extends RowDataPacket {
-  nationality: string;
-  preferred_language: string;
+  cust_attr_1_value: string;
+  cust_attr_3_value: string;
   employee_count: number;
 }
 

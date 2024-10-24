@@ -19,7 +19,7 @@ const LogIn: React.FC = () => {
     if (username != '' && password != '') {
       await login(username, password)
         .then(() => {
-          navigate('/employees'); //need to change to dashboard later
+          navigate('/dashboard'); //need to change to dashboard later
         })
         .catch((err) => {
           notifyError(err);
@@ -30,7 +30,7 @@ const LogIn: React.FC = () => {
   };
   useEffect(() => {
     if (token) {
-      navigate('/employees'); //need to change to dashboard later
+      navigate('/dashboard'); //need to change to dashboard later
     }
   }, []);
 
