@@ -113,6 +113,10 @@ export const approveLeave = async (application_id: string) => {
         const response = await axiosInstance.put(
             '/leave/approve/' + application_id,
             {
+                status: 'Approved',
+                response_date: new Date().toISOString().split('T')[0],
+            },
+            {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -143,9 +147,8 @@ export const approveLeave = async (application_id: string) => {
 export const rejectLeave = async (application_id: string) => {
     try {
         const token = localStorage.getItem('token');
-        console.log("Reject leave "+ application_id)
         const response = await axiosInstance.put(
-            '/leave/reject/' + application_id, //URL:leave/view/id
+            '/leave/reject/' + application_id,
             {
                 status: 'Rejected',
                 response_date: new Date().toISOString().split('T')[0],
@@ -157,7 +160,6 @@ export const rejectLeave = async (application_id: string) => {
             },
         )
         console.log(new Date().toISOString().split('T')[0]);
-        console.log('succeed');
         return response.data.data;
     } catch (error) {
         throw error.response.data.error;

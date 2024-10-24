@@ -78,7 +78,6 @@ export const getLeaveApplicationsByEmployeeID = async (req: Request, res: Respon
 
 export const updateLeaveApplication = async (req: Request, res: Response) => {
   const { application_id } = req.params;
-    console.log("Controller : " + application_id);
   const {
     employee_id,
     leave_type,
