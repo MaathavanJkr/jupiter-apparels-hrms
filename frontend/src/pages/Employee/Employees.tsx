@@ -84,7 +84,7 @@ const Employees = () => {
           searchBranch,
           searchDepartment,
           itemOffset,
-          endOffset,
+          itemsPerPage,
         );
         const filteredCount = await getFilteredCount(
           nameSearchKey,

@@ -124,8 +124,8 @@ export const getFilteredEmployees = async (
   name: string,
   branch_id: string,
   department_id: string,
-  start: number,
-  end: number,
+  offset: number,
+  itemsPerPage: number,
 ) => {
   try {
     const token = localStorage.getItem('token');
@@ -135,8 +135,8 @@ export const getFilteredEmployees = async (
         name,
         branch_id,
         department_id,
-        start,
-        end,
+        offset,
+        itemsPerPage,
       },
       {
         headers: {
