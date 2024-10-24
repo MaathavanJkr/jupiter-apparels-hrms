@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb"
 import DefaultLayout from "../../layout/DefaultLayout"
 import { useEffect, useState } from "react";
-import { Employee, LeaveBalance, UserInfo } from "../../types/types";
+import { Employee, LeaveBalance, EmployeeInfo } from "../../types/types";
 import { getUserInfoById } from "../../services/userServices";
 import { getLeaveBalanceByID } from "../../services/leaveServices";
 import { getEmployeeByID } from "../../services/employeeServices";
@@ -17,14 +17,14 @@ const Profile = () => {
     if (!isCorrect) {
         navigate("/"); //change to dashboard
     }
-    const [currUserInfo, setCurrUserInfo] = useState<UserInfo>();
+    const [currUserInfo, setCurrUserInfo] = useState<EmployeeInfo>();
     const [currLeaveBalance, setCurrLeaveBalance] = useState<LeaveBalance>();
     const [currSupervisor, setCurrSupervisor] = useState<Employee>();
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const currUserInfo: UserInfo = await getUserInfoById(user_id!);
+                const currUserInfo: EmployeeInfo = await getUserInfoById(user_id!);
                 setCurrUserInfo(currUserInfo);
             } catch (error) {
                 console.log("Failded to fetch info:", error);
@@ -103,7 +103,7 @@ const Profile = () => {
                         <span className="font-bold">Date of Birth:</span> <span className="font-thin">{new Date(currUserInfo?.birth_date!).toLocaleDateString()}</span>
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
-                        <span className="font-bold">NIC:</span>  <span className="font-thin">{currUserInfo?.nic}</span>
+                        <span className="font-bold">NIC:</span>  <span className="font-thin">{currUserInfo?.NIC}</span>
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
                         <span className="font-bold">Contact Number:</span> <span className="font-thin">{currUserInfo?.contact_number}</span>
@@ -136,7 +136,7 @@ const Profile = () => {
                         <span className="font-bold">Supervisor:</span> <span className="font-thin">{currSupervisor ? (currSupervisor?.first_name + " " + currSupervisor?.last_name) : "No supervisor"}</span> {/*Change after backend */}
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
-                        <span className="font-bold">Paygrade:</span> <span className="font-thin">{currUserInfo?.pay_grade_name}</span> {/*Change after backend */}
+                        <span className="font-bold">Paygrade:</span> <span className="font-thin">{currUserInfo?.pay_grade}</span> {/*Change after backend */}
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
                         <span className="font-bold">Job Title:</span>  <span className="font-thin">{currUserInfo?.job_title}</span>
