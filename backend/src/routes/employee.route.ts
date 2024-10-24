@@ -9,6 +9,7 @@ import {
   getFilteredEmployees,
   getFilteredCount,
 } from "../controllers/employee.controller";
+import { getEmployeeBasicInfoByUserID } from "../controllers/employeeBasicInfoView.controller";
 
 const router = Router();
 
@@ -19,5 +20,7 @@ router.post("/search/count", getFilteredCount);
 router.get("/:id", getEmployeeByID);
 router.put("/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
+
+router.get("/info/:user_id", getEmployeeBasicInfoByUserID)
 
 export default router;

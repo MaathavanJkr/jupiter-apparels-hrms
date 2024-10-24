@@ -85,6 +85,7 @@ DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
 DROP PROCEDURE IF EXISTS getReportByDepartment;
 DROP PROCEDURE IF EXISTS getReportByJobTitle;
 DROP PROCEDURE IF EXISTS getReportByPayGrade;
+DROP PROCEDURE IF EXISTS GetEmployeeBasicInfoByUserID;
 -- ---------------------------------------------------------------------------------
 
 
@@ -574,7 +575,7 @@ CREATE PROCEDURE GetFilteredEmployees(
     IN itemsPerPage INT
 )
 BEGIN 
-    SET @query = 'SELECT * FROM employees';
+    SET @query = 'SELECT * FROM employee_basic_info';
     SET @where_clause = '';
 
     IF name IS NOT NULL AND name != '' THEN
@@ -890,6 +891,11 @@ END $$
 CREATE PROCEDURE GetEmployeeBasicInfoByID(IN p_employee_id VARCHAR(36))
 BEGIN
     SELECT * FROM employee_basic_info WHERE employee_id = p_employee_id;
+END $$
+-- Procedure to get employee basic info by user ID. 
+CREATE PROCEDURE GetEmployeeBasicInfoByUserID(IN p_user_id VARCHAR(36))
+BEGIN
+    SELECT * FROM employee_basic_info WHERE user_id = p_user_id;
 END $$
 
 -- Procedure to get employee basic info.

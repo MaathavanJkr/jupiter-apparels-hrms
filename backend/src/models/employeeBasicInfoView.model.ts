@@ -51,6 +51,31 @@ export const getEmployeeBasicInfoByIDModel = async (
     };
   }
 };
+export const getEmployeeBasicInfoByUserIDModel = async (
+  user_id: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetEmployeeBasicInfoByUserID(?)", [user_id]);
+
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Employee not found", message: null };
+    } else {
+      return {
+        data: (result[0] as EmployeeBasicInfo[])[0],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+};
 
 export const getAllEmployeesBasicInfoModel = async (): Promise<Output> => {
   try {
