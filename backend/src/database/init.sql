@@ -235,14 +235,15 @@ SELECT
     e.cust_attr_2_value,
     e.cust_attr_3_value,
     d.name AS department_name,
+    d.department_id AS department_id,
     b.name AS branch_name,
-    b.address AS branch_address,
-    b.contact_number AS branch_contact,
+    b.branch_id AS branch_id,
     jt.title AS job_title,
     pg.grade_name AS pay_grade,
     pg.paygrade AS pay_grade_level,
     es.status AS employment_status,
-    CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name
+    CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name,
+    s.supervisor_id AS supervisor_id
 FROM
     employees e
 JOIN
