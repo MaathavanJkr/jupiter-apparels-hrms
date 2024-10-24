@@ -24,7 +24,7 @@ export interface Employee {
   contact_number: string;
   cust_attr_1_value: string;
   cust_attr_2_value: string;
-  cust_attr_3value: string;
+  cust_attr_3_value: string;
 }
 
 export interface Branch {
@@ -129,7 +129,7 @@ export interface LeaveApplication {
   reason: string;
   submission_date: string;
   status: string;
-  response_date: string;
+  response_date: string | null;
 }
 
 export interface EmployeeCount {

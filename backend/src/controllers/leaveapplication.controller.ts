@@ -1,62 +1,83 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
+
 import {
-  LeaveApplication,
-  createLeaveApplicationModel,
-  deleteLeaveApplicationModel,
-  getAllLeaveApplicationsModel,
-  getLeaveApplicationByIDModel,
-  updateLeaveApplicationModel,
+    LeaveApplication,
+    createLeaveApplicationModel,
+    deleteLeaveApplicationModel,
+    getAllLeaveApplicationsModel,
+    getLeaveApplicationByIDModel,
+    updateLeaveApplicationModel, getLeaveApplicationsByEmployeeIDModel,
 } from "../models/leaveapplication.model";
 
 export const createLeaveApplication = async (req: Request, res: Response) => {
-  const { employee_id, leave_type, start_date, end_date, reason } = req.body;
+    const { employee_id, leave_type, start_date, end_date, reason } = req.body;
 
-  if (!employee_id || !leave_type || !start_date || !end_date || !reason) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
+    if (!employee_id || !leave_type || !start_date || !end_date || !reason) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
 
-  const leaveApplication: LeaveApplication = {
-    employee_id: employee_id as string,
-    leave_type: leave_type as string,
-    start_date: start_date as Date,
-    end_date: end_date as Date,
-    reason: reason as string,
-  } as LeaveApplication;
+    const leaveApplication: LeaveApplication = {
+        employee_id: employee_id as string,
+        leave_type: leave_type as string,
+        start_date: start_date as Date,
+        end_date: end_date as Date,
+        reason: reason as string,
+    } as LeaveApplication;
 
-  await createLeaveApplicationModel(leaveApplication)
-    .then((result) => {
-      return res.status(201).json(result);
-    })
-    .catch((error) => {
-      return res.status(500).json({ error });
-    });
+    await createLeaveApplicationModel(leaveApplication)
+        .then((result) => {
+            return res.status(201).json(result);
+        })
+        .catch((error) => {
+            return res.status(500).json({ error });
+        });
 };
 
 export const getAllLeaveApplications = async (req: Request, res: Response) => {
-  await getAllLeaveApplicationsModel()
-    .then((result) => {
-      return res.status(200).json(result);
-    })
-    .catch((error) => {
-      return res.status(500).json({ error });
-    });
+    await getAllLeaveApplicationsModel()
+        .then((result) => {
+            return res.status(200).json(result);
+        })
+        .catch((error) => {
+            return res.status(500).json({ error });
+        });
 };
 
 export const getLeaveApplicationByID = async (req: Request, res: Response) => {
-  const { id } = req.params;
+    const { application_id } = req.params;
 
-  await getLeaveApplicationByIDModel(id)
-    .then((result) => {
-      return res.status(200).json(result);
-    })
-    .catch((error) => {
-      return res.status(500).json({ error });
-    });
+    if (!application_id) {
+        return res.status(400).json({ error: "Missing application ID"  });
+    }
+
+    try {
+        const result = await getLeaveApplicationByIDModel(application_id);
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({ error });
+    }
+};
+
+
+export const getLeaveApplicationsByEmployeeID = async (req: Request, res: Response) => {
+    const { employee_id } = req.params;
+
+    if (!employee_id) {
+        return res.status(400).json({ error: "Missing employee ID" });
+    }
+
+    try {
+        const result = await getLeaveApplicationsByEmployeeIDModel(employee_id);
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(500).json({ error });
+    }
 };
 
 export const updateLeaveApplication = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { application_id } = req.params;
+    console.log("Controller : " + application_id);
   const {
     employee_id,
     leave_type,
@@ -68,7 +89,7 @@ export const updateLeaveApplication = async (req: Request, res: Response) => {
     response_date,
   } = req.body;
 
-  await getLeaveApplicationByIDModel(id)
+  await getLeaveApplicationByIDModel(application_id)
     .then(async (result) => {
       if (!result.data) {
         return res.status(404).json(result);
@@ -96,23 +117,24 @@ export const updateLeaveApplication = async (req: Request, res: Response) => {
     });
 };
 
-export const deleteLeaveApplication = async (req: Request, res: Response) => {
-  const { id } = req.params;
 
-  await getLeaveApplicationByIDModel(id)
-    .then(async (result) => {
-      if (!result.data) {
-        return res.status(404).json(result);
-      }
-      await deleteLeaveApplicationModel(id)
-        .then((result) => {
-          return res.status(200).json(result);
+export const deleteLeaveApplication = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    await getLeaveApplicationByIDModel(id)
+        .then(async (result) => {
+            if (!result.data) {
+                return res.status(404).json(result);
+            }
+            await deleteLeaveApplicationModel(id)
+                .then((result) => {
+                    return res.status(200).json(result);
+                })
+                .catch((error) => {
+                    return res.status(500).json({ error });
+                });
         })
         .catch((error) => {
-          return res.status(500).json({ error });
+            return res.status(500).json({ error });
         });
-    })
-    .catch((error) => {
-      return res.status(500).json({ error });
-    });
 };

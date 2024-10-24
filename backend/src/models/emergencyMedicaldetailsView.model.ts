@@ -9,7 +9,7 @@ export interface EmergencyMedicalDetails extends RowDataPacket {
   department: string;
   branch: string;
   gender: string;
-  blood_group: string;
+  cust_attr_2_value: string;
   person_to_contact: string;
   relationship: string;
   contact_number: string;
