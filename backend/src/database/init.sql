@@ -1,8 +1,16 @@
 -- These 3 lines only needed for query submission.No need to add to the project.
+-- Uncomment this if DB doesn't exits in PC.
 
-DROP DATABASE IF EXISTS jupiter_apparels;
-CREATE DATABASE jupiter_apparels;
-USE jupiter_apparels;
+-- DROP DATABASE IF EXISTS jupiter_apparels;
+-- CREATE DATABASE jupiter_apparels;
+-- USE jupiter_apparels;
+
+-- If DB doesn't exist in PC then comment this out when running the queries for the 1st time.
+-- Otherwise, it will give an error indicating branches table and the foreign key do not exist.
+-- After creating DB in PC this segment can be uncommented.
+ALTER TABLE branches
+DROP FOREIGN KEY fk_manager;
+
 
 -- Drop all tables
 DROP TABLE IF EXISTS leave_applications;
@@ -181,7 +189,7 @@ CREATE INDEX idx_pay_grade_id_allocated ON allocated_leaves(pay_grade_id);
 
 
 -- ---------------------------------------------------------------------------
--- -------------------------------- Functions ----------------------------------
+-- -------------------------------- Functions --------------------------------
 -- ---------------------------------------------------------------------------
 
 -- Function to get the total approved leaves of a particular type for a given employee.
@@ -223,9 +231,9 @@ SELECT
     e.email,
     e.contact_number,
     e.NIC,
-    e.cust_attr_1_value AS nationality,
-    e.cust_attr_2_value AS blood_group,
-    e.cust_attr_3_value AS preferred_language,
+    e.cust_attr_1_value,
+    e.cust_attr_2_value,
+    e.cust_attr_3_value,
     d.name AS department_name,
     b.name AS branch_name,
     b.address AS branch_address,
@@ -418,7 +426,7 @@ SELECT
     d.name AS department,
     b.name AS branch,
     e.gender,
-    e.cust_attr_2_value as blood_group,
+    e.cust_attr_2_value ,
     ec.name AS person_to_contact,
     ec.relationship,
     ec.contact_number,
@@ -437,9 +445,9 @@ LEFT JOIN
 -- For reporting module.
 CREATE VIEW employee_demographics_language_nationality AS
 SELECT
-    cust_attr_1_value AS nationality,
-    cust_attr_3_value AS preferred_language,
-    COUNT(employee_id) AS employee_count
+    cust_attr_1_value ,
+    cust_attr_3_value ,
+    COUNT(employee_id) 
 FROM
     employees
 GROUP BY
@@ -475,6 +483,7 @@ BEGIN
     END IF;
 END $$
 DELIMITER ;
+
 
 
 -- Ensures that employees can only be assigned to active(valid) job titles
@@ -537,6 +546,24 @@ BEGIN
 END $$
 DELIMITER ;
 
+
+
+
+
+DELETE FROM organizations;
+DELETE FROM branches;
+DELETE FROM departments;
+DELETE FROM pay_grades;
+DELETE FROM allocated_leaves;
+DELETE FROM job_titles;
+DELETE FROM employment_statuses;
+DELETE FROM employees;
+DELETE FROM employee_dependents;
+DELETE FROM emergency_contacts;
+DELETE FROM leave_applications;
+DELETE FROM users;
+DELETE FROM custom_attribute_keys;
+
 INSERT INTO organizations VALUES ('0001', 'Jupiter Apparels', '789 main street, Punjab, Pakistan', 19781001);
 
 INSERT INTO branches (branch_id,name,address,contact_number) VALUES ('B001', 'Punjab', '789 Main Street, Punjab, Pakistan', '+924567890');
@@ -587,7 +614,6 @@ INSERT INTO custom_attribute_keys(name) VALUES ('nationality');
 INSERT INTO custom_attribute_keys(name) VALUES ('blood_group');
 INSERT INTO custom_attribute_keys(name) VALUES ('preferred_language');
 
-
 INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number, cust_attr_1_value, cust_attr_2_value, cust_attr_3_value)
 VALUES
 ('E0003', 'D009', 'B001', NULL, 'Michael', 'Johnson', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234','Nationality-A','AB','Tamil'),
@@ -620,6 +646,7 @@ VALUES
 ('E0028', 'D005', 'B003', 'E0027', 'Victoria', 'Adams', '1997-12-20', 'Female', 'Single', '321 Elm St, Kandy, Sri Lanka', 'victoria.adams@apparel.com', 'NIC028', 'T001', 'PG001', 'S004','+94901234', 'Nationality-B', 'O', 'Tamil'),
 ('E0029', 'D005', 'B003', 'E0027', 'Sebastian', 'Roberts', '1980-03-09', 'Male', 'Married', '654 Cedar Ave, Colombo, Sri Lanka', 'sebastian.roberts@apparel.com', 'NIC029', 'T002', 'PG001', 'S006','+94012345', 'Nationality-C', 'AB', 'Sinhala'),
 ('E0030', 'D005', 'B003', 'E0027', 'Aria', 'Scott', '1989-10-30', 'Female', 'Married', '987 Birch St, Colombo, Sri Lanka', 'aria.scott@apparel.com', 'NIC030', 'T001', 'PG001', 'S006','+94123456', 'Nationality-D', 'A', 'English');
+
 
 INSERT INTO employee_dependents VALUES ('DP0001', 'E0030', 'Alice Doe', 'Daughter', '2010-05-14');
 INSERT INTO employee_dependents VALUES ('DP0002', 'E0025', 'Mark Smith', 'Son', '2012-09-22');

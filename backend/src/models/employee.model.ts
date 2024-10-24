@@ -150,7 +150,49 @@ export const getEmployeeByIDModel = async (
     };
   }
 };
+export const getFilteredEmployeesModel = async(
+  name: string,
+  department_id: string,
+  branch_id: string,
+  offset: number,
+  itemPerPage: number
+) : Promise<Output> => {
+    try {
+      const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [name, department_id, branch_id, offset, itemPerPage]);
+      return { data: result[0] as Employee[], error: null, message: null };
+    } catch (error) {
+      return {
+        data: null,
+        error: error,
+        message: "Database Query Failed",
+      };
+    }
+}
 
+export const getfilteredCountModel = async (
+  name: string,
+  department_id: string,
+  branch_id: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetFilteredEmployeeCount(?, ?, ?)", [
+        name,
+        department_id,
+        branch_id,
+      ]);
+    return result[0][0].count;
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+}
 export const getAllEmployeesModel = async (): Promise<Output> => {
   try {
     const [result] = await db
