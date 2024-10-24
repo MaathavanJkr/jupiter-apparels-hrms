@@ -1,5 +1,6 @@
 import axiosInstance from '../axiosConfig';
 
+// get all the supervisors
 export const getSupervisors = async () => {
   try {
     const token = localStorage.getItem('token');

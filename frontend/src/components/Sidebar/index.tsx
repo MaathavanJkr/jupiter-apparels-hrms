@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup'
 import {getEmployeeIdByUserId} from '../../services/employeeServices.ts'
-
+import {getSupervisors} from "../../services/supervisorServices.ts";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -12,8 +12,12 @@ interface SidebarProps {
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
+
+  // =====================================================
+  // For finding the employee_id from user_id
   const user_id = localStorage.getItem('user_id');
   const [employeeId, setEmployeeId] = useState('');
+
 
   useEffect(() => {
     const fetchEmployeeId = async () => {
@@ -31,6 +35,34 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
     fetchEmployeeId();
   }, [user_id]);
+  // =====================================================
+
+  const [supervisorIds, setSupervisorIds] = useState<string[]>([]); // Store supervisor IDs
+
+  // Fetch All Supervisor IDs
+  useEffect(() => {
+    const fetchSupervisors = async () => {
+      try {
+        const supervisors = await getSupervisors();
+        const supervisorIds = supervisors.map((supervisor: { supervisor_id: string }) => supervisor.supervisor_id);
+        setSupervisorIds(supervisorIds);
+      } catch (error) {
+        console.error('Error fetching supervisor IDs:', error);
+      }
+    };
+
+    fetchSupervisors();
+  }, []);
+
+  //TODO: set the default value to false
+  const [isSupervisor, setIsSupervisor] = useState(true); // Track if employee is a supervisor
+
+  // Check if employeeId is in supervisorIds list
+  useEffect(() => {
+    if (employeeId && supervisorIds.length > 0) {
+      setIsSupervisor(supervisorIds.includes(employeeId)); // Set isSupervisor to true/false
+    }
+  }, [employeeId, supervisorIds]);
 
 
   const trigger = useRef<any>(null);
@@ -306,7 +338,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </li>
                             <li>
                               <NavLink
-                                  to="/leave/all"
+                                 /// to="/leave/all"
+                                  to = {`/leave/history/${employeeId}`}
                                   className={({isActive}) =>
                                       'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
                                       (isActive && '!text-white')
@@ -316,18 +349,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 My Leaves
                               </NavLink>
                             </li>
-                            <li>
-                              <NavLink
-                                  to={`/employee/supervisor/employees/${employeeId}`}
-                                  className={({isActive}) =>
-                                      'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                      (isActive && '!text-white')
-                                  }
-                              >
+                            {isSupervisor && (
+                                <li>
+                                  <NavLink
+                                      to={`/employee/supervisor/employees/${employeeId}`}
+                                      className={({ isActive }) =>
+                                          'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                          (isActive && '!text-white')
+                                      }
+                                  >
+                                    Manage Leaves
+                                  </NavLink>
+                                </li>
+                            )}
 
-                                Manage Leaves
-                              </NavLink>
-                            </li>
                           </ul>
                         </div>
                         {/* <!-- Dropdown Menu End --> */}

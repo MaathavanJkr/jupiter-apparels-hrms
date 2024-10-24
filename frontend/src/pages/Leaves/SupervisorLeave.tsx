@@ -9,12 +9,11 @@ import { getLeaveApplicationsByID } from "../../services/leaveServices";
 
 const SupervisorLeave = () => {
     const { supervisor_id } = useParams<{ supervisor_id: string }>();
-    console.log("Inside SupervisorLeave.jsx supervisor_id: ", supervisor_id);
 
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [leaveApplications, setLeaveApplications] = useState<Record<string, LeaveApplication[]>>({});
     const navigate = useNavigate();
-    const isSupervisor = true; // Implement your logic to check if the user is a supervisor
+    const isSupervisor = true;
 
     // Redirect if not a supervisor
     useEffect(() => {
@@ -32,13 +31,13 @@ const SupervisorLeave = () => {
                 // Handle both array and single employee object
                 if (Array.isArray(fetchedEmployees)) {
                     setEmployees(fetchedEmployees);
-                    console.log('Fetched employees (array):', fetchedEmployees);
+                    //console.log('Fetched employees (array):', fetchedEmployees);
                 } else if (fetchedEmployees && typeof fetchedEmployees === 'object') {
                     const employeesArray = [fetchedEmployees];
                     setEmployees(employeesArray);
-                    console.log('Fetched employees (single object):', employeesArray);
+                    //console.log('Fetched employees (single object):', employeesArray);
                 } else {
-                    console.error('Fetched employees is not an array or object:', fetchedEmployees);
+                    //console.error('Fetched employees is not an array or object:', fetchedEmployees);
                     setEmployees([]);
                 }
             } catch (error) {
@@ -57,7 +56,6 @@ const SupervisorLeave = () => {
     const fetchLeaveApplications = async (employee_id: string) => {
         try {
             const applications: LeaveApplication[] = await getLeaveApplicationsByID(employee_id);
-            console.log('Leave applications for employee:', employee_id, applications);
 
             // Filter applications to only include those with status "Pending"
             const pendingApplications = applications.filter(application => application.status === 'Pending');

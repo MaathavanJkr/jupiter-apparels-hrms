@@ -8,7 +8,9 @@ import {
   deleteEmployee,
   getFilteredEmployees,
   getFilteredCount,
-  getEmployeesUnderSupervisor, getEmployeeIdByUserId,
+  getEmployeesUnderSupervisor,
+  getEmployeeIdByUserId, getAllUniqueSupervisors,
+
 } from "../controllers/employee.controller";
 
 const router = Router();
@@ -21,8 +23,8 @@ router.get("/:id", getEmployeeByID);
 router.put("/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
 router.get("/supervisor/employees/:supervisor_id",getEmployeesUnderSupervisor);
-// employeeRoute.js
 router.get('/user/:user_id/employee', getEmployeeIdByUserId);
+router.get('/supervisor/',getAllUniqueSupervisors);
 
 
 export default router;

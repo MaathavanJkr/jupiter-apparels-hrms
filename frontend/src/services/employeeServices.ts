@@ -207,21 +207,14 @@ export const getEmployeeCount = async () => {
 };
 
 // employeeServices.js
-
 export const getEmployeeIdByUserId = async (user_id: string) => {
     try {
         const token = localStorage.getItem('token');
-        console.log("USER ID INSIDE service file: " + user_id);
-
         const response = await axiosInstance.get(`/employee/user/${user_id}/employee`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
-
-        console.log("Here's the response: ", response.data.data);
-
-        // Return only the employee_id from the response
         return response.data.data.employee_id;
     } catch (error) {
         throw error.response.data.error;

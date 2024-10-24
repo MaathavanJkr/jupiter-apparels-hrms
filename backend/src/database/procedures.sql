@@ -87,6 +87,7 @@ DROP PROCEDURE IF EXISTS getReportByJobTitle;
 DROP PROCEDURE IF EXISTS getReportByPayGrade;
 DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
+DROP PROCEDURE IF EXISTS GetAllSupervisorIDs;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1017,3 +1018,16 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+DELIMITER $$
+-- Procedure to get all non-null supervisors
+CREATE PROCEDURE GetAllSupervisorIDs()
+BEGIN
+    SELECT DISTINCT supervisor_id
+    FROM employees
+    WHERE supervisor_id IS NOT NULL;
+END $$
+DELIMITER ;
+
+
+
