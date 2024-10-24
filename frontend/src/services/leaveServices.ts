@@ -143,8 +143,9 @@ export const approveLeave = async (application_id: string) => {
 export const rejectLeave = async (application_id: string) => {
     try {
         const token = localStorage.getItem('token');
+        console.log("Reject leave "+ application_id)
         const response = await axiosInstance.put(
-            '/leave/reject/' + application_id,
+            '/leave/reject/' + application_id, //URL:leave/view/id
             {
                 status: 'Rejected',
                 response_date: new Date().toISOString().split('T')[0],

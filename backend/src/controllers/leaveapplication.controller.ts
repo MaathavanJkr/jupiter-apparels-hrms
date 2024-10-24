@@ -76,7 +76,8 @@ export const getLeaveApplicationsByEmployeeID = async (req: Request, res: Respon
 };
 
 export const updateLeaveApplication = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { application_id } = req.params;
+    console.log("Controller : " + application_id);
   const {
     employee_id,
     leave_type,
@@ -88,7 +89,7 @@ export const updateLeaveApplication = async (req: Request, res: Response) => {
     response_date,
   } = req.body;
 
-  await getLeaveApplicationByIDModel(id)
+  await getLeaveApplicationByIDModel(application_id)
     .then(async (result) => {
       if (!result.data) {
         return res.status(404).json(result);

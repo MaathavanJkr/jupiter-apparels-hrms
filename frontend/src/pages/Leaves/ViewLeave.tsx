@@ -22,8 +22,7 @@ const ViewLeave = () => {
         const fetchLeave = async (application_id : string) => {
             try {
                 const leave = await getLeaveApplicationByID(application_id);
-                console.log(leave[0]);
-                setLeave(leave[0]);
+                setLeave(leave);
 
             } catch (error) {
                 console.log("Error fetching leave:", error);
@@ -44,7 +43,6 @@ const ViewLeave = () => {
                 try {
                     const employee: Employee = await getEmployeeByID(leave.employee_id!);
                     setEmployee(employee);
-                    console.log(employee);
                 } catch (error) {
                     console.log("Error fetching employee:", error);
                 }
@@ -59,10 +57,10 @@ const ViewLeave = () => {
         rejectLeave(application_id!)
             .then(() => {
                 notifySuccess('Successfully Rejected');
-                // setTimeout(() => {
-                //     //navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
-                //     navigate(0); //Refreshes the page after the rejection.
-                // }, 1500);
+                setTimeout(() => {
+                    //navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
+                    navigate(0); //Refreshes the page after the rejection.
+                }, 1500);
             })
             .catch((error) => {
                 notifyError(`Error Rejecting leave: ${error}`);
