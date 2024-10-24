@@ -9,7 +9,7 @@ import { ToastContainer } from "react-toastify";
 
 const ViewLeave = () => {
     const navigate = useNavigate();
-    const user_id = localStorage.getItem('user_id'); // Retrieve the user ID from local storage
+    //const user_id = localStorage.getItem('user_id'); // Retrieve the user ID from local storage
     const { application_id } = useParams<{ application_id: string }>(); // Get the application ID from the URL params
     const [leave, setLeave] = useState<LeaveApplication>(); // State to hold leave application details
     const [employee, setEmployee] = useState<Employee>(); // State to hold employee details
@@ -73,7 +73,8 @@ const ViewLeave = () => {
             .then(() => {
                 notifySuccess('Successfully Approved');
                 setTimeout(() => {
-                    navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
+                   // navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
+                    navigate(0); //Refreshes the page after the
                 }, 1500);
             })
             .catch((error) => {
