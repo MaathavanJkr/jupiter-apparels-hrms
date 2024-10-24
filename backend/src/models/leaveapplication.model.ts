@@ -219,3 +219,25 @@ export const deleteLeaveApplicationModel = async (
         return { error, message: "Database Query Failed", data: null };
     }
 };
+
+
+export const getLeaveApplicationsForSupervisorModel = async (
+  supervisor_id:string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getAllLeaveApplicationsForSupervisor(?)",[supervisor_id]);
+    return {
+      data: result[0] as LeaveApplication[],
+      error: null,
+      message: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error,
+      message: "Database Query Failed",
+    };
+  }
+};

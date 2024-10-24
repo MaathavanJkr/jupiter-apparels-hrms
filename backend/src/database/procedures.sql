@@ -896,9 +896,20 @@ BEGIN
 END $$
 DELIMITER ;
 
+--Procedure to get all the leave applications for a supervisor
 DELIMITER $$
+CREATE PROCEDURE getAllLeaveApplicationsForSupervisor(
+IN super_id VARCHAR(36))
+BEGIN
 
-<<<<<<< HEAD
+	SELECT * FROM leave_applications WHERE application_id IN (
+	SELECT application_id FROM leave_applications JOIN employees 
+    ON leave_applications.employee_id = employees.employee_id 
+    WHERE employees.supervisor_id = super_id);
+
+END$$ 
+DELIMITER ;
+
 CREATE PROCEDURE getTotalLeavesByDepartmentForPeriod(
     IN p_start_date DATE,
     IN p_end_date DATE
@@ -923,7 +934,7 @@ BEGIN
 END $$
 
 DELIMITER ;
-=======
+
 CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
 BEGIN
     SELECT * FROM leave_applications WHERE employee_id = employeeID;
@@ -931,6 +942,3 @@ END $$
 
 DELIMITER ;
 DELIMITER $$
-
-
->>>>>>> main

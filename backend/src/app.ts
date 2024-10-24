@@ -15,6 +15,7 @@ import jobtitleRoutes from "./routes/jobtitle.route";
 import paygradeRoutes from "./routes/paygrade.route";
 import reportRoutes from "./routes/report.route";
 import remainingLeavesViewRoute from "./routes/remainingLeavesView.route";
+import leaveApplicationRoutes from "./routes/leaveapplication.route";
 import leaveRoutes from "./routes/leave.route";
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/jobtitle", jobtitleRoutes);
 app.use("/paygrade", paygradeRoutes);
 app.use("/report", reportRoutes);
 app.use("/remainingLeavesView", remainingLeavesViewRoute);
+app.use("/leaveapplication",leaveApplicationRoutes);
 app.use("/leave", leaveRoutes);
 
 export default app;

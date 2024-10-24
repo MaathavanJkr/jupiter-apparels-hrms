@@ -8,6 +8,7 @@ import {
     getAllLeaveApplicationsModel,
     getLeaveApplicationByIDModel,
     updateLeaveApplicationModel, getLeaveApplicationsByEmployeeIDModel,
+  getLeaveApplicationsForSupervisorModel,
 } from "../models/leaveapplication.model";
 
 export const createLeaveApplication = async (req: Request, res: Response) => {
@@ -121,20 +122,33 @@ export const updateLeaveApplication = async (req: Request, res: Response) => {
 export const deleteLeaveApplication = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    await getLeaveApplicationByIDModel(id)
-        .then(async (result) => {
-            if (!result.data) {
-                return res.status(404).json(result);
-            }
-            await deleteLeaveApplicationModel(id)
-                .then((result) => {
-                    return res.status(200).json(result);
-                })
-                .catch((error) => {
-                    return res.status(500).json({ error });
-                });
+  await getLeaveApplicationByIDModel(id)
+    .then(async (result) => {
+      if (!result.data) {
+        return res.status(404).json(result);
+      }
+      await deleteLeaveApplicationModel(id)
+        .then((result) => {
+          return res.status(200).json(result);
         })
         .catch((error) => {
-            return res.status(500).json({ error });
+          return res.status(500).json({ error });
         });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+
+
+export const getLeaveApplicationsForSupervisor = async (req:Request, res:Response)=>{
+  const { id } = req.params;
+
+  await getLeaveApplicationsForSupervisorModel(id)
+    .then((result)=>{
+      return res.status(200).json(result);
+    })
+    .catch((error)=>{
+      return res.status(500).json({error});
+    });
 };
