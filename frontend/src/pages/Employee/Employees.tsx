@@ -4,7 +4,7 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import {
   Branch,
   Department,
-  Employee,
+  EmployeeInfo,
   EmploymentStatus,
   JobTitle,
   PayGrade,
@@ -22,7 +22,7 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import ReactPaginate from 'react-paginate';
 
 const Employees = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<EmployeeInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
@@ -94,6 +94,9 @@ const Employees = () => {
         setEmployees(employees);
         setFilteredCount(filteredCount);
         console.log('Filtered Count:', filteredCount);
+        if (itemOffset > filteredCount) {
+          setItemOffset(0);
+        }
       } catch (error) {
         setError('Failed to fetch Employees');
         console.error('Failed to fetch Employees', error);

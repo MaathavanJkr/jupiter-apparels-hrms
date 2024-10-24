@@ -223,12 +223,16 @@ DELIMITER ;
 CREATE VIEW employee_basic_info AS
 SELECT
     e.employee_id,
-    CONCAT(e.first_name, ' ', e.last_name) AS full_name,
+    u.user_id AS user_id,
+    u.username AS username,
+    u.role AS role,
+    e.first_name,
+    e.last_name,
     e.birth_date,
     e.gender,
     e.marital_status,
     e.address,
-    e.email,
+    e.email, 
     e.contact_number,
     e.NIC,
     e.cust_attr_1_value,
@@ -256,6 +260,8 @@ JOIN
     pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
 JOIN
     employment_statuses es ON e.employment_status_id = es.employment_status_id
+LEFT JOIN 
+    users u ON e.employee_id = u.employee_id
 LEFT JOIN
     employees s ON e.supervisor_id = s.employee_id;
 

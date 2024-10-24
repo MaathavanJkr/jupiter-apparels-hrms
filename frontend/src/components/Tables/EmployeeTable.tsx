@@ -1,114 +1,177 @@
-import { useState } from "react";
-import { Employee, Branch, Department, JobTitle, EmploymentStatus, PayGrade, Supervisor } from "../../types/types";
-import { updateEmployee, deleteEmployee, getEmployeeByID } from "../../services/employeeServices";
+import { useState } from 'react';
+import {
+  Employee,
+  Branch,
+  Department,
+  JobTitle,
+  EmploymentStatus,
+  PayGrade,
+  Supervisor,
+  EmployeeInfo,
+} from '../../types/types';
+import {
+  updateEmployee,
+  deleteEmployee,
+  getEmployeeByID,
+} from '../../services/employeeServices';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { notifyError, notifySuccess } from "../../services/notify";
-import { useNavigate } from "react-router-dom";
+import { notifyError, notifySuccess } from '../../services/notify';
+import { useNavigate } from 'react-router-dom';
 
-const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData, jobTitleData, statusData, supervisorData }: { employeeData: Employee[], branchData: Branch[], departmentData: Department[], payGradeData: PayGrade[], jobTitleData: JobTitle[], statusData: EmploymentStatus[], supervisorData: Supervisor[] }) => {
-  const items: Employee[] = Array.isArray(employeeData) ?  employeeData : [];
-
-
+const EmployeeTable = ({
+  employeeData,
+  branchData,
+  departmentData,
+  payGradeData,
+  jobTitleData,
+  statusData,
+  supervisorData,
+}: {
+  employeeData: EmployeeInfo[];
+  branchData: Branch[];
+  departmentData: Department[];
+  payGradeData: PayGrade[];
+  jobTitleData: JobTitle[];
+  statusData: EmploymentStatus[];
+  supervisorData: Supervisor[];
+}) => {
+  const items: EmployeeInfo[] = Array.isArray(employeeData) ? employeeData : [];
 
   const navigate = useNavigate();
 
-
-  const [employeeId, setEmployeeId] = useState<string>("");
+  const [employeeId, setEmployeeId] = useState<string>('');
   const [departmentId, setDepartmentId] = useState<string>('');
   const [branchId, setBranchId] = useState<string>('');
   const [supervisorId, setSupervisorId] = useState<string>('');
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
   const [birthday, setBirthday] = useState<string>('');
-  const [gender, setGender] = useState<string>("");
-  const [maritalStatus, setMaritalStatus] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [nic, setNic] = useState<string>("");
+  const [gender, setGender] = useState<string>('');
+  const [maritalStatus, setMaritalStatus] = useState<string>('');
+  const [address, setAddress] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [nic, setNic] = useState<string>('');
   const [jobTitleId, setJobTitleId] = useState<string>('');
   const [payGradeId, setPayGradeId] = useState<string>('');
   const [employeeStatusId, setEmployeeStatusId] = useState<string>('');
-  const [contactNumber, setContactNumber] = useState<string>("");
+  const [contactNumber, setContactNumber] = useState<string>('');
 
   const [CurrSupervisor, setCurrSupervisor] = useState<Employee>();
 
-  const [action, setAction] = useState<string>("View");
+  const [action, setAction] = useState<string>('View');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [viewSection, setViewSection] = useState<string>("Personal");
+  const [viewSection, setViewSection] = useState<string>('Personal');
 
   const branches: Branch[] = Array.isArray(branchData) ? branchData : [];
-  const departments: Department[] = Array.isArray(departmentData) ? departmentData : [];
+  const departments: Department[] = Array.isArray(departmentData)
+    ? departmentData
+    : [];
   const jobTitles: JobTitle[] = Array.isArray(jobTitleData) ? jobTitleData : [];
-  const employmentStatuses: EmploymentStatus[] = Array.isArray(statusData) ? statusData : [];
+  const employmentStatuses: EmploymentStatus[] = Array.isArray(statusData)
+    ? statusData
+    : [];
   const payGrades: PayGrade[] = Array.isArray(payGradeData) ? payGradeData : [];
-  const supervisors: Supervisor[] = Array.isArray(supervisorData) ? supervisorData : [];
-
-
+  const supervisors: Supervisor[] = Array.isArray(supervisorData)
+    ? supervisorData
+    : [];
 
   const fetchEmployee = async (employee_id: string) => {
     try {
       const currEmployee: Employee = await getEmployeeByID(employee_id);
       if (currEmployee && currEmployee.supervisor_id) {
-        const CurrSupervisor = await getEmployeeByID(currEmployee.supervisor_id);
+        const CurrSupervisor = await getEmployeeByID(
+          currEmployee.supervisor_id,
+        );
         setCurrSupervisor(CurrSupervisor);
       } else {
-        console.log("no supervisor");
+        console.log('no supervisor');
       }
       return currEmployee;
     } catch (error) {
-      console.error("Failed to fetch Employee", error);
+      console.error('Failed to fetch Employee', error);
     }
-  }
+  };
 
   const handleDeleteEmployee = () => {
     if (employeeId !== '') {
       deleteEmployee(employeeId)
         .then(() => {
-          notifySuccess("Employee Deleted");
+          notifySuccess('Employee Deleted');
           setModalOpen(false);
-        }).catch((error) => {
+        })
+        .catch((error) => {
           notifyError(`Failed to delete: ${error}`);
           setModalOpen(false);
-        })
+        });
     } else {
-      notifyError("No Employee Selected");
+      notifyError('No Employee Selected');
     }
-  }
+  };
 
   const handleEditEmployee = () => {
-    if (firstName !== "" && lastName !== "" && email !== "" && nic !== "" && contactNumber !== "" && birthday && maritalStatus !== "" && gender !== "" && address !== ""
-      && jobTitleId !== "" && branchId !== "" && departmentId !== "" && employeeStatusId !== "" && payGradeId !== "" && supervisorId !== ""
+    if (
+      firstName !== '' &&
+      lastName !== '' &&
+      email !== '' &&
+      nic !== '' &&
+      contactNumber !== '' &&
+      birthday &&
+      maritalStatus !== '' &&
+      gender !== '' &&
+      address !== '' &&
+      jobTitleId !== '' &&
+      branchId !== '' &&
+      departmentId !== '' &&
+      employeeStatusId !== '' &&
+      payGradeId !== '' &&
+      supervisorId !== ''
     ) {
-      updateEmployee(employeeId, departmentId, branchId, supervisorId, firstName, lastName, birthday, gender, maritalStatus, address, email, nic, jobTitleId, payGradeId, employeeStatusId, contactNumber)
+      updateEmployee(
+        employeeId,
+        departmentId,
+        branchId,
+        supervisorId,
+        firstName,
+        lastName,
+        birthday,
+        gender,
+        maritalStatus,
+        address,
+        email,
+        nic,
+        jobTitleId,
+        payGradeId,
+        employeeStatusId,
+        contactNumber,
+      )
         .then(() => {
-          notifySuccess("Employee Updated");
+          notifySuccess('Employee Updated');
           setModalOpen(false);
-        }).catch((error) => {
-          notifyError(`Failed to update: ${error}`);
         })
+        .catch((error) => {
+          notifyError(`Failed to update: ${error}`);
+        });
     } else {
-      notifyError("Please fill all fields");
+      notifyError('Please fill all fields');
     }
-  }
+  };
 
   const handleModalSubmit = () => {
     switch (action) {
-      case "Edit":
+      case 'Edit':
         handleEditEmployee();
         break;
-      case "Delete":
+      case 'Delete':
         handleDeleteEmployee();
         break;
       default:
         break;
-
     }
-
-  }
+  };
   const handleViewModalOpen = async (employee_id: string) => {
     const employee = await fetchEmployee(employee_id);
-    setAction("View");
+    setAction('View');
 
     if (employee && employee.employee_id) {
       setEmployeeId(employee.employee_id);
@@ -128,14 +191,13 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
       setEmployeeStatusId(employee.employment_status_id);
       setContactNumber(employee.contact_number);
       setModalOpen(true);
+    } else {
+      notifyError('Employee Not Found');
     }
-    else {
-      notifyError("Employee Not Found");
-    }
-  }
+  };
 
   const handleEditModalOpen = async (employee_id: string) => {
-    setAction("Edit");
+    setAction('Edit');
     const employee = await fetchEmployee(employee_id);
 
     if (employee && employee.employee_id) {
@@ -156,15 +218,14 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
       setEmployeeStatusId(employee.employment_status_id);
       setContactNumber(employee.contact_number);
       setModalOpen(true);
+    } else {
+      notifyError('Employee Not Found');
     }
-    else {
-      notifyError("Employee Not Found");
-    }
-  }
+  };
 
   const handleDeleteModalOpen = async (employee_id: string) => {
-    if (employee_id !== "") {
-      setAction("Delete");
+    if (employee_id !== '') {
+      setAction('Delete');
       const employee = await fetchEmployee(employee_id);
       if (employee && employee.employee_id) {
         setEmployeeId(employee.employee_id);
@@ -172,13 +233,36 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
         setLastName(employee.last_name);
         setModalOpen(true);
       } else {
-        notifyError("Employee Not Found");
+        notifyError('Employee Not Found');
       }
     } else {
-      notifyError("Employee ID is required");
+      notifyError('Employee ID is required');
     }
-  }
-
+  };
+  
+    const userAccountButton = (
+      <div className='flex items-center gap-2 hover:text-primary'>
+      <button className="flex items-center" onClick={()=> navigate('/user/create')}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+          />
+        </svg>
+        <span>Create Account</span>
+      </button>
+    </div>
+    
+    );
+  
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -190,16 +274,16 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                 Name
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
+                Username
+              </th>
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Branch
               </th>
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Department
               </th>
-              <th className="py-4 px-4 font-medium text-black text-center dark:text-white">
+              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
                 Job Title
-              </th>
-              <th className="py-4 px-4 font-medium text-black text-center dark:text-white">
-                Employment Status
               </th>
               <th className="py-4 px-4 font-medium text-black text-center dark:text-white">
                 Actions
@@ -210,51 +294,94 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
             <>
               {items &&
                 items.map((employee, key) => {
-
-
-
                   return (
                     <tr key={key}>
-
-                      <td rowSpan={1} className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                      <td
+                        rowSpan={1}
+                        className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11"
+                      >
                         <h5 className="font-medium text-black dark:text-white">
                           {employee.first_name + ' ' + employee.last_name}
                         </h5>
                       </td>
-                      <td rowSpan={1} className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <p className="text-black dark:text-white">
-                          {branches?.find(branch => branch.branch_id === employee.branch_id)?.name}
+                          {employee.username || userAccountButton}
+                        </p>
+                      </td>
+                      <td
+                        rowSpan={1}
+                        className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
+                      >
+                        <p className="text-black dark:text-white">
+                          {employee.branch_name}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <p className="text-black dark:text-white">
-                          {departments?.find(dept => dept.department_id === employee.department_id)?.name}
+                          {employee.branch_name}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <p className="text-black dark:text-white">
-                          {jobTitles?.find(title => title.job_title_id === employee.job_title_id)?.title}
+                          {employee.job_title}
                         </p>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center">
-                          {employmentStatuses?.find(status => status.employment_status_id === employee.employment_status_id)?.status}
-                        </div>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <div className="flex items-center justify-center space-x-3.5">
-                          <button onClick={() => handleViewModalOpen(employee.employee_id!)} className="hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                          <button
+                            onClick={() =>
+                              handleViewModalOpen(employee.employee_id!)
+                            }
+                            className="hover:text-primary"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                              />
                             </svg>
                           </button>
-                          <button onClick={() => handleEditModalOpen(employee.employee_id)} className="hover:text-primary">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                          <button
+                            onClick={() =>
+                              handleEditModalOpen(employee.employee_id)
+                            }
+                            className="hover:text-primary"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="size-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                              />
                             </svg>
                           </button>
-                          <button onClick={() => handleDeleteModalOpen(employee.employee_id)} className="hover:text-primary">
+                          <button
+                            onClick={() =>
+                              handleDeleteModalOpen(employee.employee_id)
+                            }
+                            className="hover:text-primary"
+                          >
                             <svg
                               className="fill-current"
                               width="18"
@@ -283,72 +410,173 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                           </button>
                         </div>
                       </td>
-
                     </tr>
-                  )
+                  );
                 })}
             </>
           </tbody>
         </table>
       </div>
-      
-      <div className={`fixed left-0 top-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/90 px-4 py-5 overflow-y-auto ${!modalOpen && 'hidden'}`}
+
+      <div
+        className={`fixed left-0 top-0 z-999999 flex h-full min-h-screen w-full items-center justify-center bg-black/90 px-4 py-5 overflow-y-auto ${
+          !modalOpen && 'hidden'
+        }`}
       >
         <div className="w-full max-w-142.5 rounded-lg bg-white px-8 py-12 dark:bg-boxdark md:px-17.5 md:py-15 max-h-screen overflow-y-auto">
           <h3 className="pb-2 text-xl font-bold text-black dark:text-white sm:text-2xl">
-            {{
-              'Edit': `Edit Employee`,
-              'Delete': 'Delete Employee',
-              'View': 'View Employee'
-            }[action]}
+            {
+              {
+                Edit: `Edit Employee`,
+                Delete: 'Delete Employee',
+                View: 'View Employee',
+              }[action]
+            }
           </h3>
           <span className="mx-auto mb-6 inline-block h-1 w-25 rounded bg-primary"></span>
-          {action == "View" && (
+          {action == 'View' && (
             <>
               <div className="flex justify-around pb-8">
                 <div className="flex flex-wrap items-center rounded-lg">
-                  <button onClick={() => setViewSection("Personal")} className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'Personal' && 'border-primary bg-primary text-white'}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                  <button
+                    onClick={() => setViewSection('Personal')}
+                    className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${
+                      viewSection == 'Personal' &&
+                      'border-primary bg-primary text-white'
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                      />
                     </svg>
                     Personal
                   </button>
-                  <button onClick={() => setViewSection("Work")} className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'Work' && 'border-primary bg-primary text-white'}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+                  <button
+                    onClick={() => setViewSection('Work')}
+                    className={`inline-flex items-center gap-2.5 border-y border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${
+                      viewSection == 'Work' &&
+                      'border-primary bg-primary text-white'
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21"
+                      />
                     </svg>
                     Work
                   </button>
-                  <button onClick={() => setViewSection("Contact")} className={`inline-flex items-center gap-2.5 rounded-r-lg border border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${viewSection == 'Contact' && 'border-primary bg-primary text-white'}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+                  <button
+                    onClick={() => setViewSection('Contact')}
+                    className={`inline-flex items-center gap-2.5 rounded-r-lg border border-primary px-2 py-1 font-medium text-primary hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-white dark:hover:border-primary sm:px-6 sm:py-3 ${
+                      viewSection == 'Contact' &&
+                      'border-primary bg-primary text-white'
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="size-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+                      />
                     </svg>
                     Contact
                   </button>
                 </div>
               </div>
               <div className="mb-6">
-                {viewSection === "Personal" && (
+                {viewSection === 'Personal' && (
                   <div className="space-y-2">
-                    <div>Name : {firstName + " " + lastName}</div>
+                    <div>Name : {firstName + ' ' + lastName}</div>
                     <div>NIC : {nic}</div>
-                    <div>Birthday : {new Date(birthday).toLocaleDateString()}</div>
+                    <div>
+                      Birthday : {new Date(birthday).toLocaleDateString()}
+                    </div>
                     <div>Gender : {gender}</div>
                     <div>Marital Status: {maritalStatus}</div>
                   </div>
                 )}
-                {viewSection === "Work" && (
+                {viewSection === 'Work' && (
                   <div className="space-y-2">
-                    <div>Branch : {branches?.find(branch => branch.branch_id === branchId)?.name}</div>
-                    <div>Department: {departments?.find(department => department.department_id === departmentId)?.name}</div>
-                    <div>Job Title: {jobTitles?.find(jobTitle => jobTitle.job_title_id === jobTitleId)?.title}</div>
-                    <div>Employment Status: {employmentStatuses?.find(status => status.employment_status_id === employeeStatusId)?.status}</div>
-                    <div>Supervisor: {CurrSupervisor ? (CurrSupervisor?.first_name + " " + CurrSupervisor?.last_name) : ""}</div>
-                    <div>Paygrade: {payGrades?.find(grade => grade.pay_grade_id === payGradeId)?.grade_name}</div>
+                    <div>
+                      Branch :{' '}
+                      {
+                        branches?.find(
+                          (branch) => branch.branch_id === branchId,
+                        )?.name
+                      }
+                    </div>
+                    <div>
+                      Department:{' '}
+                      {
+                        departments?.find(
+                          (department) =>
+                            department.department_id === departmentId,
+                        )?.name
+                      }
+                    </div>
+                    <div>
+                      Job Title:{' '}
+                      {
+                        jobTitles?.find(
+                          (jobTitle) => jobTitle.job_title_id === jobTitleId,
+                        )?.title
+                      }
+                    </div>
+                    <div>
+                      Employment Status:{' '}
+                      {
+                        employmentStatuses?.find(
+                          (status) =>
+                            status.employment_status_id === employeeStatusId,
+                        )?.status
+                      }
+                    </div>
+                    <div>
+                      Supervisor:{' '}
+                      {CurrSupervisor
+                        ? CurrSupervisor?.first_name +
+                          ' ' +
+                          CurrSupervisor?.last_name
+                        : ''}
+                    </div>
+                    <div>
+                      Paygrade:{' '}
+                      {
+                        payGrades?.find(
+                          (grade) => grade.pay_grade_id === payGradeId,
+                        )?.grade_name
+                      }
+                    </div>
                   </div>
                 )}
 
-                {viewSection === "Contact" && (
+                {viewSection === 'Contact' && (
                   <div className="space-y-2">
                     <div>Phone : {contactNumber}</div>
                     <div>Email: {email}</div>
@@ -359,38 +587,58 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
 
               <div className="-mx-3 flex flex-wrap gap-y-4">
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={() => {
-                    handleEditModalOpen(employeeId)
-                  }} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+                  <button
+                    onClick={() => {
+                      handleEditModalOpen(employeeId);
+                    }}
+                    className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark"
+                  >
                     Edit
                   </button>
                 </div>
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={() => {
-                    navigate('/employee/details/' + employeeId);
-                  }} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+                  <button
+                    onClick={() => {
+                      navigate('/employee/details/' + employeeId);
+                    }}
+                    className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark"
+                  >
                     Dependents & contacts
                   </button>
                 </div>
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={() => { setViewSection("Personal"); setModalOpen(false); }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+                  <button
+                    onClick={() => {
+                      setViewSection('Personal');
+                      setModalOpen(false);
+                    }}
+                    className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1"
+                  >
                     Close
                   </button>
                 </div>
               </div>
             </>
           )}
-          {action == "Delete" && (
+          {action == 'Delete' && (
             <>
-              <div className="mb-4.5">Confirm to delete Employee: {firstName + " " + lastName}</div>
+              <div className="mb-4.5">
+                Confirm to delete Employee: {firstName + ' ' + lastName}
+              </div>
               <div className="-mx-3 flex flex-wrap gap-y-4">
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={() => setModalOpen(false)} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1"
+                  >
                     Cancel
                   </button>
                 </div>
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={handleModalSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+                  <button
+                    onClick={handleModalSubmit}
+                    className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark"
+                  >
                     {action} Employee
                   </button>
                 </div>
@@ -398,9 +646,9 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
             </>
           )}
 
-          {(action == "Edit") && (
+          {action == 'Edit' && (
             <>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
@@ -409,9 +657,7 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                     <input
                       type="text"
                       value={firstName}
-                      onChange={(e) =>
-                        setFirstName(e.target.value)
-                      }
+                      onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Enter First Name"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -423,9 +669,7 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                     <input
                       type="text"
                       value={lastName}
-                      onChange={(e) =>
-                        setLastName(e.target.value)
-                      }
+                      onChange={(e) => setLastName(e.target.value)}
                       placeholder="Enter Last Name"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -437,9 +681,7 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                     <input
                       type="text"
                       value={nic}
-                      onChange={(e) =>
-                        setNic(e.target.value)
-                      }
+                      onChange={(e) => setNic(e.target.value)}
                       placeholder="Enter NIC"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -451,9 +693,7 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                     <input
                       type="date"
                       value={birthday}
-                      onChange={(e) =>
-                        setBirthday(e.target.value)
-                      }
+                      onChange={(e) => setBirthday(e.target.value)}
                       placeholder="Enter NIC"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -499,9 +739,7 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) =>
-                        setEmail(e.target.value)
-                      }
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter Email Address"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -513,9 +751,7 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                     <input
                       type="text"
                       value={address}
-                      onChange={(e) =>
-                        setAddress(e.target.value)
-                      }
+                      onChange={(e) => setAddress(e.target.value)}
                       placeholder="Enter Address"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -531,9 +767,13 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                       onChange={(e) => setBranchId(e.target.value)}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                      <option value="" disabled>Select Branch</option>
-                      {branches?.map(branch => (
-                        <option key={branch.branch_id} value={branch.branch_id}>{branch.name}</option>
+                      <option value="" disabled>
+                        Select Branch
+                      </option>
+                      {branches?.map((branch) => (
+                        <option key={branch.branch_id} value={branch.branch_id}>
+                          {branch.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -546,9 +786,16 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                       onChange={(e) => setDepartmentId(e.target.value)}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                      <option value="" disabled>Select Department</option>
-                      {departments?.map(department => (
-                        <option key={department.department_id} value={department.department_id}>{department.name}</option>
+                      <option value="" disabled>
+                        Select Department
+                      </option>
+                      {departments?.map((department) => (
+                        <option
+                          key={department.department_id}
+                          value={department.department_id}
+                        >
+                          {department.name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -561,9 +808,16 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                       onChange={(e) => setSupervisorId(e.target.value)}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                      <option value="" disabled>Select Supervisor</option>
-                      {supervisors?.map(supervisor => (
-                        <option key={supervisor.supervisor_id} value={supervisor.supervisor_id}>{supervisor.full_name}</option>
+                      <option value="" disabled>
+                        Select Supervisor
+                      </option>
+                      {supervisors?.map((supervisor) => (
+                        <option
+                          key={supervisor.supervisor_id}
+                          value={supervisor.supervisor_id}
+                        >
+                          {supervisor.full_name}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -576,9 +830,14 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                       onChange={(e) => setPayGradeId(e.target.value)}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                      <option value="" disabled>Select Paygrade</option>
-                      {payGrades?.map(grade => (
-                        <option key={grade.pay_grade_id} value={grade.pay_grade_id}>
+                      <option value="" disabled>
+                        Select Paygrade
+                      </option>
+                      {payGrades?.map((grade) => (
+                        <option
+                          key={grade.pay_grade_id}
+                          value={grade.pay_grade_id}
+                        >
                           {grade.grade_name}
                         </option>
                       ))}
@@ -593,9 +852,14 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                       onChange={(e) => setEmployeeStatusId(e.target.value)}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                      <option value="" disabled>Select Employment Status</option>
-                      {employmentStatuses?.map(status => (
-                        <option key={status.employment_status_id} value={status.employment_status_id}>
+                      <option value="" disabled>
+                        Select Employment Status
+                      </option>
+                      {employmentStatuses?.map((status) => (
+                        <option
+                          key={status.employment_status_id}
+                          value={status.employment_status_id}
+                        >
                           {status.status}
                         </option>
                       ))}
@@ -612,14 +876,17 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                       }}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     >
-                      <option value="" disabled>Select Job Title</option>
-                      {
-                        jobTitles?.map(title => (
-                          <option key={title.job_title_id} value={title.job_title_id} >
-                            {title.title}
-                          </option>
-                        ))
-                      }
+                      <option value="" disabled>
+                        Select Job Title
+                      </option>
+                      {jobTitles?.map((title) => (
+                        <option
+                          key={title.job_title_id}
+                          value={title.job_title_id}
+                        >
+                          {title.title}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="mb-4.5">
@@ -629,9 +896,7 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
                     <input
                       type="text"
                       value={contactNumber}
-                      onChange={(e) =>
-                        setContactNumber(e.target.value)
-                      }
+                      onChange={(e) => setContactNumber(e.target.value)}
                       placeholder="Enter Contact Number"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -640,24 +905,29 @@ const EmployeeTable = ({ employeeData, branchData, departmentData, payGradeData,
               </div>
               <div className="-mx-3 flex flex-wrap gap-y-4">
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={() => setModalOpen(false)} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-1 hover:bg-meta-1 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1"
+                  >
                     Cancel
                   </button>
                 </div>
                 <div className="w-full px-3 2xsm:w-1/2">
-                  <button onClick={handleModalSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+                  <button
+                    onClick={handleModalSubmit}
+                    className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark"
+                  >
                     {action} Employee
                   </button>
                 </div>
               </div>
             </>
           )}
-
         </div>
-      </div >
+      </div>
       <ToastContainer />
     </div>
   );
-}
+};
 
 export default EmployeeTable;
