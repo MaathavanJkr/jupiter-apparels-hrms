@@ -120,15 +120,58 @@ export const deleteEmployee = async (employee_id: string) => {
   }
 };
 
-export const getEmployees = async () => {
+export const getFilteredEmployees = async (
+  name: string,
+  branch_id: string,
+  department_id: string,
+  offset: number,
+  itemsPerPage: number,
+) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('/employee', {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await axiosInstance.post(
+      '/employee/search',
+      {
+        name,
+        branch_id,
+        department_id,
+        offset,
+        itemsPerPage,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
     return response.data.data;
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    return error.response.data.error;
+  }
+};
+
+export const getFilteredCount = async (
+  name: string,
+  branch_id: string,
+  department_id: string,
+) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.post(
+      '/employee/search/count',
+      {
+        name,
+        branch_id,
+        department_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.count;
   } catch (error) {
     console.error('Error fetching employees:', error);
     return error.response.data.error;
