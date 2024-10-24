@@ -76,6 +76,7 @@ DROP PROCEDURE IF EXISTS UpdateOrganization;
 DROP PROCEDURE IF EXISTS UpdatePayGrade;
 DROP PROCEDURE IF EXISTS getEmployeeDependentByEmployeeID;
 DROP PROCEDURE IF EXISTS getEmergencyContactByEmployeeID;
+DROP PROCEDURE IF EXISTS  GetLeaveApplicationByEmployeeID;
 -- Procedure for creating allocated leaves
 DELIMITER $$
 CREATE PROCEDURE createAllocatedLeaves(
@@ -850,3 +851,6 @@ BEGIN
 END $$
 
 DELIMITER ;
+DELIMITER $$
+
+

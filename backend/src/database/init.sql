@@ -426,7 +426,7 @@ SELECT
     d.name AS department,
     b.name AS branch,
     e.gender,
-    e.cust_attr_2_value as blood_group,
+    e.cust_attr_2_value ,
     ec.name AS person_to_contact,
     ec.relationship,
     ec.contact_number,
@@ -445,9 +445,9 @@ LEFT JOIN
 -- For reporting module.
 CREATE VIEW employee_demographics_language_nationality AS
 SELECT
-    cust_attr_1_value AS nationality,
-    cust_attr_3_value AS preferred_language,
-    COUNT(employee_id) AS employee_count
+    cust_attr_1_value ,
+    cust_attr_3_value ,
+    COUNT(employee_id) 
 FROM
     employees
 GROUP BY
