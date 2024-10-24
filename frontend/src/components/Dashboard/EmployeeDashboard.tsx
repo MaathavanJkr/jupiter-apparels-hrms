@@ -122,7 +122,7 @@ const EmployeeDashboard = () => {
 
       <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
         <h2 className="text-2xl text-primary font-bold mb-3.5">
-          Leave Heastory
+          Leave History
         </h2>
         <LeaveTable
           employee_id={userInfo?.employee_id!}
@@ -182,6 +182,16 @@ const EmployeeDashboard = () => {
             className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Manage Employees
+          </button>
+        )}
+        {isSupervisor && (
+          <button
+            onClick={() =>
+              navigate('/user/create')
+            }
+            className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            Create User Account
           </button>
         )}
       </div>
