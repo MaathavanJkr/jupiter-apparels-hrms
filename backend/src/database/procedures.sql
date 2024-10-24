@@ -78,8 +78,6 @@ DROP PROCEDURE IF EXISTS GetFilteredEmployees;
 DROP PROCEDURE IF EXISTS getEmployeeDependentByEmployeeID;
 DROP PROCEDURE IF EXISTS getEmergencyContactByEmployeeID;
 DROP PROCEDURE IF EXISTS GetFilteredEmployeeCount;
-DROP PROCEDURE IF EXISTS getEmployeeDependentByEmployeeID;
-DROP PROCEDURE IF EXISTS getEmergencyContactByEmployeeID;
 DROP PROCEDURE IF EXISTS GetLeaveApplicationByEmployeeID;
 DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 DROP PROCEDURE IF EXISTS getTotalLeavesByDepartmentForPeriod;
@@ -567,6 +565,46 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE GetFilteredEmployeeCount(
+    IN name VARCHAR(255), 
+    IN department_id VARCHAR(36),
+    IN branch_id VARCHAR(36)
+)
+BEGIN 
+    SET @query = 'SELECT COUNT(*) as count FROM employees';
+    SET @where_clause = '';
+
+    IF name IS NOT NULL AND name != '' THEN
+        SET @where_clause = CONCAT(@where_clause, ' first_name LIKE "', name, '%" OR last_name LIKE "', name, '%"');
+    END IF; 
+
+    IF department_id IS NOT NULL AND department_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND department_id = "', department_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' department_id = "', department_id, '"');
+        END IF;
+    END IF;
+
+    IF branch_id IS NOT NULL AND branch_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND branch_id = "', branch_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' branch_id = "', branch_id, '"');
+        END IF;
+    END IF;
+
+    IF LENGTH(@where_clause) > 0 THEN
+        SET @query = CONCAT(@query, ' WHERE ', @where_clause);
+    END IF;
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
+
+DELIMITER ;
 
 DELIMITER $$
 -- Procedure to get employment status by ID
