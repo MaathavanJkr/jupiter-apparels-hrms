@@ -85,6 +85,7 @@ DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
 DROP PROCEDURE IF EXISTS getReportByDepartment;
 DROP PROCEDURE IF EXISTS getReportByJobTitle;
 DROP PROCEDURE IF EXISTS getReportByPayGrade;
+DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 -- ---------------------------------------------------------------------------------
 
 
