@@ -442,6 +442,59 @@ BEGIN
     SELECT * FROM employees;
 END $$
 
+-- Procedure to get all employees by filter
+DELIMITER $$
+
+CREATE PROCEDURE getAllEmployeesByFilter(
+    IN p_department_id VARCHAR(36),
+    IN p_branch_id VARCHAR(36),
+    IN p_job_title_id VARCHAR(36),
+    IN p_pay_grade_id VARCHAR(36),
+    IN p_employment_status_id VARCHAR(36)
+)
+BEGIN
+    SET @query = 'SELECT 
+                     employee_id,
+                     first_name,
+                     last_name,
+                     email,
+                     contact_number,
+                     department_id,
+                     branch_id,
+                     job_title_id,
+                     pay_grade_id,
+                     employment_status_id
+                 FROM employees WHERE 1 = 1';
+
+    IF p_department_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND department_id = "', p_department_id, '"');
+    END IF;
+
+    IF p_branch_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND branch_id = "', p_branch_id, '"');
+    END IF;
+
+    IF p_job_title_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND job_title_id = "', p_job_title_id, '"');
+    END IF;
+
+    IF p_pay_grade_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND pay_grade_id = "', p_pay_grade_id, '"');
+    END IF;
+
+    IF p_employment_status_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND employment_status_id = "', p_employment_status_id, '"');
+    END IF;
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+    
+END $$
+
+DELIMITER ;
+
+
 -- Procedure to update an employee
 CREATE PROCEDURE UpdateEmployee(
     IN employeeID VARCHAR(255),
@@ -845,6 +898,32 @@ DELIMITER ;
 
 DELIMITER $$
 
+<<<<<<< HEAD
+CREATE PROCEDURE getTotalLeavesByDepartmentForPeriod(
+    IN p_start_date DATE,
+    IN p_end_date DATE
+)
+BEGIN
+    SELECT 
+        d.department_id,
+        d.name AS department_name,
+        COUNT(la.application_id) AS total_leaves
+    FROM 
+        employees e
+    JOIN 
+        departments d ON e.department_id = d.department_id
+    JOIN 
+        leave_applications la ON e.employee_id = la.employee_id
+    WHERE 
+        la.start_date BETWEEN p_start_date AND p_end_date
+    GROUP BY 
+        d.department_id
+    ORDER BY 
+        d.name;
+END $$
+
+DELIMITER ;
+=======
 CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
 BEGIN
     SELECT * FROM leave_applications WHERE employee_id = employeeID;
@@ -854,3 +933,4 @@ DELIMITER ;
 DELIMITER $$
 
 
+>>>>>>> main
