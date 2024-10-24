@@ -76,7 +76,18 @@ DROP PROCEDURE IF EXISTS UpdateOrganization;
 DROP PROCEDURE IF EXISTS UpdatePayGrade;
 DROP PROCEDURE IF EXISTS getEmployeeDependentByEmployeeID;
 DROP PROCEDURE IF EXISTS getEmergencyContactByEmployeeID;
-DROP PROCEDURE IF EXISTS  GetLeaveApplicationByEmployeeID;
+DROP PROCEDURE IF EXISTS GetLeaveApplicationByEmployeeID;
+DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
+DROP PROCEDURE IF EXISTS getTotalLeavesByDepartmentForPeriod;
+DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
+DROP PROCEDURE IF EXISTS getReportByDepartment;
+DROP PROCEDURE IF EXISTS getReportByJobTitle;
+DROP PROCEDURE IF EXISTS getReportByPayGrade;
+-- ---------------------------------------------------------------------------------
+
+
+
+
 -- Procedure for creating allocated leaves
 DELIMITER $$
 CREATE PROCEDURE createAllocatedLeaves(
@@ -494,8 +505,8 @@ END $$
 
 DELIMITER ;
 
-
 -- Procedure to update an employee
+DELIMITER $$
 CREATE PROCEDURE UpdateEmployee(
     IN employeeID VARCHAR(255),
     IN departmentID VARCHAR(255),
@@ -541,6 +552,9 @@ BEGIN
     WHERE employee_id = employeeID;
 END $$
 
+DELIMITER ;
+
+DELIMITER $$
 -- Procedure to delete an employee
 CREATE PROCEDURE DeleteEmployee(IN employeeID VARCHAR(255))
 BEGIN
@@ -910,6 +924,7 @@ BEGIN
 END$$ 
 DELIMITER ;
 
+DELIMITER $$
 CREATE PROCEDURE getTotalLeavesByDepartmentForPeriod(
     IN p_start_date DATE,
     IN p_end_date DATE
@@ -935,10 +950,10 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
 CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
 BEGIN
     SELECT * FROM leave_applications WHERE employee_id = employeeID;
 END $$
 
 DELIMITER ;
-DELIMITER $$
