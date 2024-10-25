@@ -6,6 +6,8 @@ import {
   deleteEmployeeModel,
   getAllEmployeesModel,
   getEmployeeByIDModel,
+  getFilteredEmployeesModel,
+  getfilteredCountModel,
   updateEmployeeModel,
 } from "../models/employee.model";
 
@@ -69,6 +71,27 @@ export const createEmployee = async (req: Request, res: Response) => {
   await createEmployeeModel(employee)
     .then((result) => {
       return res.status(201).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+export const getFilteredEmployees = async (req: Request, res: Response) => {
+  const { name, department_id, branch_id, offset, itemsPerPage } = req.body;
+  await getFilteredEmployeesModel(name, department_id, branch_id, offset, itemsPerPage)
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+
+export const getFilteredCount = async (req: Request, res: Response) => {
+  const { name, department_id, branch_id } = req.body;
+  await getfilteredCountModel(name, department_id, branch_id)
+    .then((result) => {
+      return res.status(200).json({ count: result });
     })
     .catch((error) => {
       return res.status(500).json({ error });
