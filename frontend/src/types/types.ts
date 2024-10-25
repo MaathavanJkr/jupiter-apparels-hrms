@@ -151,3 +151,16 @@ export interface Organization {
   address: string;
   reg_no: number;
 }
+
+export interface TLDData {
+  startdate: string;
+  enddate: string;
+}
+
+export interface EDRData {
+  department: string;
+}
+
+export interface GERData {
+  group: string;
+}

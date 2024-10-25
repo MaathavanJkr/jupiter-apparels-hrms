@@ -10,7 +10,12 @@ export interface TotalLeaves extends RowDataPacket {
   total_leaves: number;
 }
 
-export const reportGroups = ["Department", "JobTitle", "PayGrade"];
+export const reportGroups = [
+  "Department",
+  "JobTitle",
+  "PayGrade",
+  "EmploymentStatus",
+];
 
 export const getEmployeesByDepartmentIDModel = async (
   dept_id: string
@@ -83,12 +88,12 @@ export const getReportsByGroupModel = async (
   try {
     const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>(`CALL getReportBy${groupBy}()`);
+      .query<RowDataPacket[][]>(`CALL getReportBy(?)`, [groupBy]);
     if (Array.isArray(result) && result.length === 0) {
       return { data: null, error: "User not found", message: null };
     } else {
       return {
-        data: result[0] as TotalLeaves[],
+        data: result[0],
         error: null,
         message: null,
       };

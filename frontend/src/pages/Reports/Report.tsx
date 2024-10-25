@@ -2,26 +2,31 @@ import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import EDRTable from '../../components/Tables/EDRTable';
 import TLDTable from '../../components/Tables/TLDTable';
-import axiosInstance from '../../axiosConfig';
+import GERTable from '../../components/Tables/GERTable';
+import { TLDData, EDRData, GERData } from '../../types/types';
+import {
+  fetchEDRReportData,
+  fetchTLDReportData,
+  fetchGERReportData,
+} from '../../services/reportTableServices';
 
-interface TLDData {
-  startdate: string;
-  enddate: string;
-}
 const defaultTLDData: TLDData = {
   startdate: '',
   enddate: '',
 };
 
-interface EDRData {
-  department: string;
-}
-
 const defaultEDRData: EDRData = {
   department: '',
 };
 
+const defaultGERData: GERData = {
+  group: '',
+};
+
 const Report = () => {
+  const [GERData, setGERData] = useState<GERData>(defaultGERData);
+  const [GERReportData, setGERReportData] = useState<any>(null);
+
   const [TLDData, setTLDData] = useState<TLDData>(defaultTLDData);
   const [TLDReportData, setTLDReportData] = useState<any>(null);
 
@@ -31,6 +36,12 @@ const Report = () => {
   const resetReports = () => {
     setTLDReportData(null);
     setEDRReportData(null);
+    setGERReportData(null);
+  };
+
+  const handleGERChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setGERData((prevData) => ({ ...prevData, [name]: value }));
   };
 
   const handleEDRChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -43,33 +54,6 @@ const Report = () => {
   ) => {
     const { name, value } = e.target;
     setTLDData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const fetchEDRReportData = async () => {
-    try {
-      resetReports();
-      const response = await axiosInstance.get(
-        `/report/employee/dept/${EDRData.department}`,
-      );
-      setEDRReportData(response.data);
-    } catch (error) {
-      console.error('Error fetching report data:', error);
-    }
-  };
-
-  const fetchTLDReportData = async () => {
-    try {
-      resetReports();
-      const response = await axiosInstance.get(`/report/totalleaves`, {
-        params: {
-          start_date: TLDData.startdate,
-          end_date: TLDData.enddate,
-        },
-      });
-      setTLDReportData(response.data);
-    } catch (error) {
-      console.error('Error fetching report data:', error);
-    }
   };
 
   return (
@@ -110,7 +94,10 @@ const Report = () => {
             </div>
             <button
               className="mt-10 hover:bg-green-500 card-btn text-gray-300 self-center dark:bg-blue-950 dark:hover:bg-green-500"
-              onClick={fetchEDRReportData}
+              onClick={async () => {
+                resetReports();
+                setEDRReportData(await fetchEDRReportData(EDRData));
+              }}
             >
               Generate
             </button>
@@ -147,7 +134,44 @@ const Report = () => {
             </div>
             <button
               className="mt-8 hover:bg-green-500 card-btn text-gray-300 self-center mt-3 dark:bg-blue-950 dark:hover:bg-green-500"
-              onClick={fetchTLDReportData}
+              onClick={async () => {
+                resetReports();
+                setTLDReportData(await fetchTLDReportData(TLDData));
+              }}
+            >
+              Generate
+            </button>
+          </div>
+
+          <div className="shadow-lg flex flex-col w-[30%] my-5 bg-slate-200 rounded-3xl h-full dark:bg-blue-800">
+            <h1 className="p-5 text-lg text-black font-bold bg-slate-300 text-center rounded-t-lg dark:text-white dark:bg-blue-950 shadow-lg">
+              Grouped Employee Report
+            </h1>
+            <div className="w-full justify-around flex flex-col items-center">
+              <div className="p-5 ">
+                <h2 className="my-5 text-black-2 dark:text-white">Group By</h2>
+                <select
+                  value={GERData.group}
+                  name="group"
+                  onChange={handleGERChange}
+                  className="p-3 px-20 dark:bg-blue-950 shadow-lg rounded-md text-black-2  dark:text-white"
+                >
+                  <option value="" disabled>
+                    Select a Group
+                  </option>
+                  <option value="Department">Department</option>
+                  <option value="PayGrade">Pay Grade</option>
+                  <option value="JobTitle">Job Title</option>
+                  <option value="EmploymentStatus">Employement Status</option>
+                </select>
+              </div>
+            </div>
+            <button
+              className="mt-10 hover:bg-green-500 card-btn text-gray-300 self-center dark:bg-blue-950 dark:hover:bg-green-500"
+              onClick={async () => {
+                resetReports();
+                setGERReportData(await fetchGERReportData(GERData));
+              }}
             >
               Generate
             </button>
@@ -157,6 +181,7 @@ const Report = () => {
         <div className="w-full mt-5">
           {EDRReportData && <EDRTable reportdata={EDRReportData} />}
           {TLDReportData && <TLDTable reportdata={TLDReportData} />}
+          {GERReportData && <GERTable reportdata={GERReportData} />}
         </div>
       </div>
     </DefaultLayout>

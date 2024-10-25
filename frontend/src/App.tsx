@@ -204,7 +204,7 @@ function App() {
         }
       />
       <Route
-         path="/leave/history/:employee_id"
+        path="/leave/history/:employee_id"
         //   path="/leave/history/test"
         element={
           <>

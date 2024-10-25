@@ -1,6 +1,10 @@
 // src/routes/index.ts
 import { Router } from "express";
-import { getEmployeesByDepartment, getReportByGroup, getTotalLeavesByDepartmentForPeriod } from "../controllers/report.controller";
+import {
+  getEmployeesByDepartment,
+  getReportByGroup,
+  getTotalLeavesByDepartmentForPeriod,
+} from "../controllers/report.controller";
 
 const router = Router();
 

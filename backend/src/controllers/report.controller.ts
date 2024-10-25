@@ -59,13 +59,10 @@ export const getTotalLeavesByDepartmentForPeriod = async (
 
 export const getReportByGroup = async (req: Request, res: Response) => {
   const group = req.query.group as string;
-
   if (!group || !reportGroups.includes(group)) {
-    return res
-      .status(400)
-      .json({
-        error: "Invalid group. Please use Department, JobTitle, or PayGrade.",
-      });
+    return res.status(400).json({
+      error: "Invalid group. Please use Department, JobTitle, or PayGrade.",
+    });
   }
 
   await getReportsByGroupModel(group)
@@ -81,4 +78,3 @@ export const getReportByGroup = async (req: Request, res: Response) => {
       return res.status(500).json({ error });
     });
 };
-
