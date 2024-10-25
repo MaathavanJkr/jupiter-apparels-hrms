@@ -71,7 +71,7 @@ const AdminDashboard = () => {
     </svg>
   </CardDataStats>
 
-  <CardDataStats title="Departments" total="10">
+  <CardDataStats title="Departments" total="9">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
