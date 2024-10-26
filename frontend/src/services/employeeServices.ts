@@ -206,6 +206,20 @@ export const getEmployeeCount = async () => {
   }
 };
 
+export const getEmployees = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get('/employee', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        return error.response.data.error;
+    }
+};
+
 // employeeServices.js
 export const getEmployeeIdByUserId = async (user_id: string) => {
     try {
