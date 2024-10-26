@@ -52,3 +52,26 @@ export const changePassword = async (
     throw error.response ? error.response.data.message : error;
   }
 };
+
+export const createUserAccount = async (employee_id: string,role:string, username: string, password: string) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.post(
+      '/user',
+      {
+        employee_id,
+        username,
+        password,
+        role
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+}
