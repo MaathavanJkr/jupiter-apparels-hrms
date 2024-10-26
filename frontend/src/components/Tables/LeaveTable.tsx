@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { LeaveApplication } from '../../types/types'; // Import your LeaveApplication type
 import { useNavigate } from 'react-router-dom';

@@ -117,6 +117,7 @@ export interface EmployeeInfo {
   NIC:string,
   contact_number:string,
   department_name:string,
+  branch_id: string;  
   branch_name:string,
   job_title:string,
   employment_status:string,
@@ -170,6 +171,7 @@ export interface EmployeeCount {
   total_count: number;
   male_count: number;
   female_count: number;
+
 }
 
 export interface LeaveCount {
@@ -184,4 +186,17 @@ export interface Organization {
   name: string;
   address: string;
   reg_no: number;
+}
+
+export interface EmployeeCountByDepartment {
+  total_count: number;
+  dep1_count: number;
+  dep2_count: number;
+  dep3_count: number;
+  dep4_count: number;
+  dep5_count: number;
+  dep6_count: number;
+  dep7_count: number;
+  dep8_count: number;
+  dep9_count: number;
 }

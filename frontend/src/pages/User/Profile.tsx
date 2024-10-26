@@ -146,44 +146,6 @@ const Profile = () => {
                     </p>
                 </div>
             </div>
-            <div className="mt-10.5 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
-                <h2 className="text-2xl text-primary font-bold mb-3.5">Remaining Leaves</h2>
-
-                {/* Data boxes */}
-                <div className="grid grid-cols-2 gap-4">
-                    {/* Box 1 */}
-                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
-                        <p className="text-lg font-semibold">Annual Leaves</p>
-                        <p className="text-xl font-bold">10</p> {/* Replace with dynamic value */}
-                    </div>
-
-                    {/* Box 2 */}
-                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
-                        <p className="text-lg font-semibold">Casual Leaves</p>
-                        <p className="text-xl font-bold">5</p> {/* Replace with dynamic value */}
-                    </div>
-
-                    {/* Box 3 */}
-                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
-                        <p className="text-lg font-semibold">Maternity Leaves</p>
-                        <p className="text-xl font-bold">7</p> {/* Replace with dynamic value */}
-                    </div>
-
-                    {/* Box 4 */}
-                    <div className="bg-gray-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark">
-                        <p className="text-lg font-semibold">No Pay Leaves</p>
-                        <p className="text-xl font-bold">2</p> {/* Replace with dynamic value */}
-                    </div>
-                </div>
-
-                {/* Button */}
-                <button
-                    onClick={() => navigate('/leave/history/' + currUserInfo?.employee_id)}
-                    className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                >
-                    View Leave History
-                </button>
-            </div>
         </DefaultLayout>
     )
 }

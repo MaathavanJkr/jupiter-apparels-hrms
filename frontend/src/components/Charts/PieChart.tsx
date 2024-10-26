@@ -1,7 +1,7 @@
 import { ApexOptions } from 'apexcharts';
 import  { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { LeaveCount } from '../../types/types';
+import { EmployeeCountByDepartment } from '../../types/types';
 
 interface PieChartState {
   series: number[];
@@ -12,30 +12,44 @@ const options: ApexOptions = {
     fontFamily: 'Satoshi, sans-serif',
     type: 'donut',
   },
-  colors: ['#AB47BC', '#26C6DA', '#1E3A5F'],
-  labels: ['Approved', 'Rejected', 'Pending'],
-  legend: {
-    show: false,
-    position: 'bottom',
-  },
-
+  
+  colors: ['#AB47BC', '#1E3A5F', '#FF7043', '#66BB6A', '#FFEB3B', '#8D6E63', '#42A5F5', '#78909C', '#D4E157'],
+  
+  
+  labels: ['HR', 'Finance', 'IT', 'Marketing', 'Production', 'Customer Service', 'Sales', 'Quality Assurance', 'Corporate Management'],
+  
   plotOptions: {
     pie: {
       donut: {
-        size: '0%',
+        size: '100%',  
         background: 'transparent',
       },
     },
   },
+  
   dataLabels: {
     enabled: false,
   },
+
+  legend: {
+    show: true,
+    position: 'right',  
+    horizontalAlign: 'center',  
+    formatter: function (val, opts) {
+      const total = opts.w.globals.seriesTotals.reduce((acc: number, value: number) => acc + value, 0);
+      const percentage = ((opts.w.globals.series[opts.seriesIndex] / total) * 100).toFixed(2);
+      return `${val}: ${percentage}%`;
+    },
+  },
+  
+  
+
   responsive: [
     {
       breakpoint: 2600,
       options: {
         chart: {
-          width: 380,
+          width: 580,
         },
       },
     },
@@ -43,25 +57,32 @@ const options: ApexOptions = {
       breakpoint: 640,
       options: {
         chart: {
-          width: 200,
+          width: 100,
         },
       },
     },
   ],
 };
 
-const PieChart = ({countData}:{countData:LeaveCount}) => {
- // const pending = (countData.pending_count/countData.total_count)*100;
-  //const approved = (countData.approved_count/countData.total_count)*100;
- // const rejected = (countData.rejected_count/countData.total_count)*100;
+const PieChart = ({countData}:{countData:EmployeeCountByDepartment}) => {
+  // const pending = (countData.dep1_count/countData.total_count)*100;
+  // const pending = (countData.dep2_count/countData.total_count)*100;
+  // const pending = (countData.dep3_count/countData.total_count)*100;
+  // const pending = (countData.dep4_count/countData.total_count)*100;
+  // const pending = (countData.dep5_count/countData.total_count)*100;
+  // const pending = (countData.dep6_count/countData.total_count)*100;
+  // const pending = (countData.dep7_count/countData.total_count)*100;
+  // const pending = (countData.dep8_count/countData.total_count)*100;
+  // const pending = (countData.dep9_count/countData.total_count)*100;
+  
   const [state, setState] = useState<PieChartState>({
-    series: [65, 34, 12],
+    series: [25,18,20,11,8,7,4,2,5],
   });
 
   const handleReset = () => {
     setState((prevState) => ({
       ...prevState,
-      series: [65, 34, 12],
+      series: [25,18,20,11,8,7,4,2,5],
     }));
   };
   handleReset;
@@ -69,43 +90,13 @@ const PieChart = ({countData}:{countData:LeaveCount}) => {
   return (
     <div>
 
-      <div className="mb-2">
+      <div className="mb-4">
         <div id="chartThree" className="mx-auto flex justify-center">
           <ReactApexChart
             options={options}
             series={state.series}
-            type="donut"
+            type="pie"
           />
-        </div>
-      </div>
-
-      <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
-        <div className="sm:w-1/2 w-full px-8">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#AB47BC]"></span>
-            <p className="flex w-full gap-2 text-sm font-medium text-black dark:text-white">
-              <span> Approved </span>
-              <span> 65% </span>
-            </p>
-          </div>
-        </div>
-        <div className="sm:w-1/2 w-full px-8">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#26C6DA]"></span>
-            <p className="flex w-full gap-2 text-sm font-medium text-black dark:text-white">
-              <span> Rejected </span>
-              <span> 34% </span>
-            </p>
-          </div>
-        </div>
-        <div className="sm:w-1/2 w-full px-8">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#1E3A5F]"></span>
-            <p className="flex w-full gap-2 text-sm font-medium text-black dark:text-white">
-              <span> Pending </span>
-              <span> 45% </span>
-            </p>
-          </div>
         </div>
       </div>
     </div>
