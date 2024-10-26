@@ -89,6 +89,7 @@ DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
 DROP PROCEDURE IF EXISTS GetAllSupervisorIDs;
+DROP PROCEDURE IF EXISTS GetEmployeeBasicInfoByUserID;
 -- ---------------------------------------------------------------------------------
 
 
@@ -894,6 +895,11 @@ END $$
 CREATE PROCEDURE GetEmployeeBasicInfoByID(IN p_employee_id VARCHAR(36))
 BEGIN
     SELECT * FROM employee_basic_info WHERE employee_id = p_employee_id;
+END $$
+-- Procedure to get employee basic info by user ID. 
+CREATE PROCEDURE GetEmployeeBasicInfoByUserID(IN p_user_id VARCHAR(36))
+BEGIN
+    SELECT * FROM employee_basic_info WHERE user_id = p_user_id;
 END $$
 
 -- Procedure to get employee basic info.

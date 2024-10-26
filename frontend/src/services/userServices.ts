@@ -3,7 +3,7 @@ import axiosInstance from '../axiosConfig';
 export const getUserInfoById = async (user_id: string) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('user/info/' + user_id, {
+    const response = await axiosInstance.get('employee/info/' + user_id, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

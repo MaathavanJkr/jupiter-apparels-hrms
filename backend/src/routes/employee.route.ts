@@ -12,6 +12,7 @@ import {
   getEmployeeIdByUserId, getAllUniqueSupervisors,
 
 } from "../controllers/employee.controller";
+import { getEmployeeBasicInfoByUserID } from "../controllers/employeeBasicInfoView.controller";
 
 const router = Router();
 
@@ -26,5 +27,7 @@ router.get("/supervisor/employees/:supervisor_id",getEmployeesUnderSupervisor);
 router.get('/user/:user_id/employee', getEmployeeIdByUserId);
 router.get('/supervisor/',getAllUniqueSupervisors);
 
+
+router.get("/info/:user_id", getEmployeeBasicInfoByUserID)
 
 export default router;
