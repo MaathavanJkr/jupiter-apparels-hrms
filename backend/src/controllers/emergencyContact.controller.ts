@@ -109,9 +109,9 @@ export const getEmergencyContactByEmployeeID = async (
   req: Request,
   res: Response
 ) => {
-  const { id } = req.params;
+  const { employee_id } = req.params;
 
-  await getEmergencyContactByEmployeeIDModel(id)
+  await getEmergencyContactByEmployeeIDModel(employee_id)
     .then((result) => {
       return res.status(200).json(result);
     })
