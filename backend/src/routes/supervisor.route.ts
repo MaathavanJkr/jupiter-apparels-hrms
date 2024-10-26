@@ -6,5 +6,4 @@ const router = Router();
 
 router.get("/allsuperid", getAllSupervisorID);
 
-
 export default router;

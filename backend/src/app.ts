@@ -38,8 +38,8 @@ app.use("/jobtitle", jobtitleRoutes);
 app.use("/paygrade", paygradeRoutes);
 app.use("/report", reportRoutes);
 app.use("/remainingLeavesView", remainingLeavesViewRoute);
-app.use("/leaveapplication",leaveApplicationRoutes);
+app.use("/leaveapplication", leaveApplicationRoutes);
 app.use("/leave", leaveRoutes);
-app.use("/supervisor",supervisorRoutes);
+app.use("/supervisor", supervisorRoutes);
 
 export default app;
