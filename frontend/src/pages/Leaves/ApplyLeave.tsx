@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { createLeaveApplication } from '../../services/leaveServices';
 import { notifyError, notifySuccess } from '../../services/notify';
+import {getEmployeeIdByUserId} from "../../services/employeeServices.ts";
+import {useNavigate} from "react-router-dom";
 
 interface LeaveAppData {
-  employeeid: string;
+  //employeeid: string;
   leaveType: string;
   startdate: string;
   enddate: string;
@@ -12,15 +14,39 @@ interface LeaveAppData {
 }
 
 const defaultLeaveAppData: LeaveAppData = {
-  employeeid: '',
+  //employeeid: '',
   leaveType: '',
   startdate: '',
   enddate: '',
   reason: '',
 };
 
+
+
+
 const UpdateLeaveApplicationData = () => {
   const [leaveAppData, setLeaveAppData] = useState<LeaveAppData>(defaultLeaveAppData);
+
+  const user_id = localStorage.getItem('user_id');
+  const [employeeId, setEmployeeId] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchEmployeeId = async () => {
+      if (user_id) { // Check if user_id is not null
+        try {
+          const id = await getEmployeeIdByUserId(user_id);
+          setEmployeeId(id);
+        } catch (error) {
+          console.error('Error fetching employee ID:', error);
+        }
+      } else {
+        console.error('User ID is not available.');
+      }
+    };
+
+    fetchEmployeeId();
+  }, [user_id]);
 
   const handleLeaveAppDataChange = (
       event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
@@ -38,19 +64,18 @@ const UpdateLeaveApplicationData = () => {
     try {
       // Call the API to create a leave application
       await createLeaveApplication(
-          leaveAppData.employeeid,
+          //leaveAppData.employeeid,
+          //manually put emp_id here
+          employeeId,
           leaveAppData.leaveType,
           leaveAppData.startdate,
           leaveAppData.enddate,
           leaveAppData.reason
       );
-      console.log("Leave application submitted successfully");
       notifySuccess("Application Submitted Successfully");
+      navigate(0);
     } catch (err) {
       notifyError("Could not create application");
-      console.error("API error", err);
-    } finally {
-      console.log("Submission completed");
     }
   };
 
@@ -62,14 +87,14 @@ const UpdateLeaveApplicationData = () => {
               Leave Application
             </h2>
             <div className="pt-5">
-              <h1 className="text-lg text-black dark:text-white">Employee ID</h1>
-              <input
-                  className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
-                  name="employeeid"
-                  type="text"
-                  placeholder="Enter Employee ID"
-                  onChange={handleLeaveAppDataChange}
-              />
+              {/*<h1 className="text-lg text-black dark:text-white">Employee ID</h1>*/}
+              {/*<input*/}
+              {/*    className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"*/}
+              {/*    name="employeeid"*/}
+              {/*    type="text"*/}
+              {/*    placeholder="Enter Employee ID"*/}
+              {/*    onChange={handleLeaveAppDataChange}*/}
+              {/*/>*/}
 
               <h1 className="mt-4 text-lg text-black dark:text-white">Leave Type</h1>
               <select

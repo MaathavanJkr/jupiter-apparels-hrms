@@ -3,7 +3,7 @@ import { Employee, LeaveApplication } from "../../types/types";
 import { useEffect, useState } from "react";
 import { approveLeave, getLeaveApplicationByID, rejectLeave } from "../../services/leaveServices";
 import DefaultLayout from "../../layout/DefaultLayout";
-import { getEmployeeByID } from "../../services/employeeServices";
+import {getEmployeeByID, getEmployeeIdByUserId} from "../../services/employeeServices";
 import { notifyError, notifySuccess } from "../../services/notify";
 import { ToastContainer } from "react-toastify";
 
@@ -14,8 +14,31 @@ const ViewLeave = () => {
     const [leave, setLeave] = useState<LeaveApplication>(); // State to hold leave application details
     const [employee, setEmployee] = useState<Employee>(); // State to hold employee details
 
-    // Logic to determine if the user is a supervisor (replace with your actual logic)
-    const isSupervisor = true; // Set this to true or false based on your app's logic
+    const user_id = localStorage.getItem('user_id');
+    const [employeeId, setEmployeeId] = useState('');
+
+    useEffect(() => {
+        const fetchEmployeeId = async () => {
+            if (user_id) { // Check if user_id is not null
+                try {
+                    const id = await getEmployeeIdByUserId(user_id);
+                    setEmployeeId(id);
+                } catch (error) {
+                    console.error('Error fetching employee ID:', error);
+                }
+            } else {
+                console.error('User ID is not available.');
+            }
+        };
+
+        fetchEmployeeId();
+    }, [user_id]);
+
+    // Logic to determine if the user is a supervisor
+    var isSupervisor = false;
+    if (employeeId == employee?.supervisor_id){
+         isSupervisor = true;
+    }
 
     // Fetch leave application details when the component mounts or application_id changes
     useEffect(() => {
@@ -59,7 +82,7 @@ const ViewLeave = () => {
                 notifySuccess('Successfully Rejected');
                 setTimeout(() => {
                     //navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
-                    navigate(0); //Refreshes the page after the rejection.
+                    navigate(-1); //Refreshes the page after the rejection.
                 }, 1500);
             })
             .catch((error) => {
@@ -74,7 +97,7 @@ const ViewLeave = () => {
                 notifySuccess('Successfully Approved');
                 setTimeout(() => {
                    // navigate('/leaveapplications/' + user_id); // Redirect to the leave applications page
-                    navigate(0); //Refreshes the page after the
+                    navigate(-1); //Refreshes the page after the
                 }, 1500);
             })
             .catch((error) => {

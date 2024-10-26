@@ -1,15 +1,21 @@
 // src/controllers/userController.ts
 import { Request, Response } from "express";
 import {
-  Employee,
-  createEmployeeModel,
-  deleteEmployeeModel,
-  getAllEmployeesModel,
-  getEmployeeByIDModel,
-  getFilteredEmployeesModel,
-  getfilteredCountModel,
-  updateEmployeeModel,
+    Employee,
+    createEmployeeModel,
+    deleteEmployeeModel,
+    getAllEmployeesModel,
+    getEmployeeByIDModel,
+    getFilteredEmployeesModel,
+    getfilteredCountModel,
+    updateEmployeeModel,
+    getEmployeesUnderSupervisorModel,
+    getEmployeeIdByUserIdModel,
+    getAllUniqueSupervisorsModel
+
 } from "../models/employee.model";
+
+
 
 export const createEmployee = async (req: Request, res: Response) => {
   const {
@@ -194,4 +200,48 @@ export const deleteEmployee = async (req: Request, res: Response) => {
     .catch((error) => {
       return res.status(500).json({ error });
     });
+};
+
+export const getEmployeesUnderSupervisor = async (req: Request, res: Response) => {
+    const { supervisor_id } = req.params;
+
+    await getEmployeesUnderSupervisorModel(supervisor_id)
+        .then((result) => {
+            return res.status(200).json(result);
+        })
+        .catch((error) => {
+            return res.status(500).json({ error });
+        });
+};
+
+
+export const getEmployeeIdByUserId = async (req: Request, res: Response) => {
+    const { user_id } = req.params;
+
+    try {
+        const employee_id = await getEmployeeIdByUserIdModel(user_id);
+        if (!employee_id) {
+            return res.status(404).json({ error: 'Employee id not found' });
+        }
+        return res.status(200).json(employee_id);
+    } catch (error) {
+        return res.status(500).json({ error });
+    }
+};
+
+
+
+
+export const getAllUniqueSupervisors = async (req: Request, res: Response) => {
+    try {
+        const result = await getAllUniqueSupervisorsModel();
+        if (!result.data) {
+            return res.status(404).json({ error: "No supervisors found" });
+        }
+
+        return res.status(200).json(result);
+    } catch (error) {
+        console.log("error: " + error);
+        return res.status(500).json({ error: "Failed to retrieve supervisors" });
+    }
 };
