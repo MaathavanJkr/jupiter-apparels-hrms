@@ -4,7 +4,7 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import {
   Branch,
   Department,
-  Employee,
+  EmployeeInfo,
   EmploymentStatus,
   JobTitle,
   PayGrade,
@@ -22,7 +22,7 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import ReactPaginate from 'react-paginate';
 
 const Employees = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<EmployeeInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
@@ -94,6 +94,9 @@ const Employees = () => {
         setEmployees(employees);
         setFilteredCount(filteredCount);
         console.log('Filtered Count:', filteredCount);
+        if (itemOffset > filteredCount) {
+          setItemOffset(0);
+        }
       } catch (error) {
         setError('Failed to fetch Employees');
         console.error('Failed to fetch Employees', error);
@@ -257,13 +260,13 @@ const Employees = () => {
             />
           )}
         </div>
-        <div className="flex flex-wrap justify-between my-2">
-          <div className="flex items-center my-2">
+        <div className="flex flex-wrap justify-between items-center my-4 p-4 bg-white rounded shadow-md dark:bg-meta-4">
+          <div className="flex items-center my-2 text-gray-700 dark:text-white">
             Showing {itemOffset + 1} to{' '}
             {endOffset < filteredCount ? endOffset : filteredCount} out of{' '}
             {filteredCount}
           </div>
-          <div className="overflow-x-auto my-2">
+          <div className="my-2">
             <ReactPaginate
               breakLabel="..."
               nextLabel=">"
@@ -273,27 +276,26 @@ const Employees = () => {
               previousLabel="<"
               renderOnZeroPageCount={null}
               containerClassName={
-                'isolate inline-flex -space-x-px rounded-md shadow-sm'
+          'isolate inline-flex -space-x-px rounded-md shadow-sm'
               }
               pageLinkClassName={
-                'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
+          'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
               }
               breakLinkClassName={
-                'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
+          'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
               }
               activeLinkClassName={
-                'z-10 bg-secondary text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
+          'z-10 bg-secondary text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
               }
               previousLinkClassName={
-                'relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
+          'relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
               }
               nextLinkClassName={
-                'relative inline-flex items-center rounded-r-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-400'
+          'relative inline-flex items-center rounded-r-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
               }
-              disabledLinkClassName={'text-black-100'}
+              disabledLinkClassName={'text-gray-300 dark:text-gray-500'}
             />
           </div>
-          <div></div>
         </div>
       </DefaultLayout>
     </>

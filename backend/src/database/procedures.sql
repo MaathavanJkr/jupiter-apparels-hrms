@@ -85,6 +85,7 @@ DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
 DROP PROCEDURE IF EXISTS getReportByDepartment;
 DROP PROCEDURE IF EXISTS getReportByJobTitle;
 DROP PROCEDURE IF EXISTS getReportByPayGrade;
+DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
 DROP PROCEDURE IF EXISTS GetAllSupervisorIDs;
@@ -566,6 +567,52 @@ BEGIN
     DELETE FROM employees WHERE employee_id = employeeID;
 END $$
 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetFilteredEmployees(
+    IN name VARCHAR(255), 
+    IN department_id VARCHAR(36),
+    IN branch_id VARCHAR(36),
+    IN offset INT,
+    IN itemsPerPage INT
+)
+BEGIN 
+    SET @query = 'SELECT * FROM employee_basic_info';
+    SET @where_clause = '';
+
+    IF name IS NOT NULL AND name != '' THEN
+        SET @where_clause = CONCAT(@where_clause, ' first_name LIKE "', name, '%" OR last_name LIKE "', name, '%"');
+    END IF; 
+
+    IF department_id IS NOT NULL AND department_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND department_id = "', department_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' department_id = "', department_id, '"');
+        END IF;
+    END IF;
+
+    IF branch_id IS NOT NULL AND branch_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND branch_id = "', branch_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' branch_id = "', branch_id, '"');
+        END IF;
+    END IF;
+
+    IF LENGTH(@where_clause) > 0 THEN
+        SET @query = CONCAT(@query, ' WHERE ', @where_clause);
+    END IF;
+
+    IF offset IS NOT NULL AND itemsPerPage IS NOT NULL AND itemsPerPage != 0 THEN
+        SET @query = CONCAT(@query, ' LIMIT ', offset, ', ', itemsPerPage);
+    END IF;
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
 DELIMITER ;
 
 DELIMITER $$
