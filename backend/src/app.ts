@@ -18,6 +18,7 @@ import remainingLeavesViewRoute from "./routes/remainingLeavesView.route";
 import leaveApplicationRoutes from "./routes/leaveapplication.route";
 import leaveRoutes from "./routes/leave.route";
 
+
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -39,5 +40,6 @@ app.use("/report", reportRoutes);
 app.use("/remainingLeavesView", remainingLeavesViewRoute);
 app.use("/leaveapplication", leaveApplicationRoutes);
 app.use("/leave", leaveRoutes);
+
 
 export default app;
