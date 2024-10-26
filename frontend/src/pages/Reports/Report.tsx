@@ -1,172 +1,115 @@
 import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-
-interface GERData {
-  department: string;
-  jobtitle: string;
-  paygrade: string;
-}
-
-const defaultGERData: GERData = {
-  department: '',
-  jobtitle: '',
-  paygrade: '',
-};
-
-interface TLDData {
-  department: string;
-  startdate: string;
-  enddate: string;
-}
+import EDRTable from '../../components/Tables/EDRTable';
+import TLDTable from '../../components/Tables/TLDTable';
+import GERTable from '../../components/Tables/GERTable';
+import { TLDData, EDRData, GERData } from '../../types/types';
+import {
+  fetchEDRReportData,
+  fetchTLDReportData,
+  fetchGERReportData,
+} from '../../services/reportTableServices';
 
 const defaultTLDData: TLDData = {
-  department: '',
   startdate: '',
   enddate: '',
 };
-
-interface EDRData {
-  department: string;
-}
 
 const defaultEDRData: EDRData = {
   department: '',
 };
 
-const attributes = ['atr1', 'atr2', 'atr3'];
+const defaultGERData: GERData = {
+  group: '',
+};
 
 const Report = () => {
   const [GERData, setGERData] = useState<GERData>(defaultGERData);
+  const [GERReportData, setGERReportData] = useState<any>(null);
+
   const [TLDData, setTLDData] = useState<TLDData>(defaultTLDData);
+  const [TLDReportData, setTLDReportData] = useState<any>(null);
+
   const [EDRData, setEDRData] = useState<EDRData>(defaultEDRData);
-  const [count, setCount] = useState('0');
+  const [EDRReportData, setEDRReportData] = useState<any>(null);
 
-  const handleGERChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newGERData: GERData = {
-      ...GERData,
-      [event.target.name]: event.target.value,
-    };
+  const resetReports = () => {
+    setTLDReportData(null);
+    setEDRReportData(null);
+    setGERReportData(null);
+  };
 
-    setGERData(newGERData);
+  const handleGERChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setGERData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleEDRChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setEDRData((prevData: any) => ({ ...prevData, [name]: value }));
   };
 
   const handleTLDChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const { name, value } = event.target;
-    setTLDData({
-      ...TLDData,
-      [name]: value,
-    });
+    const { name, value } = e.target;
+    setTLDData((prevData) => ({ ...prevData, [name]: value }));
   };
-
-  const handleEDRChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = event.target;
-    setEDRData({
-      ...EDRData,
-      [name]: value,
-    });
-  };
-
-  const handleCountChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setCount(event.target.value);
-  };
-
-  // const fields = [];
-
-  // for(let i = 0 ; i < parseInt(count); i++){
-  //     fields.push(
-  //         <div>
-  //             <h2 className='p-3'>SF</h2>
-  //             <select value={selectedJobtitle} onChange={handleGERChange} className='p-2 px-15'>
-  //                 {
-  //                     attributes.map((val, key))
-  //                 }
-  //             </select>
-  //         </div>
-  //     )
-  // }
 
   return (
     <DefaultLayout>
-      <div className=" w-full flex flex-col ">
-        <h1 className=" font-bold text-2xl">Report Generation</h1>
-        <div className=" w-full flex flex-row flex-wrap items-start justify-around ">
-          <div className="shadow-lg flex flex-col w-4/5 sm:w-2/5 my-5 bg-slate-200 rounded-3xl h-[450px] lg:w-[30%] dark:bg-blue-800">
-            <h1 className="p-5 text-lg text-black font-bold bg-slate-300 text-center rounded-t-lg dark:text-white dark:bg-blue-950 shadow-lg">
-              Grouped Employee Report
+      <div className="w-full flex flex-col h-screen">
+        <h1 className="font-bold text-2xl">Report Generation</h1>
+
+        <div className="w-full flex flex-row flex-wrap items-start justify-between space-x-4 h-[80%] mb-10">
+          <div className="shadow-lg flex flex-col w-[30%] my-5 bg-slate-200 rounded-3xl h-full dark:bg-blue-800">
+            <h1 className="text-lg p-5 text-black font-bold bg-slate-300 text-center rounded-t-lg dark:text-white dark:bg-blue-950 shadow-lg">
+              Employee By Department Report
             </h1>
             <div className="w-full justify-around flex flex-col items-center ">
-              <div className="pt-5">
-                <h2 className="p-3 text-black-2 dark:text-white">Department</h2>
+              <div className="p-5">
+                <h2 className="my-5 text-black-2 dark:text-white">
+                  Department
+                </h2>
                 <select
-                  value={GERData.department}
+                  value={EDRData.department}
                   name="department"
-                  onChange={handleGERChange}
-                  className="p-2 px-15  dark:bg-blue-950 shadow-lg"
+                  onChange={handleEDRChange}
+                  className="p-3 px-10 dark:bg-blue-950 shadow-lg rounded-md text-black-2  dark:text-white"
                 >
-                  <option value="HR">Human Resource</option>
-                  <option value="Packing">Packing</option>
-                  <option value="Delivery">Delivery</option>
-                </select>
-              </div>
-
-              <div>
-                <h2 className="p-3  text-black-2 dark:text-white">Job Title</h2>
-                <select
-                  value={GERData.jobtitle}
-                  name="jobtitle"
-                  onChange={handleGERChange}
-                  className="p-2 px-15  dark:bg-blue-950 shadow-lg"
-                >
-                  <option value="HR">Human Resource</option>
-                  <option value="Packing">Packing</option>
-                  <option value="Delivery">Delivery</option>
-                </select>
-              </div>
-
-              <div className="pb-8">
-                <h2 className="p-3  text-black-2 dark:text-white">Pay Grade</h2>
-                <select
-                  value={GERData.paygrade}
-                  name="paygrade"
-                  onChange={handleGERChange}
-                  className="p-2 px-15  dark:bg-blue-950 shadow-lg"
-                >
-                  <option value="HR">Human Resource</option>
-                  <option value="Packing">Packing</option>
-                  <option value="Delivery">Delivery</option>
+                  <option value="" disabled>
+                    Select a Department
+                  </option>
+                  <option value="D001">HR</option>
+                  <option value="D002">Finance</option>
+                  <option value="D003">IT</option>
+                  <option value="D004">Marketing</option>
+                  <option value="D005">Production</option>
+                  <option value="D006">Customer Service</option>
+                  <option value="D007">Sales</option>
+                  <option value="D008">Quality Assurance</option>
+                  <option value="D009">Corporate Management</option>
                 </select>
               </div>
             </div>
-            <button className=" hover:bg-green-500 card-btn text-gray-300 self-center  dark:bg-blue-950 dark:hover:bg-green-500">
+            <button
+              className="mt-10 hover:bg-green-500 card-btn text-gray-300 self-center dark:bg-blue-950 dark:hover:bg-green-500"
+              onClick={async () => {
+                resetReports();
+                setEDRReportData(await fetchEDRReportData(EDRData));
+              }}
+            >
               Generate
             </button>
           </div>
 
-          <div className="shadow-lg flex flex-col w-4/5 sm:w-2/5 my-5 bg-slate-200 rounded-3xl h-[450px] lg:w-[30%] dark:bg-blue-800">
-            <h1 className="p-5 text-lg  text-black font-bold bg-slate-300 text-center rounded-t-lg dark:text-white  dark:bg-blue-950 shadow-lg">
+          <div className="shadow-lg flex flex-col w-[30%] my-5 bg-slate-200 rounded-3xl h-full dark:bg-blue-800">
+            <h1 className="p-5 text-lg text-black font-bold bg-slate-300 text-center rounded-t-lg dark:text-white dark:bg-blue-950 shadow-lg">
               Total Leaves By Department Report
             </h1>
             <div className="w-full justify-around flex flex-col items-center">
-              <div className="pt-5">
-                <h2 className="p-3  text-black-2 dark:text-white">
-                  Department
-                </h2>
-                <select
-                  value={TLDData.department}
-                  name="department"
-                  onChange={handleTLDChange}
-                  className="p-2 px-15  dark:bg-blue-950 shadow-lg"
-                >
-                  <option value="HR">Human Resource</option>
-                  <option value="Packing">Packing</option>
-                  <option value="Delivery">Delivery</option>
-                </select>
-              </div>
-
-              <div>
-                <h2 className="p-3  text-black-2 dark:text-white">
+              <div className="p-5">
+                <h2 className="my-5 text-black-2 dark:text-white">
                   Start Date
                 </h2>
                 <input
@@ -174,86 +117,71 @@ const Report = () => {
                   value={TLDData.startdate}
                   name="startdate"
                   onChange={handleTLDChange}
-                  className="p-2 px-15  dark:bg-blue-950 shadow-lg"
+                  className="p-2 px-15 dark:bg-blue-950 shadow-lg rounded-md"
                 />
               </div>
 
               <div className="pb-3">
-                <h2 className="p-3  text-black-2 dark:text-white">End Date</h2>
+                <h2 className="p-3 text-black-2 dark:text-white">End Date</h2>
                 <input
                   type="date"
                   value={TLDData.enddate}
                   name="enddate"
                   onChange={handleTLDChange}
-                  className="p-2 px-15  dark:bg-blue-950 shadow-lg"
+                  className="p-2 px-15 dark:bg-blue-950 shadow-lg rounded-md"
                 />
               </div>
             </div>
-            <button className="hover:bg-green-500 card-btn text-gray-300 self-center mt-3  dark:bg-blue-950 dark:hover:bg-green-500">
+            <button
+              className="mt-8 hover:bg-green-500 card-btn text-gray-300 self-center mt-3 dark:bg-blue-950 dark:hover:bg-green-500"
+              onClick={async () => {
+                resetReports();
+                setTLDReportData(await fetchTLDReportData(TLDData));
+              }}
+            >
               Generate
             </button>
           </div>
 
-          <div className="shadow-lg flex flex-col w-4/5 sm:w-2/5 my-5 bg-slate-200 rounded-3xl h-[450px] lg:w-[30%] dark:bg-blue-800">
-            <h1 className="text-lg p-5  text-black font-bold bg-slate-300 text-center rounded-t-lg dark:text-white  dark:bg-blue-950 shadow-lg">
-              Employee By Department Report
+          <div className="shadow-lg flex flex-col w-[30%] my-5 bg-slate-200 rounded-3xl h-full dark:bg-blue-800">
+            <h1 className="p-5 text-lg text-black font-bold bg-slate-300 text-center rounded-t-lg dark:text-white dark:bg-blue-950 shadow-lg">
+              Grouped Employee Report
             </h1>
-            <div className="w-full justify-around flex flex-col items-center pb-20">
-              <div className="pt-5">
-                <h2 className="p-3  text-black-2 dark:text-white">
-                  Department
-                </h2>
+            <div className="w-full justify-around flex flex-col items-center">
+              <div className="p-5 ">
+                <h2 className="my-5 text-black-2 dark:text-white">Group By</h2>
                 <select
-                  value={EDRData.department}
-                  name="department"
-                  onChange={handleEDRChange}
-                  className="p-2 px-15  dark:bg-blue-950 shadow-lg"
+                  value={GERData.group}
+                  name="group"
+                  onChange={handleGERChange}
+                  className="p-3 px-20 dark:bg-blue-950 shadow-lg rounded-md text-black-2  dark:text-white"
                 >
-                  <option value="HR">Human Resource</option>
-                  <option value="Packing">Packing</option>
-                  <option value="Delivery">Delivery</option>
+                  <option value="" disabled>
+                    Select a Group
+                  </option>
+                  <option value="Department">Department</option>
+                  <option value="PayGrade">Pay Grade</option>
+                  <option value="JobTitle">Job Title</option>
+                  <option value="EmploymentStatus">Employement Status</option>
                 </select>
               </div>
             </div>
-            <button className="card-btn text-gray-300 self-center hover:bg-green-500 dark:bg-blue-950 dark:hover:bg-green-500">
+            <button
+              className="mt-10 hover:bg-green-500 card-btn text-gray-300 self-center dark:bg-blue-950 dark:hover:bg-green-500"
+              onClick={async () => {
+                resetReports();
+                setGERReportData(await fetchGERReportData(GERData));
+              }}
+            >
               Generate
             </button>
           </div>
-          {/* 
-                <div className='flex flex-col w-4/5 sm:w-2/5 my-5 bg-slate-200 rounded-3xl h-[450px] lg:w-[30%]'>
-                    <h1 className='text-lg p-5 text-blue-700 font-bold bg-slate-300 text-center rounded-lg' >Custom Report</h1>
-                    <div className='w-full justify-around flex flex-col items-center'>
-                        <div className='pt-5'>
-                            <h2 className='p-3'>Count</h2>
-                            <select value={count} onChange={handleCountChange} className='p-2 px-15'>
-                                <option value="0">0</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                        </div>
+        </div>
 
-                        <div>
-                            <h2 className='p-3'>Job Title</h2>
-                            <select value={selectedJobtitle} onChange={handleGERChange} className='p-2 px-15'>
-                                <option value="HR">Human Resource</option>
-                                <option value="Packing">Packing</option>
-                                <option value="Delivery">Delivery</option>
-                            </select>
-                        </div>
-
-                        <div className='pb-8'>
-                            <h2 className='p-3'>Pay Grade</h2>
-                            <select value={selectedPaygrade} onChange={handleGERChange} className='p-2 px-15'>
-                                <option value="HR">Human Resource</option>
-                                <option value="Packing">Packing</option>
-                                <option value="Delivery">Delivery</option>
-                            </select>
-                        </div>
-
-                    </div>
-                    <button className='card-btn text-gray-300 self-center' >Generate</button>
-                </div> */}
+        <div className="w-full mt-5">
+          {EDRReportData && <EDRTable reportdata={EDRReportData} />}
+          {TLDReportData && <TLDTable reportdata={TLDReportData} />}
+          {GERReportData && <GERTable reportdata={GERReportData} />}
         </div>
       </div>
     </DefaultLayout>

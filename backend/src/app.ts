@@ -38,7 +38,7 @@ app.use("/jobtitle", jobtitleRoutes);
 app.use("/paygrade", paygradeRoutes);
 app.use("/report", reportRoutes);
 app.use("/remainingLeavesView", remainingLeavesViewRoute);
-app.use("/leaveapplication",leaveApplicationRoutes);
+app.use("/leaveapplication", leaveApplicationRoutes);
 app.use("/leave", leaveRoutes);
 
 
