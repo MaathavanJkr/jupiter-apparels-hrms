@@ -575,7 +575,7 @@ CREATE PROCEDURE GetFilteredEmployees(
     IN itemsPerPage INT
 )
 BEGIN 
-    SET @query = 'SELECT * FROM employees';
+    SET @query = 'SELECT * FROM employee_basic_info';
     SET @where_clause = '';
 
     IF name IS NOT NULL AND name != '' THEN

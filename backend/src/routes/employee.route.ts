@@ -7,7 +7,7 @@ import {
   updateEmployee,
   deleteEmployee,
   getFilteredEmployees,
-  getFilteredCount,
+  getFilteredCount, 
 } from "../controllers/employee.controller";
 
 const router = Router();
