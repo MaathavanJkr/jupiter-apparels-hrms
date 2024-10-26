@@ -24,9 +24,36 @@ export interface Employee {
   contact_number: string;
   cust_attr_1_value: string;
   cust_attr_2_value: string;
-  cust_attr_3value: string;
+  cust_attr_3_value: string;
 }
-
+export interface EmployeeInfo {
+  employee_id: string,
+  first_name:string,
+  last_name:string,
+  birth_date: string,
+  gender: string,
+  marital_status:string,
+  address:string,
+  email:string,
+  NIC:string,
+  contact_number:string,
+  department_name:string,
+  branch_name:string,
+  job_title:string,
+  employment_status:string,
+  pay_grade:string,
+  pay_grade_level: number,
+  supervisor_name:string,
+  supervisor_id: string,
+  branch_id: string,
+  department_id: string,
+  user_id:string,
+  role:string
+  username:string;
+  cust_attr_1_value:string,
+  cust_attr_2_value:string,
+  cust_attr_3_value:string,
+}
 export interface Branch {
   branch_id: string;
   name: string;
@@ -78,27 +105,34 @@ export interface EmergencyContact {
   address: string;
 }
 
-export interface UserInfo {
-  employee_id: string;
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-  role: string;
-  birth_date: string;
-  gender: string;
-  marital_status: string;
-  email: string;
-  nic: string;
-  address: string;
-  department_name: string;
+export interface EmployeeInfo {
+  employee_id: string,
+  first_name:string,
+  last_name:string,
+  birth_date: string,
+  gender: string,
+  marital_status:string,
+  address:string,
+  email:string,
+  NIC:string,
+  contact_number:string,
+  department_name:string,
   branch_id: string;  
-  branch_name: string;
-  job_title: string;
-  employment_status: string;
-  contact_number: string;
-  pay_grade_name: string;
-  supervisor_id: string;
+  branch_name:string,
+  job_title:string,
+  employment_status:string,
+  pay_grade:string,
+  pay_grade_level: number,
+  supervisor_name:string,
+  supervisor_id: string,
+  branch_id: string,
+  department_id: string,
+  user_id:string,
+  role:string
+  username:string;
+  cust_attr_1_value:string,
+  cust_attr_2_value:string,
+  cust_attr_3_value:string,
 }
 
 export interface LeaveBalance {
@@ -130,7 +164,7 @@ export interface LeaveApplication {
   reason: string;
   submission_date: string;
   status: string;
-  response_date: string;
+  response_date: string | null;
 }
 
 export interface EmployeeCount {

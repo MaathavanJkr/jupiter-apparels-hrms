@@ -3,3 +3,5 @@ node_modules
 .env
 
 .idea/
+node_modules/
+logger.ts

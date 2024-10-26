@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { getEmployees } from '../../services/employeeServices';
+import { getFilteredCount, getFilteredEmployees } from '../../services/employeeServices';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import {
   Branch,
   Department,
-  Employee,
+  EmployeeInfo,
   EmploymentStatus,
   JobTitle,
   PayGrade,
@@ -19,9 +19,10 @@ import { getPayGrades } from '../../services/payGradeServices';
 import { Link } from 'react-router-dom';
 import { getSupervisors } from '../../services/supervisorServices';
 import DefaultLayout from '../../layout/DefaultLayout';
+import ReactPaginate from 'react-paginate';
 
 const Employees = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<EmployeeInfo[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState<number>(5);
@@ -38,6 +39,7 @@ const Employees = () => {
 
   const [searchDepartment, setSearchDepartment] = useState<string>('');
   const [searchBranch, setSearchBranch] = useState<string>('');
+  const [filteredCount, setFilteredCount] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,20 +64,56 @@ const Employees = () => {
     fetchData();
   }, []);
 
+  const [itemOffset, setItemOffset] = useState(0);
+
+  const endOffset = itemOffset + itemsPerPage;
+  console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+
+  const pageCount = Math.ceil(filteredCount / itemsPerPage);
+
+  const handlePageClick = (event: { selected: number }) => {
+    const newOffset = (event.selected * itemsPerPage) % filteredCount;
+    setItemOffset(newOffset);
+  };
+
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const employees = await getEmployees();
+        const employees = await getFilteredEmployees(
+          nameSearchKey,
+          searchBranch,
+          searchDepartment,
+          itemOffset,
+          itemsPerPage,
+        );
+        const filteredCount = await getFilteredCount(
+          nameSearchKey,
+          searchBranch,
+          searchDepartment,
+        );
         setEmployees(employees);
+        setFilteredCount(filteredCount);
+        console.log('Filtered Count:', filteredCount);
+        if (itemOffset > filteredCount) {
+          setItemOffset(0);
+        }
       } catch (error) {
         setError('Failed to fetch Employees');
+        console.error('Failed to fetch Employees', error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchEmployees();
-  }, []);
+  }, [
+    nameSearchKey,
+    searchBranch,
+    searchDepartment,
+    itemOffset,
+    endOffset,
+    itemsPerPage,
+  ]);
 
   if (error) {
     return <div>{error}</div>;
@@ -129,6 +167,24 @@ const Employees = () => {
             </select>
           </div>
           <div className="mb-4.5">
+            <button onClick={() => setSearchBranch('')}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="mb-4.5">
             <select
               className="rounded border border-stroke bg-white py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
               name="selectDepartment"
@@ -150,7 +206,25 @@ const Employees = () => {
             </select>
           </div>
           <div className="mb-4.5">
-            <Link to={'/addEmployee'}>
+            <button onClick={() => setSearchDepartment('')}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="mb-4.5">
+            <Link to={'/employee/add'}>
               <button className="flex gap-1 block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -177,8 +251,6 @@ const Employees = () => {
           ) : (
             <EmployeeTable
               employeeData={employees}
-              nameSearchKey={nameSearchKey}
-              itemsPerPage={itemsPerPage}
               branchData={branches}
               departmentData={departments}
               payGradeData={payGrades}
@@ -187,6 +259,43 @@ const Employees = () => {
               supervisorData={supervisors}
             />
           )}
+        </div>
+        <div className="flex flex-wrap justify-between items-center my-4 p-4 bg-white rounded shadow-md dark:bg-meta-4">
+          <div className="flex items-center my-2 text-gray-700 dark:text-white">
+            Showing {itemOffset + 1} to{' '}
+            {endOffset < filteredCount ? endOffset : filteredCount} out of{' '}
+            {filteredCount}
+          </div>
+          <div className="my-2">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel=">"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={1}
+              pageCount={pageCount}
+              previousLabel="<"
+              renderOnZeroPageCount={null}
+              containerClassName={
+          'isolate inline-flex -space-x-px rounded-md shadow-sm'
+              }
+              pageLinkClassName={
+          'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
+              }
+              breakLinkClassName={
+          'relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
+              }
+              activeLinkClassName={
+          'z-10 bg-secondary text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600'
+              }
+              previousLinkClassName={
+          'relative inline-flex items-center rounded-l-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
+              }
+              nextLinkClassName={
+          'relative inline-flex items-center rounded-r-md px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-secondary hover:bg-gray-50 focus:z-20 focus:outline-offset-0 dark:text-white dark:ring-gray-700 dark:hover:bg-gray-700'
+              }
+              disabledLinkClassName={'text-gray-300 dark:text-gray-500'}
+            />
+          </div>
         </div>
       </DefaultLayout>
     </>

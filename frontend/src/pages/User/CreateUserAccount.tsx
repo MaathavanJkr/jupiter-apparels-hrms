@@ -1,25 +1,44 @@
 import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
+import { useParams } from 'react-router-dom';
+import { createUserAccount } from '../../services/userServices';
+import { notifyError, notifySuccess } from '../../services/notify';
 
 interface userAccountData {
-  employeeid: string;
   username: string;
   password: string;
+  role: string;
 }
 
 const deafultuserAccountData: userAccountData = {
-  employeeid: '',
   username: '',
   password: '',
+  role: '',
 };
 
 const CreateUserAccount = () => {
+
   const [userAccountData, setuserAccountData] = useState<userAccountData>(
     deafultuserAccountData,
   );
 
+
+  const { employee_id } = useParams<{ employee_id: string }>();
+  const handleSubmit = async () => {
+    try {
+      await createUserAccount(
+        employee_id!,
+        userAccountData.role,
+        userAccountData.username,
+        userAccountData.password,
+      ).then(() => {notifySuccess('User Account Created Successfully')})
+      .catch(() => {notifyError('User Account Creation Failed')});
+    } catch (error) {
+      notifyError('User Account Creation Failed');  
+  }
+}
   const handleuserAccountDataChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const newuserAccountData: userAccountData = {
       ...userAccountData,
@@ -37,15 +56,6 @@ const CreateUserAccount = () => {
             User Account Creation
           </h2>
           <div className="pt-5">
-            <h1 className="text-lg text-black dark:text-white">Employee ID</h1>
-            <input
-              className="shadow-lg rounded-md p-3 mt-3 w-4/5  dark:bg-blue-900"
-              name="employeeid"
-              type="text"
-              placeholder="Enter Employee ID"
-              onChange={handleuserAccountDataChange}
-            ></input>
-
             <h1 className="mt-4 text-lg text-black dark:text-white">
               Username
             </h1>
@@ -67,9 +77,24 @@ const CreateUserAccount = () => {
               placeholder="Enter password"
               onChange={handleuserAccountDataChange}
             ></input>
+            <h1 className="mt-4 text-lg text-black dark:text-white">
+              Role
+            </h1>
+            <select
+              className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
+              name="role"
+              onChange={handleuserAccountDataChange}
+              value={userAccountData.role}
+            >
+              <option value="" disabled>
+              Select role
+              </option>
+              <option value="Employee">Employee</option>
+              <option value="Manager">Manager</option>
+            </select>
           </div>
           <div className="mt-10 flex justify-normal">
-            <button className="shadow-lg m-2 rounded-lg bg-blue-700 card-btn font-bold text-black self-center hover:bg-green-500 dark:text-white">
+            <button className="shadow-lg m-2 rounded-lg bg-blue-700 card-btn font-bold text-black self-center hover:bg-green-500 dark:text-white" onClick={handleSubmit}>
               Create Account
             </button>
             <button className="shadow-lg card-btn rounded-lg bg-gray-500 text-black font-bold self-center hover:bg-red-600 dark:text-white">

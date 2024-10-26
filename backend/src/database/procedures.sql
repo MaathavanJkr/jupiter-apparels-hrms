@@ -1,3 +1,4 @@
+-- ---------------------------------------------------------------------------------
 -- drop procedures
 DROP PROCEDURE IF EXISTS createAllocatedLeaves;
 DROP PROCEDURE IF EXISTS createBranch;
@@ -73,6 +74,26 @@ DROP PROCEDURE IF EXISTS UpdateJobTitle;
 DROP PROCEDURE IF EXISTS UpdateLeaveApplication;
 DROP PROCEDURE IF EXISTS UpdateOrganization;
 DROP PROCEDURE IF EXISTS UpdatePayGrade;
+DROP PROCEDURE IF EXISTS GetFilteredEmployees;
+DROP PROCEDURE IF EXISTS getEmployeeDependentByEmployeeID;
+DROP PROCEDURE IF EXISTS getEmergencyContactByEmployeeID;
+DROP PROCEDURE IF EXISTS GetFilteredEmployeeCount;
+DROP PROCEDURE IF EXISTS GetLeaveApplicationByEmployeeID;
+DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
+DROP PROCEDURE IF EXISTS getTotalLeavesByDepartmentForPeriod;
+DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
+DROP PROCEDURE IF EXISTS getReportByDepartment;
+DROP PROCEDURE IF EXISTS getReportByJobTitle;
+DROP PROCEDURE IF EXISTS getReportByPayGrade;
+DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
+DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
+DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
+DROP PROCEDURE IF EXISTS GetAllSupervisorIDs;
+DROP PROCEDURE IF EXISTS GetEmployeeBasicInfoByUserID;
+-- ---------------------------------------------------------------------------------
+
+
+
 
 -- Procedure for creating allocated leaves
 DELIMITER $$
@@ -330,7 +351,7 @@ CREATE PROCEDURE updateEmergencyContact(
     IN p_name VARCHAR(255),
     IN p_relationship VARCHAR(255),
     IN p_contact_number VARCHAR(50),
-    IN address VARCHAR(255)
+    IN p_address VARCHAR(255)
 )
 BEGIN
     UPDATE emergency_contacts
@@ -390,7 +411,7 @@ BEGIN
         supervisor_id,
         first_name,
         last_name,
-        birthday,
+        birth_date,
         gender,
         marital_status,
         address,
@@ -398,7 +419,7 @@ BEGIN
         NIC,
         job_title_id,
         pay_grade_id,
-        employee_status_id,
+        employment_status_id,
         contact_number,
         cust_attr_1_value,
         cust_attr_2_value,
@@ -439,7 +460,60 @@ BEGIN
     SELECT * FROM employees;
 END $$
 
+-- Procedure to get all employees by filter
+DELIMITER $$
+
+CREATE PROCEDURE getAllEmployeesByFilter(
+    IN p_department_id VARCHAR(36),
+    IN p_branch_id VARCHAR(36),
+    IN p_job_title_id VARCHAR(36),
+    IN p_pay_grade_id VARCHAR(36),
+    IN p_employment_status_id VARCHAR(36)
+)
+BEGIN
+    SET @query = 'SELECT 
+                     employee_id,
+                     first_name,
+                     last_name,
+                     email,
+                     contact_number,
+                     department_id,
+                     branch_id,
+                     job_title_id,
+                     pay_grade_id,
+                     employment_status_id
+                 FROM employees WHERE 1 = 1';
+
+    IF p_department_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND department_id = "', p_department_id, '"');
+    END IF;
+
+    IF p_branch_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND branch_id = "', p_branch_id, '"');
+    END IF;
+
+    IF p_job_title_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND job_title_id = "', p_job_title_id, '"');
+    END IF;
+
+    IF p_pay_grade_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND pay_grade_id = "', p_pay_grade_id, '"');
+    END IF;
+
+    IF p_employment_status_id IS NOT NULL THEN
+        SET @query = CONCAT(@query, ' AND employment_status_id = "', p_employment_status_id, '"');
+    END IF;
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+    
+END $$
+
+DELIMITER ;
+
 -- Procedure to update an employee
+DELIMITER $$
 CREATE PROCEDURE UpdateEmployee(
     IN employeeID VARCHAR(255),
     IN departmentID VARCHAR(255),
@@ -469,7 +543,7 @@ BEGIN
         supervisor_id = supervisorID,
         first_name = firstName,
         last_name = lastName,
-        birthday = birthday,
+        birth_date = birthday,
         gender = gender,
         marital_status = maritalStatus,
         address = address,
@@ -477,7 +551,7 @@ BEGIN
         NIC = NIC,
         job_title_id = jobTitleID,
         pay_grade_id = payGradeID,
-        employee_status_id = employeeStatusID,
+        employment_status_id = employeeStatusID,
         contact_number = contactNumber,
         cust_attr_1_value = custAttr1Value,
         cust_attr_2_value = custAttr2Value,
@@ -485,6 +559,9 @@ BEGIN
     WHERE employee_id = employeeID;
 END $$
 
+DELIMITER ;
+
+DELIMITER $$
 -- Procedure to delete an employee
 CREATE PROCEDURE DeleteEmployee(IN employeeID VARCHAR(255))
 BEGIN
@@ -493,6 +570,92 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE GetFilteredEmployees(
+    IN name VARCHAR(255), 
+    IN department_id VARCHAR(36),
+    IN branch_id VARCHAR(36),
+    IN offset INT,
+    IN itemsPerPage INT
+)
+BEGIN 
+    SET @query = 'SELECT * FROM employee_basic_info';
+    SET @where_clause = '';
+
+    IF name IS NOT NULL AND name != '' THEN
+        SET @where_clause = CONCAT(@where_clause, ' first_name LIKE "', name, '%" OR last_name LIKE "', name, '%"');
+    END IF; 
+
+    IF department_id IS NOT NULL AND department_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND department_id = "', department_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' department_id = "', department_id, '"');
+        END IF;
+    END IF;
+
+    IF branch_id IS NOT NULL AND branch_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND branch_id = "', branch_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' branch_id = "', branch_id, '"');
+        END IF;
+    END IF;
+
+    IF LENGTH(@where_clause) > 0 THEN
+        SET @query = CONCAT(@query, ' WHERE ', @where_clause);
+    END IF;
+
+    IF offset IS NOT NULL AND itemsPerPage IS NOT NULL AND itemsPerPage != 0 THEN
+        SET @query = CONCAT(@query, ' LIMIT ', offset, ', ', itemsPerPage);
+    END IF;
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetFilteredEmployeeCount(
+    IN name VARCHAR(255), 
+    IN department_id VARCHAR(36),
+    IN branch_id VARCHAR(36)
+)
+BEGIN 
+    SET @query = 'SELECT COUNT(*) as count FROM employees';
+    SET @where_clause = '';
+
+    IF name IS NOT NULL AND name != '' THEN
+        SET @where_clause = CONCAT(@where_clause, ' first_name LIKE "', name, '%" OR last_name LIKE "', name, '%"');
+    END IF; 
+
+    IF department_id IS NOT NULL AND department_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND department_id = "', department_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' department_id = "', department_id, '"');
+        END IF;
+    END IF;
+
+    IF branch_id IS NOT NULL AND branch_id != '' THEN
+        IF LENGTH(@where_clause) > 0 THEN
+            SET @where_clause = CONCAT(@where_clause, ' AND branch_id = "', branch_id, '"');
+        ELSE
+            SET @where_clause = CONCAT(@where_clause, ' branch_id = "', branch_id, '"');
+        END IF;
+    END IF;
+
+    IF LENGTH(@where_clause) > 0 THEN
+        SET @query = CONCAT(@query, ' WHERE ', @where_clause);
+    END IF;
+
+    PREPARE stmt FROM @query;
+    EXECUTE stmt;
+    DEALLOCATE PREPARE stmt;
+END $$
+
+DELIMITER ;
 
 DELIMITER $$
 -- Procedure to get employment status by ID
@@ -733,6 +896,11 @@ CREATE PROCEDURE GetEmployeeBasicInfoByID(IN p_employee_id VARCHAR(36))
 BEGIN
     SELECT * FROM employee_basic_info WHERE employee_id = p_employee_id;
 END $$
+-- Procedure to get employee basic info by user ID. 
+CREATE PROCEDURE GetEmployeeBasicInfoByUserID(IN p_user_id VARCHAR(36))
+BEGIN
+    SELECT * FROM employee_basic_info WHERE user_id = p_user_id;
+END $$
 
 -- Procedure to get employee basic info.
 CREATE PROCEDURE GetAllEmployeeBasicInfos()
@@ -833,9 +1001,86 @@ BEGIN
 END $$
 
 -- Procedure to get employee demographics by nationality and preferred language
-CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_nationality VARCHAR(50), IN p_language VARCHAR(50))
+CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_cust_attr_1_value VARCHAR(50), IN p_cust_attr_3_value VARCHAR(50))
 BEGIN
     SELECT * FROM employee_demographics_language_nationality
-    WHERE cust_attr_1_value = p_nationality AND cust_attr_3_value = p_language;
+    WHERE cust_attr_1_value = p_cust_attr_1_value AND cust_attr_3_value = p_cust_attr_3_value;
 END $$
 DELIMITER ;
+
+--Procedure to get all the leave applications for a supervisor
+DELIMITER $$
+CREATE PROCEDURE getAllLeaveApplicationsForSupervisor(
+IN super_id VARCHAR(36))
+BEGIN
+
+	SELECT * FROM leave_applications WHERE application_id IN (
+	SELECT application_id FROM leave_applications JOIN employees 
+    ON leave_applications.employee_id = employees.employee_id 
+    WHERE employees.supervisor_id = super_id);
+
+END$$ 
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE getTotalLeavesByDepartmentForPeriod(
+    IN p_start_date DATE,
+    IN p_end_date DATE
+)
+BEGIN
+    SELECT 
+        d.department_id,
+        d.name AS department_name,
+        COUNT(la.application_id) AS total_leaves
+    FROM 
+        employees e
+    JOIN 
+        departments d ON e.department_id = d.department_id
+    JOIN 
+        leave_applications la ON e.employee_id = la.employee_id
+    WHERE 
+        la.start_date BETWEEN p_start_date AND p_end_date
+    GROUP BY 
+        d.department_id
+    ORDER BY 
+        d.name;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetLeaveApplicationByEmployeeID(IN employeeID VARCHAR(255))
+BEGIN
+    SELECT * FROM leave_applications WHERE employee_id = employeeID;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetEmployeesUnderSupervisor(IN supervisorID VARCHAR(255))
+BEGIN
+    SELECT * FROM employees WHERE supervisor_id = supervisorID;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE GetEmployeeIdByUserId(IN userID VARCHAR(255))
+BEGIN
+    SELECT employee_id FROM users WHERE user_id = userID;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+-- Procedure to get all non-null supervisors
+CREATE PROCEDURE GetAllSupervisorIDs()
+BEGIN
+    SELECT DISTINCT supervisor_id
+    FROM employees
+    WHERE supervisor_id IS NOT NULL;
+END $$
+DELIMITER ;
+
+
+
