@@ -239,30 +239,6 @@ const EmployeeTable = ({
       notifyError('Employee ID is required');
     }
   };
-  
-    const userAccountButton = (
-      <div className='flex items-center gap-2 hover:text-primary'>
-      <button className="flex items-center" onClick={()=> navigate('/user/create')}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          className="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
-          />
-        </svg>
-        <span>Create Account</span>
-      </button>
-    </div>
-    
-    );
-  
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -306,7 +282,32 @@ const EmployeeTable = ({
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <p className="text-black dark:text-white">
-                          {employee.username || userAccountButton}
+                          {employee.username ? (<div className='hover:text-primary hover:underline hover:cursor-pointer' onClick={() => navigate('/user/view/'+employee.user_id)}>
+                            {employee.username}
+                          </div>) : (
+                            <div className="flex items-center gap-2 hover:text-primary">
+                              <button
+                                className="flex items-center"
+                                onClick={() => navigate('/user/create/' + employee.employee_id)}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                                  />
+                                </svg>
+                                <span>Create Account</span>
+                              </button>
+                            </div>
+                          )}
                         </p>
                       </td>
                       <td
@@ -319,7 +320,7 @@ const EmployeeTable = ({
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <p className="text-black dark:text-white">
-                          {employee.branch_name}
+                          {employee.department_name}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

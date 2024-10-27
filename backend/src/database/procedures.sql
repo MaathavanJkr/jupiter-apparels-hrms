@@ -90,6 +90,12 @@ DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
 DROP PROCEDURE IF EXISTS GetAllSupervisorIDs;
 DROP PROCEDURE IF EXISTS GetEmployeeBasicInfoByUserID;
+DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
+DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
+DROP PROCEDURE IF EXISTS UpdateUser;
+DROP PROCEDURE IF EXISTS DeleteUser;
+DROP PROCEDURE IF EXISTS ChangePassword;
+DROP PROCEDURE IF EXISTS GetUserByID;
 -- ---------------------------------------------------------------------------------
 
 
@@ -378,7 +384,7 @@ CREATE PROCEDURE getEmergencyContactByEmployeeID(
     IN p_employee_id VARCHAR(255)
 )
 BEGIN
-    SELECT * FROM emergency_contacts WHERE emergency_id = p_employee_id;
+    SELECT * FROM emergency_contacts WHERE employee_id = p_employee_id;
 END $$
 
 -- Procedure to create a new employee
@@ -860,6 +866,7 @@ DELIMITER $$
 
 -- Procedure to create a user
 CREATE PROCEDURE CreateUser(
+    IN userID VARCHAR(255),
     IN employeeID VARCHAR(255),
     IN role VARCHAR(50),
     IN username VARCHAR(50),
@@ -867,7 +874,7 @@ CREATE PROCEDURE CreateUser(
 )
 BEGIN
     INSERT INTO users (user_id, employee_id, role, username, password)
-    VALUES (UUID(), employeeID, role, username, password);
+    VALUES (userID, employeeID, role, username, password);
 END $$
 
 -- Procedure to get a user by username
@@ -876,8 +883,36 @@ BEGIN
     SELECT * FROM users WHERE username = p_username;
 END $$
 
+-- procedure to get user by ID
+CREATE PROCEDURE GetUserByID(IN userID VARCHAR(255))
+BEGIN
+    SELECT * FROM users WHERE user_id = userID;
+END $$
 
+-- procedure to update user
+CREATE PROCEDURE UpdateUser(
+    IN userID VARCHAR(255),
+    IN role VARCHAR(50),
+    IN username VARCHAR(50)
+)
+BEGIN 
+    UPDATE users
+    SET role = role, username = username
+    WHERE user_id = userID;
+END $$
 
+CREATE PROCEDURE DeleteUser (IN userID VARCHAR(255)) 
+BEGIN
+    DELETE FROM users WHERE user_id = userID;
+END $$
+
+-- procedure to change password
+CREATE PROCEDURE ChangePassword(IN id VARCHAR(255), IN new_password VARCHAR(255))
+BEGIN
+    UPDATE users
+    SET password = new_password
+    WHERE user_id = id;
+END $$
 
 -- Procedure to get remaining leaves by employee ID
 CREATE PROCEDURE GetRemainingLeavesByID(IN p_employee_id VARCHAR(36))
@@ -1082,5 +1117,18 @@ BEGIN
 END $$
 DELIMITER ;
 
+DELIMITER $$
+-- procedure to get all custom attribute names
+CREATE PROCEDURE GetAllCustomAttributes()
+BEGIN 
+    SELECT name FROM custom_attribute_keys;
+END $$
 
+-- procedure to get specific custom attribute name by key
+CREATE PROCEDURE GetCustomAttributeByKey(IN attr_key INT) 
+BEGIN 
+    SELECT name FROM custom_attribute_keys WHERE custom_attribute_key_id = attr_key;
+END $$
+
+DELIMITER ;
 

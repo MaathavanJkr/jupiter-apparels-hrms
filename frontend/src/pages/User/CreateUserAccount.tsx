@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { createUserAccount } from '../../services/userServices';
 import { notifyError, notifySuccess } from '../../services/notify';
+import { ToastContainer } from 'react-toastify';
 
 interface userAccountData {
   username: string;
@@ -17,7 +18,7 @@ const deafultuserAccountData: userAccountData = {
 };
 
 const CreateUserAccount = () => {
-
+  const navigate = useNavigate();
   const [userAccountData, setuserAccountData] = useState<userAccountData>(
     deafultuserAccountData,
   );
@@ -64,6 +65,7 @@ const CreateUserAccount = () => {
               name="username"
               type="text"
               placeholder="Enter username"
+              autoComplete='off'
               onChange={handleuserAccountDataChange}
             ></input>
 
@@ -75,6 +77,7 @@ const CreateUserAccount = () => {
               name="password"
               type="text"
               placeholder="Enter password"
+              autoComplete='off'
               onChange={handleuserAccountDataChange}
             ></input>
             <h1 className="mt-4 text-lg text-black dark:text-white">
@@ -97,12 +100,13 @@ const CreateUserAccount = () => {
             <button className="shadow-lg m-2 rounded-lg bg-blue-700 card-btn font-bold text-black self-center hover:bg-green-500 dark:text-white" onClick={handleSubmit}>
               Create Account
             </button>
-            <button className="shadow-lg card-btn rounded-lg bg-gray-500 text-black font-bold self-center hover:bg-red-600 dark:text-white">
+            <button className="shadow-lg card-btn rounded-lg bg-gray-500 text-black font-bold self-center hover:bg-red-600 dark:text-white" onClick={()=>navigate('/employee/all')}>
               Cancel
             </button>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </DefaultLayout>
   );
 };
