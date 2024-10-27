@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { EmployeeCount, EmployeeCountByDepartment, LeaveCount, UserInfo } from '../../types/types';
+import { EmployeeCount, EmployeeCountByDepartment, LeaveCount, EmployeeInfo } from '../../types/types';
 import RingChart from '../Charts/RingChart';
 import { getEmployeeCount } from '../../services/employeeServices';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [employeeCount, setEmployeeCount] = useState<EmployeeCount>();
   const [employeeCountByID, setEmployeeCountByID] = useState<EmployeeCountByDepartment>();
-  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [userInfo, setUserInfo] = useState<EmployeeInfo>();
 
   
   useEffect(() => {
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
     const department_id = localStorage.getItem('user_id');
     const fetchuserInfo = async () => {
       try {
-        const userInfo: UserInfo = await getUserInfoById(user_id!);
+        const userInfo: EmployeeInfo = await getUserInfoById(user_id!);
         const employeeCountByID: EmployeeCountByDepartment = await getCountByDepartment(department_id!);
         
         setEmployeeCountByID(employeeCountByID);

@@ -3,7 +3,7 @@ import {
   Employee,
   LeaveBalance,
   UsedLeaves,
-  UserInfo,
+  EmployeeInfo,
 } from '../../types/types';
 import { getUserInfoById } from '../../services/userServices';
 import { getEmployeeByID } from '../../services/employeeServices';
@@ -18,7 +18,7 @@ import PendingleaveTable from '../Tables/PendingleaveTable'; // Import LeaveTabl
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
 
-  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [userInfo, setUserInfo] = useState<EmployeeInfo>();
   const [supervisor, setSupervisor] = useState<Employee>();
   const [usedLeaves, setUsedLeaves] = useState<UsedLeaves>();
   const [remainingLeaves, setRemainingLeaves] = useState<LeaveBalance>();
@@ -30,7 +30,7 @@ const EmployeeDashboard = () => {
     const user_id = localStorage.getItem('user_id');
     const fetchuserInfo = async () => {
       try {
-        const userInfo: UserInfo = await getUserInfoById(user_id!);
+        const userInfo: EmployeeInfo = await getUserInfoById(user_id!);
         setUserInfo(userInfo);
       } catch (error) {
         console.log('Error Fetching Info:', error);

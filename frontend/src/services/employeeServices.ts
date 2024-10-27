@@ -3,7 +3,6 @@ import axiosInstance from '../axiosConfig';
 export const addEmployee = async (
   department_id: string,
   branch_id: string,
-  supervisor_id: string,
   first_name: string,
   last_name: string,
   birthday: string,
@@ -24,7 +23,6 @@ export const addEmployee = async (
       {
         department_id,
         branch_id,
-        supervisor_id,
         first_name,
         last_name,
         birthday,
