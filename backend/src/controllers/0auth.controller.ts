@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { getUserByUsernameModel } from "../models/user.model";
 import { hashPassword } from "../utils/hashPassword";
+import { getEmployeeIdByUserIdModel } from "../models/employee.model";
 
 // login
 export const loginUser = async (req: Request, res: Response) => {
@@ -33,6 +34,7 @@ export const loginUser = async (req: Request, res: Response) => {
   //NEED TO UPDATE ABOVE LINE
 
   if (isvalid) {
+    const {data} = await getEmployeeIdByUserIdModel(user.user_id)
     return res.status(200).send({
       error: null,
       message: "successfully logged in",
@@ -40,6 +42,7 @@ export const loginUser = async (req: Request, res: Response) => {
         username: user.username,
         user_id: user.user_id,
         role: user.role,
+        employee_id: data.employee_id,
       }),
       user,
     });

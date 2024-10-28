@@ -203,3 +203,9 @@ export interface UserInfo {
   pay_grade_name: string;
   supervisor_id: string;
 }
+export interface LeaveAppData {
+  leaveType: string;
+  startdate: string;
+  enddate: string;
+  reason: string;
+}

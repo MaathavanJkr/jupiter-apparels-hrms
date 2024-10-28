@@ -40,7 +40,11 @@ export const adminAuth = (
         typeof decodedToken === "object" &&
         (decodedToken as JwtPayload).role == "Admin"
       ) {
-        req.user_id = decodedToken.user_id;
+        req.user = {
+          id: (decodedToken as JwtPayload).user_id,
+          role: (decodedToken as JwtPayload).role,
+          employee_id: (decodedToken as JwtPayload).employee_id,
+        };
         next();
       }
       return res
@@ -75,7 +79,11 @@ export const userAuth = (
           .json({ success: false, message: "Not authorized" });
       }
 
-      req.user_id = (decodedToken as JwtPayload).user_id;
+      req.user = {
+        id: (decodedToken as JwtPayload).user_id,
+        role: (decodedToken as JwtPayload).role,
+        employee_id: (decodedToken as JwtPayload).employee_id,
+      };
       next();
     });
   } catch (error) {

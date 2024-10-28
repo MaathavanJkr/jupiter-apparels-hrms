@@ -4,28 +4,15 @@ import { createLeaveApplication } from '../../services/leaveServices';
 import { notifyError, notifySuccess } from '../../services/notify';
 import {getEmployeeIdByUserId} from "../../services/employeeServices.ts";
 import {useNavigate} from "react-router-dom";
-
-interface LeaveAppData {
-  //employeeid: string;
-  leaveType: string;
-  startdate: string;
-  enddate: string;
-  reason: string;
-}
-
-const defaultLeaveAppData: LeaveAppData = {
-  //employeeid: '',
-  leaveType: '',
-  startdate: '',
-  enddate: '',
-  reason: '',
-};
-
-
-
+import { LeaveAppData } from '../../types/types.ts';
 
 const UpdateLeaveApplicationData = () => {
-  const [leaveAppData, setLeaveAppData] = useState<LeaveAppData>(defaultLeaveAppData);
+  const [leaveAppData, setLeaveAppData] = useState<LeaveAppData>({
+    leaveType: '',
+    startdate: '',
+    enddate: '',
+    reason: '',
+  });
 
   const user_id = localStorage.getItem('user_id');
   const [employeeId, setEmployeeId] = useState('');
@@ -64,8 +51,6 @@ const UpdateLeaveApplicationData = () => {
     try {
       // Call the API to create a leave application
       await createLeaveApplication(
-          //leaveAppData.employeeid,
-          //manually put emp_id here
           employeeId,
           leaveAppData.leaveType,
           leaveAppData.startdate,
