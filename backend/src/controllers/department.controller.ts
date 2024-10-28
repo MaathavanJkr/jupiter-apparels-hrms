@@ -7,6 +7,7 @@ import {
   getAllDepartmentsModel,
   getDepartmentByIDModel,
   updateDepartmentModel,
+  getEmployeeCountByDepartmentIDModel,
 } from "../models/department.model";
 
 export const createDepartment = async (req: Request, res: Response) => {
@@ -91,6 +92,21 @@ export const deleteDepartment = async (req: Request, res: Response) => {
         .catch((error) => {
           return res.status(500).json({ error });
         });
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+};
+
+export const getEmployeeCountByDepartmentID = async (
+  req: Request,
+  res: Response
+) => {
+  const { id } = req.params;
+
+  await getEmployeeCountByDepartmentIDModel(id)
+    .then((result) => {
+      return res.status(200).json(result);
     })
     .catch((error) => {
       return res.status(500).json({ error });

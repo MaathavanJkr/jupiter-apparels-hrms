@@ -90,6 +90,8 @@ DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
 DROP PROCEDURE IF EXISTS GetAllSupervisorIDs;
 DROP PROCEDURE IF EXISTS GetEmployeeBasicInfoByUserID;
+DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
+DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
 DROP PROCEDURE IF EXISTS GetAllUsers;
 -- ---------------------------------------------------------------------------------
 
@@ -1081,6 +1083,21 @@ BEGIN
     FROM employees
     WHERE supervisor_id IS NOT NULL;
 END $$
+DELIMITER ;
+
+DELIMITER $$
+-- procedure to get all custom attribute names
+CREATE PROCEDURE GetAllCustomAttributes()
+BEGIN 
+    SELECT name FROM custom_attribute_keys;
+END $$
+
+-- procedure to get specific custom attribute name by key
+CREATE PROCEDURE GetCustomAttributeByKey(IN attr_key INT) 
+BEGIN 
+    SELECT name FROM custom_attribute_keys WHERE custom_attribute_key_id = attr_key;
+END $$
+
 DELIMITER ;
 
 DELIMITER $$

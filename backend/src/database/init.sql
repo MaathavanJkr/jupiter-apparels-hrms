@@ -157,7 +157,7 @@ CREATE TABLE leave_applications (
     submission_date DATE DEFAULT (CURRENT_DATE()),
     status ENUM('Pending', 'Approved', 'Rejected') NOT NULL DEFAULT 'Pending',
     response_date DATE,
-    FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
 );
 CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
