@@ -10,7 +10,6 @@ import {
     updateLeaveApplicationModel, getLeaveApplicationsByEmployeeIDModel,
   getLeaveApplicationsForSupervisorModel,
 } from "../models/leaveapplication.model";
-import { getEmployeeIdByUserId } from "./employee.controller";
 
 export const createLeaveApplication = async (req: Request, res: Response) => {
     const { employee_id, leave_type, start_date, end_date, reason } = req.body;
