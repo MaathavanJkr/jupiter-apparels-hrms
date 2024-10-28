@@ -1,5 +1,36 @@
 import axiosInstance from '../axiosConfig';
 
+export const applyLeave = async (
+  leaveType: string,
+  start_date: string,
+  end_date: string,
+  reason: string,
+) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.post(
+      '/leave/apply',
+      {
+        leave_type: leaveType, // Changed to leave_type to match API
+        start_date,
+        end_date,
+        reason,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log('Response:', response);
+    return response.data; // Return true if the request is successful
+  } catch (error: any) {
+    console.error('Error creating leave application: ', error);
+    throw error.response.data.error; // Throw error if request fails
+  }
+};
+
+
 export const createLeaveApplication = async (
   employee_id: string,
   leaveType: string,

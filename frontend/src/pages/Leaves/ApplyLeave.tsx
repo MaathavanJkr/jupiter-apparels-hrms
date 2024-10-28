@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { createLeaveApplication } from '../../services/leaveServices';
+import { applyLeave } from '../../services/leaveServices';
 import { notifyError, notifySuccess } from '../../services/notify';
-import {getEmployeeIdByUserId} from "../../services/employeeServices.ts";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LeaveAppData } from '../../types/types.ts';
+import { ToastContainer } from 'react-toastify';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb.tsx';
 
 const UpdateLeaveApplicationData = () => {
   const [leaveAppData, setLeaveAppData] = useState<LeaveAppData>({
@@ -14,29 +15,9 @@ const UpdateLeaveApplicationData = () => {
     reason: '',
   });
 
-  const user_id = localStorage.getItem('user_id');
-  const [employeeId, setEmployeeId] = useState('');
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchEmployeeId = async () => {
-      if (user_id) { // Check if user_id is not null
-        try {
-          const id = await getEmployeeIdByUserId(user_id);
-          setEmployeeId(id);
-        } catch (error) {
-          console.error('Error fetching employee ID:', error);
-        }
-      } else {
-        console.error('User ID is not available.');
-      }
-    };
-
-    fetchEmployeeId();
-  }, [user_id]);
-
   const handleLeaveAppDataChange = (
-      event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
   ) => {
     const newLeaveAppData: LeaveAppData = {
       ...leaveAppData,
@@ -48,93 +29,100 @@ const UpdateLeaveApplicationData = () => {
 
   // Handle form submission
   const handleSubmit = async () => {
+
+    // Check if all fields are filled
+    if (!leaveAppData.leaveType || !leaveAppData.startdate || !leaveAppData.enddate || !leaveAppData.reason) {
+      notifyError("Please fill in all fields");
+      return;
+    }
+
     try {
       // Call the API to create a leave application
-      await createLeaveApplication(
-          employeeId,
-          leaveAppData.leaveType,
-          leaveAppData.startdate,
-          leaveAppData.enddate,
-          leaveAppData.reason
+      const response = await applyLeave(
+        leaveAppData.leaveType,
+        leaveAppData.startdate,
+        leaveAppData.enddate,
+        leaveAppData.reason
       );
+
+      if (response.error) {
+        notifyError(response.error.message);
+        return;
+      }
       notifySuccess("Application Submitted Successfully");
-      navigate(0);
+
+      setTimeout(() => {
+        navigate('/leave/my');
+      }, 2000);
     } catch (err) {
       notifyError("Could not create application");
     }
   };
 
   return (
-      <DefaultLayout>
-        <div className="w-full h-screen flex items-center justify-center">
-          <div className="w-[50%] h-[90%] bg-gray-300 p-6 rounded-lg shadow-lg dark:bg-blue-950">
-            <h2 className="text-2xl font-bold text-black shadow-lg text-center bg-gray-200 py-5 dark:bg-blue-900 dark:text-white">
-              Leave Application
-            </h2>
-            <div className="pt-5">
-              {/*<h1 className="text-lg text-black dark:text-white">Employee ID</h1>*/}
-              {/*<input*/}
-              {/*    className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"*/}
-              {/*    name="employeeid"*/}
-              {/*    type="text"*/}
-              {/*    placeholder="Enter Employee ID"*/}
-              {/*    onChange={handleLeaveAppDataChange}*/}
-              {/*/>*/}
+    <DefaultLayout>
+      <Breadcrumb pageName="Apply for Leave" />
+      <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
+        <div>
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Leave Type <span className="text-meta-1">*</span>
+            </label>
+            <select
+              name="leaveType"
+              onChange={handleLeaveAppDataChange}
+              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            >
+              <option value="" disabled selected>Select Leave Type</option>
+              <option value="annual">Annual Leave</option>
+              <option value="casual">Casual Leave</option>
+              <option value="maternity">Maternity Leave</option>
+              <option value="noPay">No Pay Leave</option>
+            </select>
+          </div>
+          <h1 className="mt-4 text-lg text-black dark:text-white">Start Date</h1>
+          <input
+            className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
+            name="startdate"
+            type="date"
+            placeholder="Enter start date"
+            onChange={handleLeaveAppDataChange}
+          />
 
-              <h1 className="mt-4 text-lg text-black dark:text-white">Leave Type</h1>
-              <select
-                  className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
-                  name="leaveType"
-                  onChange={handleLeaveAppDataChange}
-              >
-                <option value="">Select Leave Type</option>
-                <option value="annual">Annual Leave</option>
-                <option value="casual">Casual Leave</option>
-                <option value="maternity">Maternity Leave</option>
-                <option value="noPay">No Pay Leave</option>
-              </select>
+          <h1 className="mt-4 text-lg text-black dark:text-white">End Date</h1>
+          <input
+            className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
+            name="enddate"
+            type="date"
+            placeholder="Enter end date"
+            onChange={handleLeaveAppDataChange}
+          />
 
-              <h1 className="mt-4 text-lg text-black dark:text-white">Start Date</h1>
-              <input
-                  className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
-                  name="startdate"
-                  type="date"
-                  placeholder="Enter start date"
-                  onChange={handleLeaveAppDataChange}
-              />
-
-              <h1 className="mt-4 text-lg text-black dark:text-white">End Date</h1>
-              <input
-                  className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
-                  name="enddate"
-                  type="date"
-                  placeholder="Enter end date"
-                  onChange={handleLeaveAppDataChange}
-              />
-
-              <h1 className="mt-4 text-lg text-black dark:text-white">Reason</h1>
-              <input
-                  className="shadow-lg rounded-md p-3 mt-3 w-4/5 pb-10 dark:bg-blue-900"
-                  name="reason"
-                  type="text"
-                  placeholder="Enter reason"
-                  onChange={handleLeaveAppDataChange}
-              />
-            </div>
-            <div className="mt-7 flex justify-normal">
-              <button
-                  onClick={handleSubmit}
-                  className="shadow-lg m-2 rounded-lg bg-blue-700 card-btn font-bold text-black self-center hover:bg-green-500 dark:text-white"
-              >
-                Submit
-              </button>
-              <button className="shadow-lg card-btn rounded-lg bg-gray-500 text-black font-bold self-center hover:bg-red-600 dark:text-white">
-                Cancel
-              </button>
-            </div>
+          <h1 className="mt-4 text-lg text-black dark:text-white">Reason</h1>
+          <input
+            className="shadow-lg rounded-md p-3 mt-3 w-4/5 pb-10 dark:bg-blue-900"
+            name="reason"
+            type="text"
+            placeholder="Enter reason"
+            onChange={handleLeaveAppDataChange}
+          />
+        </div>
+        <div className="-mx-3 flex flex-wrap gap-y-4">
+          <div className="w-full px-3 2xsm:w-1/2">
+            <button onClick={handleSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+              Add Employee
+            </button>
+          </div>
+          <div className="w-full px-3 2xsm:w-1/2">
+            <button onClick={() => { navigate('/employee/all') }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-4 hover:bg-meta-4 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+              View All
+            </button>
           </div>
         </div>
-      </DefaultLayout>
+      </div>
+      <ToastContainer />
+      <ToastContainer />
+    </DefaultLayout>
   );
 };
 
