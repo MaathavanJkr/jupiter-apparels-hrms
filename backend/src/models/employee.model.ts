@@ -30,7 +30,7 @@ export interface Employee extends RowDataPacket {
   NIC: string;
   job_title_id: string;
   pay_grade_id: string;
-  employee_status_id: string;
+  employment_status_id: string;
   contact_number: string;
   cust_attr_1_value: string;
   cust_attr_2_value: string;
@@ -60,7 +60,7 @@ export const createEmployeeModel = async (
     NIC,
     job_title_id,
     pay_grade_id,
-    employee_status_id,
+    employment_status_id,
     contact_number,
     cust_attr_1_value,
     cust_attr_2_value,
@@ -83,10 +83,10 @@ export const createEmployeeModel = async (
     !NIC ||
     !job_title_id ||
     !pay_grade_id ||
-    !employee_status_id ||
+    !employment_status_id ||
     !contact_number
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    return { error: "Missing required fields in model", data: null, message: null };
   }
 
   try {
@@ -109,7 +109,7 @@ export const createEmployeeModel = async (
           NIC,
           job_title_id,
           pay_grade_id,
-          employee_status_id,
+          employment_status_id,
           contact_number,
           cust_attr_1_value,
           cust_attr_2_value,
@@ -122,7 +122,7 @@ export const createEmployeeModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
