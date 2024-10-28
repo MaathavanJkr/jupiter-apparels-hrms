@@ -18,7 +18,7 @@ import remainingLeavesViewRoute from "./routes/remainingLeavesView.route";
 import leaveApplicationRoutes from "./routes/leaveapplication.route";
 import leaveRoutes from "./routes/leave.route";
 import supervisorRoutes from "./routes/supervisor.route";
-
+import customAttributeRoutes from "./routes/customAttribute.route";
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -42,6 +42,8 @@ app.use("/remainingLeavesView", remainingLeavesViewRoute);
 app.use("/leaveapplication", leaveApplicationRoutes);
 app.use("/leave", leaveRoutes);
 app.use("/supervisor", supervisorRoutes);
+
+app.use("/attribute", customAttributeRoutes);
 
 
 export default app;

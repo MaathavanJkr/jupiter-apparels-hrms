@@ -28,6 +28,27 @@ export const getUserByID = async (user_id: string) => {
   }
 };
 
+
+export const getUsers = async () => {
+  try {
+    const token = localStorage.getItem('token'); // Retrieve token from localStorage
+    const response = await axiosInstance.get('/user/', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.users || [];
+  } catch (error) {
+    // Handle error gracefully
+    if (error.response && error.response.data && error.response.data.error) {
+      throw new Error(error.response.data.error);
+    } else {
+      throw new Error("An error occurred while fetching users.");
+    }
+  }
+};
+
 export const changePassword = async (
   user_id: string,
   old_password: string,

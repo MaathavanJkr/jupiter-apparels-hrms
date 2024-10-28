@@ -4,7 +4,7 @@ import axiosInstance from '../axiosConfig';
 export const getSupervisors = async () => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('/employee/supervisor', {
+    const response = await axiosInstance.get('/supervisor/allsuperid', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

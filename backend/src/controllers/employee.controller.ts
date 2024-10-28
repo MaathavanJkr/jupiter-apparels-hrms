@@ -142,6 +142,9 @@ export const updateEmployee = async (req: Request, res: Response) => {
     pay_grade_id,
     employee_status_id,
     contact_number,
+    cust_attr_1_value,
+    cust_attr_2_value,
+    cust_attr_3_value,
   } = req.body;
 
   await getEmployeeByIDModel(id)
@@ -165,7 +168,10 @@ export const updateEmployee = async (req: Request, res: Response) => {
       if (pay_grade_id) employee.pay_grade_id = pay_grade_id;
       if (employee_status_id) employee.employee_status_id = employee_status_id;
       if (contact_number) employee.contact_number = contact_number;
-
+      if (cust_attr_1_value) employee.cust_attr_1_value = cust_attr_1_value;
+      if (cust_attr_2_value) employee.cust_attr_2_value = cust_attr_2_value;
+      if (cust_attr_3_value) employee.cust_attr_3_value = cust_attr_3_value;
+  
       await updateEmployeeModel(employee)
         .then((result) => {
           return res.status(200).json(result);
