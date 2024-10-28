@@ -316,7 +316,7 @@ export const updateEmployeeModel = async (
     await db
       .promise()
       .query(
-        "CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL UpdateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
         [
           employee_id,
           department_id,
@@ -402,7 +402,6 @@ export const getAllUniqueSupervisorsModel = async (): Promise<Output> => {
         };
     }
 };
-
 
 
 

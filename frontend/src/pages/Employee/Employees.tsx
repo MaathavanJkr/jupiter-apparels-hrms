@@ -3,6 +3,7 @@ import { getFilteredCount, getFilteredEmployees } from '../../services/employeeS
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import {
   Branch,
+  CustomAttribute,
   Department,
   EmployeeInfo,
   EmploymentStatus,
@@ -20,6 +21,7 @@ import { Link } from 'react-router-dom';
 import { getSupervisors } from '../../services/supervisorServices';
 import DefaultLayout from '../../layout/DefaultLayout';
 import ReactPaginate from 'react-paginate';
+import { getCustomAttributes } from '../../services/attributeServices';
 
 const Employees = () => {
   const [employees, setEmployees] = useState<EmployeeInfo[]>([]);
@@ -41,6 +43,8 @@ const Employees = () => {
   const [searchBranch, setSearchBranch] = useState<string>('');
   const [filteredCount, setFilteredCount] = useState<number>(0);
 
+  const [customAttributes, setCustomAttributes] = useState<CustomAttribute[]>([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,12 +54,14 @@ const Employees = () => {
         const employmentStatuses = await getEmploymentStatuses();
         const payGrades = await getPayGrades();
         const supervisors = await getSupervisors();
+        const customAttributes = await getCustomAttributes();
         setJobTitles(jobTitles);
         setBranches(branches);
         setDepartments(departments);
         setEmploymentStatuses(employmentStatuses);
         setPayGardes(payGrades);
         setSupervisors(supervisors);
+        setCustomAttributes(customAttributes);
       } catch (error) {
         console.error('Failed to fetch Data', error);
       }
@@ -257,6 +263,7 @@ const Employees = () => {
               jobTitleData={jobTitles}
               statusData={employmentStatuses}
               supervisorData={supervisors}
+              customAttributeData={customAttributes}
             />
           )}
         </div>

@@ -20,7 +20,7 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(400).send({ error });
   }
 
-  if (user === null) {
+  if (user == null) {
     return res.status(400).send({ error: "User does not exists" });
   }
 

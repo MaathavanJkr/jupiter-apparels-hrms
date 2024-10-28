@@ -3,7 +3,6 @@ import axiosInstance from '../axiosConfig';
 export const addEmployee = async (
   department_id: string,
   branch_id: string,
-  supervisor_id: string,
   first_name: string,
   last_name: string,
   birthday: string,
@@ -24,7 +23,6 @@ export const addEmployee = async (
       {
         department_id,
         branch_id,
-        supervisor_id,
         first_name,
         last_name,
         birthday,
@@ -68,8 +66,13 @@ export const updateEmployee = async (
   pay_grade_id: string,
   employee_status_id: string,
   contact_number: string,
+  cust_attr_1_value: string,
+  cust_attr_2_value: string,
+  cust_attr_3_value: string,
 ) => {
   try {
+    console.log('Birthday:', birthday);
+
     const token = localStorage.getItem('token');
     const response = await axiosInstance.put(
       `/employee/` + employee_id,
@@ -89,6 +92,9 @@ export const updateEmployee = async (
         pay_grade_id,
         employee_status_id,
         contact_number,
+        cust_attr_1_value,
+        cust_attr_2_value,
+        cust_attr_3_value,
       },
       {
         headers: {
@@ -204,6 +210,20 @@ export const getEmployeeCount = async () => {
   } catch (error) {
     return error.response.data.error;
   }
+};
+
+export const getEmployees = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.get('/employee', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        return error.response.data.error;
+    }
 };
 
 // employeeServices.js
