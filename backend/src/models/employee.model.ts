@@ -66,26 +66,7 @@ export const createEmployeeModel = async (
     cust_attr_2_value,
     cust_attr_3_value,
   } = employee;
-  const missingFields = [];
-  if (!department_id) missingFields.push("department_id");
-  if (!branch_id) missingFields.push("branch_id");
-  if (!first_name) missingFields.push("first_name");
-  if (!last_name) missingFields.push("last_name");
-  if (!birthday) missingFields.push("birthday");
-  if (!gender) missingFields.push("gender");
-  if (!marital_status) missingFields.push("marital_status");
-  if (!address) missingFields.push("address");
-  if (!email) missingFields.push("email");
-  if (!NIC) missingFields.push("NIC");
-  if (!job_title_id) missingFields.push("job_title_id");
-  if (!pay_grade_id) missingFields.push("pay_grade_id");
-  if (!employment_status_id) missingFields.push("employment_status_id");
-  if (!contact_number) missingFields.push("contact_number");
 
-  if (missingFields.length > 0) {
-    console.log("Missing fields:", missingFields);
-    //return res.status(400).json({ error: "Missing required fields", missingFields });
-  }
   employee.employee_id = uuidv4();
 
   if (
