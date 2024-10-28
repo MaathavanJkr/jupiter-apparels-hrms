@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Branch, Department, JobTitle, EmploymentStatus, PayGrade, Supervisor } from "../../types/types";
+import { Branch, Department, JobTitle, EmploymentStatus, PayGrade} from "../../types/types";
 import { getBranches } from "../../services/branchService";
 import { getDepartments } from "../../services/departmentServices";
 import { getEmploymentStatuses } from "../../services/employmentStatusServices";
@@ -17,7 +17,6 @@ const AddEmployee = () => {
 
   const [departmentId, setDepartmentId] = useState<string>('');
   const [branchId, setBranchId] = useState<string>('');
-  const [supervisorId, setSupervisorId] = useState<string>('');
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [birthday, setBirthday] = useState<string>('');
@@ -37,7 +36,6 @@ const AddEmployee = () => {
   const [jobTitles, setJobTitles] = useState<JobTitle[]>([]);
   const [employmentStatuses, setEmploymentStatuses] = useState<EmploymentStatus[]>([]);
   const [payGrades, setPayGardes] = useState<PayGrade[]>([]);
-  const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -54,7 +52,6 @@ const AddEmployee = () => {
         setDepartments(departments);
         setEmploymentStatuses(employmentStatuses);
         setPayGardes(payGrades);
-        setSupervisors(supervisors || []);
         console.log(supervisors)
       } catch (error) {
         console.error("Failed to fetch Data", error);
@@ -66,9 +63,9 @@ const AddEmployee = () => {
 
   const handleSubmit = () => {
     if (firstName !== "" && lastName !== "" && email !== "" && nic !== "" && contactNumber !== "" && birthday && maritalStatus !== "" && gender !== "" && address !== ""
-      && jobTitleId !== "" && branchId !== "" && departmentId !== "" && employeeStatusId !== "" && payGradeId !== "" && supervisorId !== ""
+      && jobTitleId !== "" && branchId !== "" && departmentId !== "" && employeeStatusId !== "" && payGradeId !== "" 
     ) {
-      addEmployee(departmentId, branchId, supervisorId, firstName, lastName, birthday, gender, maritalStatus, address, email, nic, jobTitleId, payGradeId, employeeStatusId, contactNumber).then(() => {
+      addEmployee(departmentId, branchId, firstName, lastName, birthday, gender, maritalStatus, address, email, nic, jobTitleId, payGradeId, employeeStatusId, contactNumber).then(() => {
         notifySuccess("Employee Added Sucessfully");
         navigate("/employee");
       }).catch((error) => {
@@ -216,21 +213,6 @@ const AddEmployee = () => {
                 <option value="" disabled>Select Branch</option>
                 {branches?.map(branch => (
                   <option key={branch.branch_id} value={branch.branch_id}>{branch.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-5.5">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Supervisors <span className="text-meta-1">*</span>
-              </label>
-              <select
-                value={supervisorId}
-                onChange={(e) => setSupervisorId(e.target.value)}
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              >
-                <option value="" disabled>Select Supervisor</option>
-                {supervisors?.map(supervisor => (
-                  <option key={supervisor.supervisor_id} value={supervisor.supervisor_id}>{supervisor.full_name}</option>
                 ))}
               </select>
             </div>

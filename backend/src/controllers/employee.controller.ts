@@ -21,7 +21,6 @@ export const createEmployee = async (req: Request, res: Response) => {
   const {
     department_id,
     branch_id,
-    supervisor_id,
     first_name,
     last_name,
     birthday,
@@ -39,7 +38,6 @@ export const createEmployee = async (req: Request, res: Response) => {
   if (
     !department_id ||
     !branch_id ||
-    !supervisor_id ||
     !first_name ||
     !last_name ||
     !birthday ||
@@ -59,7 +57,7 @@ export const createEmployee = async (req: Request, res: Response) => {
   const employee: Employee = {
     department_id: department_id as string,
     branch_id: branch_id as string,
-    supervisor_id: supervisor_id as string,
+    supervisor_id: "E0004",// hardcode here to set the admin as the supervisor when creating a user account.
     first_name: first_name as string,
     last_name: last_name as string,
     birthday: birthday as Date,
