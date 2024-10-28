@@ -121,7 +121,6 @@ const UpdateLeaveApplicationData = () => {
         </div>
       </div>
       <ToastContainer />
-      <ToastContainer />
     </DefaultLayout>
   );
 };
