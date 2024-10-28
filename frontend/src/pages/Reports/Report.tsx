@@ -1,36 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import EDRTable from '../../components/Tables/EDRTable';
 import TLDTable from '../../components/Tables/TLDTable';
 import GERTable from '../../components/Tables/GERTable';
-import { TLDData, EDRData, GERData } from '../../types/types';
+import { TLDData, EDRData, GERData, Department } from '../../types/types';
 import {
   fetchEDRReportData,
   fetchTLDReportData,
   fetchGERReportData,
 } from '../../services/reportTableServices';
-
-const defaultTLDData: TLDData = {
-  startdate: '',
-  enddate: '',
-};
-
-const defaultEDRData: EDRData = {
-  department: '',
-};
-
-const defaultGERData: GERData = {
-  group: '',
-};
+import { getDepartments } from '../../services/departmentServices';
 
 const Report = () => {
-  const [GERData, setGERData] = useState<GERData>(defaultGERData);
+  const [GERData, setGERData] = useState<GERData>({
+    group: '',
+  });
   const [GERReportData, setGERReportData] = useState<any>(null);
 
-  const [TLDData, setTLDData] = useState<TLDData>(defaultTLDData);
+  const [TLDData, setTLDData] = useState<TLDData>({
+    startdate: '',
+    enddate: '',
+  });
   const [TLDReportData, setTLDReportData] = useState<any>(null);
 
-  const [EDRData, setEDRData] = useState<EDRData>(defaultEDRData);
+  const [EDRData, setEDRData] = useState<EDRData>({
+    department: '',
+  });
   const [EDRReportData, setEDRReportData] = useState<any>(null);
 
   const resetReports = () => {
@@ -56,6 +51,36 @@ const Report = () => {
     setTLDData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const [departments, setDepartments] = useState<Department[]>([]);
+
+  const handleGERGenerate = async () => {
+    resetReports();
+    setGERReportData(await fetchGERReportData(GERData));
+  }
+
+  const handleTLDGenerate = async () => {
+    resetReports();
+    setTLDReportData(await fetchTLDReportData(TLDData));
+  }
+
+  const handleEDRGenerate = async () => {
+    resetReports();
+    setEDRReportData(await fetchEDRReportData(EDRData));
+  }
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const departments = await getDepartments();
+        setDepartments(departments);
+      } catch (error) {
+        console.log('Error Fetching Departments:', error);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
+
   return (
     <DefaultLayout>
       <div className="w-full flex flex-col h-screen">
@@ -80,24 +105,17 @@ const Report = () => {
                   <option value="" disabled>
                     Select a Department
                   </option>
-                  <option value="D001">HR</option>
-                  <option value="D002">Finance</option>
-                  <option value="D003">IT</option>
-                  <option value="D004">Marketing</option>
-                  <option value="D005">Production</option>
-                  <option value="D006">Customer Service</option>
-                  <option value="D007">Sales</option>
-                  <option value="D008">Quality Assurance</option>
-                  <option value="D009">Corporate Management</option>
+                  {departments.map((department) => (
+                    <option key={department.department_id} value={department.department_id}>
+                      {department.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
             <button
               className="mt-10 hover:bg-green-500 card-btn text-gray-300 self-center dark:bg-blue-950 dark:hover:bg-green-500"
-              onClick={async () => {
-                resetReports();
-                setEDRReportData(await fetchEDRReportData(EDRData));
-              }}
+              onClick={handleEDRGenerate}
             >
               Generate
             </button>
@@ -134,10 +152,7 @@ const Report = () => {
             </div>
             <button
               className="mt-8 hover:bg-green-500 card-btn text-gray-300 self-center mt-3 dark:bg-blue-950 dark:hover:bg-green-500"
-              onClick={async () => {
-                resetReports();
-                setTLDReportData(await fetchTLDReportData(TLDData));
-              }}
+              onClick={handleTLDGenerate}
             >
               Generate
             </button>
@@ -168,10 +183,7 @@ const Report = () => {
             </div>
             <button
               className="mt-10 hover:bg-green-500 card-btn text-gray-300 self-center dark:bg-blue-950 dark:hover:bg-green-500"
-              onClick={async () => {
-                resetReports();
-                setGERReportData(await fetchGERReportData(GERData));
-              }}
+              onClick={handleGERGenerate}
             >
               Generate
             </button>

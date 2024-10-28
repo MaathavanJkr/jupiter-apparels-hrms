@@ -76,6 +76,22 @@ export const getLeaveApplicationsByEmployeeID = async (req: Request, res: Respon
     }
 };
 
+export const getMyLeaveApplications = async (req: Request, res: Response) => {
+  const employee_id  = req.user?.employee_id;
+
+  if (!employee_id) {
+      return res.status(400).json({ error: "Missing employee ID in backend" });
+  }
+
+  try {
+      const result = await getLeaveApplicationsByEmployeeIDModel(employee_id);
+      return res.status(200).json(result);
+  } catch (error) {
+      return res.status(500).json({ error });
+  }
+};
+
+
 export const updateLeaveApplication = async (req: Request, res: Response) => {
   const { application_id } = req.params;
   const {
@@ -150,4 +166,30 @@ export const getLeaveApplicationsForSupervisor = async (req:Request, res:Respons
     .catch((error)=>{
       return res.status(500).json({error});
     });
+};
+
+export const applyLeave = async (req: Request, res: Response) => {
+  const { leave_type, start_date, end_date, reason } = req.body;
+
+  if (!leave_type || !start_date || !end_date || !reason) {
+      return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  const employee_id = req.user?.employee_id;
+
+  const leaveApplication: LeaveApplication = {
+      employee_id: employee_id as string,
+      leave_type: leave_type as string,
+      start_date: start_date as Date,
+      end_date: end_date as Date,
+      reason: reason as string,
+  } as LeaveApplication;
+
+  await createLeaveApplicationModel(leaveApplication)
+      .then((result) => {
+          return res.status(201).json(result);
+      })
+      .catch((error) => {
+          return res.status(500).json({ error });
+      });
 };

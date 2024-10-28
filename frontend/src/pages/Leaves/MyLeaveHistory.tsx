@@ -1,37 +1,31 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "../../layout/DefaultLayout";
 import LeaveTable from "../../components/Tables/LeaveTable";
-import { getLeaveApplicationsByID } from "../../services/leaveServices";
+import { getMyLeaveApplications } from "../../services/leaveServices";
 
-const LeaveHistory = () => {
-    const { employee_id } = useParams<{ employee_id: string }>();
+const MyLeaveHistory = () => {
     const [leaveApplications, setLeaveApplications] = useState<any[]>([]);
 
     useEffect(() => {
-        const fetchLeaveApplications = async (employee_id: string) => {
+        const fetchLeaveApplications = async () => {
             try {
-                const applications = await getLeaveApplicationsByID(employee_id);
+                const applications = await getMyLeaveApplications();
                 setLeaveApplications(applications || []);  // Default to empty array if no applications are found
             } catch (err) {
                 console.log("Fetching leave applications failed", err);
             }
         };
 
-        if (employee_id) {
-            fetchLeaveApplications(employee_id);
-        } else {
-            console.log("Employee ID is not defined");
-        }
-
-    }, [employee_id]);
+        fetchLeaveApplications();
+    }, []);
 
     const hasLeaveApplications = Array.isArray(leaveApplications) && leaveApplications.length > 0;
 
     return (
         <DefaultLayout>
-            <Breadcrumb pageName="My Leave History" />
+            <Breadcrumb pageName="Leaves" />
             <div className="mb-6">
                 <Link to={`/leave/apply`}>
                     <button className="flex gap-1 block rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
@@ -51,4 +45,4 @@ const LeaveHistory = () => {
     );
 };
 
-export default LeaveHistory;
+export default MyLeaveHistory;

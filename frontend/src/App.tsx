@@ -15,7 +15,7 @@ import Profile from './pages/User/Profile';
 import ChangePassword from './pages/User/ChangePassword';
 import LeaveHistory from './pages/Leaves/LeaveHistory';
 import ViewLeave from './pages/Leaves/ViewLeave';
-import SupervisorLeave from './pages/Leaves/SupervisorLeave';
+import ManageLeaveApplications from './pages/Leaves/ManageLeaves';
 import Dashboard from './pages/Dashboard';
 import OrganizationConfig from './pages/Configuration/OrganizationConfig';
 
@@ -29,6 +29,7 @@ import Features from './pages/Home/Features';
 import EditCustomAttribute from './pages/Configuration/EditCustomAttribute';
 import EmployeeDashboardPage from './pages/EmployeeDashboard';
 import UserControl from './pages/User/UserControl';
+import MyLeaveHistory from './pages/Leaves/MyLeaveHistory';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -215,6 +216,16 @@ function App() {
         }
       />
       <Route
+        path="/leave/my"
+        //   path="/leave/history/test"
+        element={
+          <>
+            <PageTitle title="Leave History | Jupiter Apparels" />
+            <MyLeaveHistory />
+          </>
+        }
+      />
+      <Route
         path="/leave/history/:employee_id"
         //   path="/leave/history/test"
         element={
@@ -235,11 +246,11 @@ function App() {
       />
       <Route
         //path="/supervisor/leaveview/:supervisor_id"
-          path="/employee/supervisor/employees/:supervisor_id"
+          path="/leave/manage"
         element={
           <>
             <PageTitle title="Leave | Jupiter Apparels" />
-            <SupervisorLeave />
+            <ManageLeaveApplications />
           </>
         }
       />

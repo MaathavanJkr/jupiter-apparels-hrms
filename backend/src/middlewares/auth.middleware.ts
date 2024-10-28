@@ -15,7 +15,7 @@ const extractToken = (req: Request): string | undefined => {
 
 // Middleware for Admin Authentication
 export const adminAuth = (
-  req: Request & { user_id: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -40,7 +40,12 @@ export const adminAuth = (
         typeof decodedToken === "object" &&
         (decodedToken as JwtPayload).role == "Admin"
       ) {
-        req.user_id = decodedToken.user_id;
+        req.user = {
+          id: (decodedToken as JwtPayload).user_id,
+          role: (decodedToken as JwtPayload).role,
+          employee_id: (decodedToken as JwtPayload).employee_id,
+          isSupervisor: (decodedToken as JwtPayload).isSupervisor,
+        };
         next();
       }
       return res
@@ -55,7 +60,7 @@ export const adminAuth = (
 
 // Middleware for User Authentication
 export const userAuth = (
-  req: Request & { user_id: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -75,7 +80,12 @@ export const userAuth = (
           .json({ success: false, message: "Not authorized" });
       }
 
-      req.user_id = (decodedToken as JwtPayload).user_id;
+      req.user = {
+        id: (decodedToken as JwtPayload).user_id,
+        role: (decodedToken as JwtPayload).role,
+        employee_id: (decodedToken as JwtPayload).employee_id,
+        isSupervisor: (decodedToken as JwtPayload).isSupervisor,
+      };
       next();
     });
   } catch (error) {

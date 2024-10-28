@@ -169,6 +169,11 @@ export interface GERData {
   group: string;
 }
 
+export interface TLDData {
+  startdate: string;
+  enddate: string;
+}
+
 export interface EmployeeCountByDepartment {
   total_count: number;
   dep1_count: number;
@@ -202,4 +207,10 @@ export interface UserInfo {
   contact_number: string;
   pay_grade_name: string;
   supervisor_id: string;
+}
+export interface LeaveAppData {
+  leaveType: string;
+  startdate: string;
+  enddate: string;
+  reason: string;
 }
