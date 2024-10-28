@@ -3,7 +3,7 @@ import {
   Employee,
   LeaveBalance,
   UsedLeaves,
-  UserInfo,
+  EmployeeInfo,
 } from '../../types/types';
 import { getUserInfoById } from '../../services/userServices';
 import { getEmployeeByID } from '../../services/employeeServices';
@@ -18,7 +18,7 @@ import PendingleaveTable from '../Tables/PendingleaveTable'; // Import LeaveTabl
 const EmployeeDashboard = () => {
   const navigate = useNavigate();
 
-  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [userInfo, setUserInfo] = useState<EmployeeInfo>();
   const [supervisor, setSupervisor] = useState<Employee>();
   const [usedLeaves, setUsedLeaves] = useState<UsedLeaves>();
   const [remainingLeaves, setRemainingLeaves] = useState<LeaveBalance>();
@@ -30,7 +30,7 @@ const EmployeeDashboard = () => {
     const user_id = localStorage.getItem('user_id');
     const fetchuserInfo = async () => {
       try {
-        const userInfo: UserInfo = await getUserInfoById(user_id!);
+        const userInfo: EmployeeInfo = await getUserInfoById(user_id!);
         setUserInfo(userInfo);
       } catch (error) {
         console.log('Error Fetching Info:', error);
@@ -185,7 +185,7 @@ const EmployeeDashboard = () => {
         </button>
         <button
           onClick={() =>
-            navigate('/leave/apply/' + userInfo?.employee_id)
+              navigate('/leave/apply/')
           }
           className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >

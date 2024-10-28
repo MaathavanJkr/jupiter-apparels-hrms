@@ -8,6 +8,7 @@ import {
   PayGrade,
   Supervisor,
   EmployeeInfo,
+  CustomAttribute,
 } from '../../types/types';
 import {
   updateEmployee,
@@ -18,6 +19,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { notifyError, notifySuccess } from '../../services/notify';
 import { useNavigate } from 'react-router-dom';
+import { formatString } from '../../utils/stringUtils';
 
 const EmployeeTable = ({
   employeeData,
@@ -27,6 +29,7 @@ const EmployeeTable = ({
   jobTitleData,
   statusData,
   supervisorData,
+  customAttributeData,
 }: {
   employeeData: EmployeeInfo[];
   branchData: Branch[];
@@ -35,6 +38,7 @@ const EmployeeTable = ({
   jobTitleData: JobTitle[];
   statusData: EmploymentStatus[];
   supervisorData: Supervisor[];
+  customAttributeData: CustomAttribute[];
 }) => {
   const items: EmployeeInfo[] = Array.isArray(employeeData) ? employeeData : [];
 
@@ -57,6 +61,10 @@ const EmployeeTable = ({
   const [employeeStatusId, setEmployeeStatusId] = useState<string>('');
   const [contactNumber, setContactNumber] = useState<string>('');
 
+  const [cust_attr_1_value, setCust_attr_1_value] = useState<string>('');
+  const [cust_attr_2_value, setCust_attr_2_value] = useState<string>('');
+  const [cust_attr_3_value, setCust_attr_3_value] = useState<string>('');
+
   const [CurrSupervisor, setCurrSupervisor] = useState<Employee>();
 
   const [action, setAction] = useState<string>('View');
@@ -74,6 +82,10 @@ const EmployeeTable = ({
   const payGrades: PayGrade[] = Array.isArray(payGradeData) ? payGradeData : [];
   const supervisors: Supervisor[] = Array.isArray(supervisorData)
     ? supervisorData
+    : [];
+
+  const customAttributes: CustomAttribute[] = Array.isArray(customAttributeData)
+    ? customAttributeData
     : [];
 
   const fetchEmployee = async (employee_id: string) => {
@@ -134,7 +146,7 @@ const EmployeeTable = ({
         supervisorId,
         firstName,
         lastName,
-        birthday,
+        new Date(birthday).toISOString().split('T')[0],
         gender,
         maritalStatus,
         address,
@@ -144,6 +156,9 @@ const EmployeeTable = ({
         payGradeId,
         employeeStatusId,
         contactNumber,
+        cust_attr_1_value,
+        cust_attr_2_value,
+        cust_attr_3_value,
       )
         .then(() => {
           notifySuccess('Employee Updated');
@@ -190,6 +205,9 @@ const EmployeeTable = ({
       setPayGradeId(employee.pay_grade_id);
       setEmployeeStatusId(employee.employment_status_id);
       setContactNumber(employee.contact_number);
+      setCust_attr_1_value(employee.cust_attr_1_value);
+      setCust_attr_2_value(employee.cust_attr_2_value);
+      setCust_attr_3_value(employee.cust_attr_3_value);
       setModalOpen(true);
     } else {
       notifyError('Employee Not Found');
@@ -217,6 +235,9 @@ const EmployeeTable = ({
       setPayGradeId(employee.pay_grade_id);
       setEmployeeStatusId(employee.employment_status_id);
       setContactNumber(employee.contact_number);
+      setCust_attr_1_value(employee.cust_attr_1_value);
+      setCust_attr_2_value(employee.cust_attr_2_value);
+      setCust_attr_3_value(employee.cust_attr_3_value);
       setModalOpen(true);
     } else {
       notifyError('Employee Not Found');
@@ -239,10 +260,13 @@ const EmployeeTable = ({
       notifyError('Employee ID is required');
     }
   };
-  
-    const userAccountButton = (
-      <div className='flex items-center gap-2 hover:text-primary'>
-      <button className="flex items-center" onClick={()=> navigate('/user/create')}>
+
+  const userAccountButton = (
+    <div className="flex items-center gap-2 hover:text-primary">
+      <button
+        className="flex items-center"
+        onClick={() => navigate('/user/create')}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -260,9 +284,7 @@ const EmployeeTable = ({
         <span>Create Account</span>
       </button>
     </div>
-    
-    );
-  
+  );
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -306,7 +328,32 @@ const EmployeeTable = ({
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <p className="text-black dark:text-white">
-                          {employee.username || userAccountButton}
+                          {employee.username ? (<div className='hover:text-primary hover:underline hover:cursor-pointer' onClick={() => navigate('/user/view/'+employee.user_id)}>
+                            {employee.username}
+                          </div>) : (
+                            <div className="flex items-center gap-2 hover:text-primary">
+                              <button
+                                className="flex items-center"
+                                onClick={() => navigate('/user/create/' + employee.employee_id)}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+                                  />
+                                </svg>
+                                <span>Create Account</span>
+                              </button>
+                            </div>
+                          )}
                         </p>
                       </td>
                       <td
@@ -319,7 +366,7 @@ const EmployeeTable = ({
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                         <p className="text-black dark:text-white">
-                          {employee.branch_name}
+                          {employee.department_name}
                         </p>
                       </td>
                       <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -519,6 +566,21 @@ const EmployeeTable = ({
                     </div>
                     <div>Gender : {gender}</div>
                     <div>Marital Status: {maritalStatus}</div>
+                    {cust_attr_1_value && (
+                      <div className="">
+                        {formatString(customAttributes[0].name)}: {cust_attr_1_value}
+                      </div>
+                    )}
+                    {cust_attr_2_value && (
+                      <div className="">
+                        {formatString(customAttributes[1].name)}: {cust_attr_2_value}
+                      </div>
+                    )}
+                    {cust_attr_3_value && (
+                      <div className="">
+                        {formatString(customAttributes[2].name)}: {cust_attr_3_value}
+                      </div>
+                    )}
                   </div>
                 )}
                 {viewSection === 'Work' && (
@@ -693,7 +755,7 @@ const EmployeeTable = ({
                     <input
                       type="date"
                       value={birthday}
-                      onChange={(e) => setBirthday(e.target.value)}
+                      onChange={(e) => setBirthday(new Date(e.target.value).toISOString().split('T')[0])}
                       placeholder="Enter NIC"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -753,6 +815,20 @@ const EmployeeTable = ({
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       placeholder="Enter Address"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      {formatString(customAttributes[0].name)}{' '}
+                      <span className="text-meta-1">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={cust_attr_1_value}
+                      onChange={(e) => setCust_attr_1_value(e.target.value)}
+                      placeholder={`Enter ${formatString(customAttributes[0].name)}`}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
@@ -898,6 +974,34 @@ const EmployeeTable = ({
                       value={contactNumber}
                       onChange={(e) => setContactNumber(e.target.value)}
                       placeholder="Enter Contact Number"
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      {formatString(customAttributes[1].name)}{' '}
+                      <span className="text-meta-1">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={cust_attr_2_value}
+                      onChange={(e) => setCust_attr_2_value(e.target.value)}
+                      placeholder={`Enter ${formatString(customAttributes[1].name)}`}
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="mb-4.5">
+                    <label className="mb-2.5 block text-black dark:text-white">
+                      {formatString(customAttributes[2].name)}{' '}
+                      <span className="text-meta-1">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={cust_attr_3_value}
+                      onChange={(e) => setCust_attr_3_value(e.target.value)}
+                      placeholder={`Enter ${formatString(customAttributes[2].name)}`}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>

@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { createUserAccount } from '../../services/userServices';
 import { notifyError, notifySuccess } from '../../services/notify';
+import { ToastContainer } from 'react-toastify';
+import { Employee } from '../../types/types';
+import { getEmployeeByID } from '../../services/employeeServices';
 
 interface userAccountData {
   username: string;
@@ -17,13 +20,25 @@ const deafultuserAccountData: userAccountData = {
 };
 
 const CreateUserAccount = () => {
-
+  const navigate = useNavigate();
   const [userAccountData, setuserAccountData] = useState<userAccountData>(
     deafultuserAccountData,
   );
+  const [employee, setEmployee] = useState<Employee>();
 
 
   const { employee_id } = useParams<{ employee_id: string }>();
+  useEffect(()=>{
+    const fetchEmployee = async () => {
+     try {
+      const employee : Employee = await getEmployeeByID(employee_id!);
+      setEmployee(employee);
+     } catch (error) {
+      console.log("Error Fetching Employee", error);
+     }
+    }
+    fetchEmployee();
+  },[])
   const handleSubmit = async () => {
     try {
       await createUserAccount(
@@ -32,7 +47,7 @@ const CreateUserAccount = () => {
         userAccountData.username,
         userAccountData.password,
       ).then(() => {notifySuccess('User Account Created Successfully')})
-      .catch(() => {notifyError('User Account Creation Failed')});
+      .catch((error) => {notifyError('User Account Creation Failed: '+ error.message)});
     } catch (error) {
       notifyError('User Account Creation Failed');  
   }
@@ -56,6 +71,11 @@ const CreateUserAccount = () => {
             User Account Creation
           </h2>
           <div className="pt-5">
+
+            <h1 className="mt-4 text-lg text-black dark:text-white">
+              Employee Name: {employee?.first_name + " " + employee?.last_name}
+            </h1>
+            
             <h1 className="mt-4 text-lg text-black dark:text-white">
               Username
             </h1>
@@ -64,6 +84,7 @@ const CreateUserAccount = () => {
               name="username"
               type="text"
               placeholder="Enter username"
+              autoComplete='off'
               onChange={handleuserAccountDataChange}
             ></input>
 
@@ -75,6 +96,7 @@ const CreateUserAccount = () => {
               name="password"
               type="text"
               placeholder="Enter password"
+              autoComplete='off'
               onChange={handleuserAccountDataChange}
             ></input>
             <h1 className="mt-4 text-lg text-black dark:text-white">
@@ -97,12 +119,13 @@ const CreateUserAccount = () => {
             <button className="shadow-lg m-2 rounded-lg bg-blue-700 card-btn font-bold text-black self-center hover:bg-green-500 dark:text-white" onClick={handleSubmit}>
               Create Account
             </button>
-            <button className="shadow-lg card-btn rounded-lg bg-gray-500 text-black font-bold self-center hover:bg-red-600 dark:text-white">
+            <button className="shadow-lg card-btn rounded-lg bg-gray-500 text-black font-bold self-center hover:bg-red-600 dark:text-white" onClick={()=>navigate('/employee/all')}>
               Cancel
             </button>
           </div>
         </div>
       </div>
+      <ToastContainer />
     </DefaultLayout>
   );
 };
