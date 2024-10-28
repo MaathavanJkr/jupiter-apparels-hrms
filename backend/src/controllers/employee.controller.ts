@@ -31,10 +31,10 @@ export const createEmployee = async (req: Request, res: Response) => {
     NIC,
     job_title_id,
     pay_grade_id,
-    employee_status_id,
+    employment_status_id,
     contact_number,
   } = req.body;
-
+  
   if (
     !department_id ||
     !branch_id ||
@@ -48,10 +48,10 @@ export const createEmployee = async (req: Request, res: Response) => {
     !NIC ||
     !job_title_id ||
     !pay_grade_id ||
-    !employee_status_id ||
+    !employment_status_id ||
     !contact_number!
   ) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: "Missing required fields in controller" });
   }
 
   const employee: Employee = {
@@ -68,7 +68,7 @@ export const createEmployee = async (req: Request, res: Response) => {
     NIC: NIC as string,
     job_title_id: job_title_id as string,
     pay_grade_id: pay_grade_id as string,
-    employee_status_id: employee_status_id as string,
+    employment_status_id: employment_status_id as string,
     contact_number: contact_number as string,
   } as Employee;
 
