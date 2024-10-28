@@ -24,7 +24,7 @@ const AdminDashboard = () => {
     const department_id = localStorage.getItem('user_id');
     const fetchUserInfo = async () => {
       try {
-        const userInfo: EmployeeInfo = await getUserInfoById(user_id!);
+        const userInfo: UserInfo = await getUserInfoById(user_id!);
         const employeeCountByID: EmployeeCountByDepartment = await getCountByDepartment(department_id!);
 
         setEmployeeCountByID(employeeCountByID);
