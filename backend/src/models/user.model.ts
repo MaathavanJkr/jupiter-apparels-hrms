@@ -44,7 +44,8 @@ export const createUserModel = async (user: User): Promise<Output> => {
       data: user,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    console.log(error)
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 

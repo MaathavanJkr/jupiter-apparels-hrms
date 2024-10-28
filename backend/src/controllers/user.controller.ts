@@ -19,8 +19,11 @@ export const createUser = async (req: Request, res: Response) => {
 
   await createUserModel(user)
   .then((result)=>{
+    console.log("result -> ",result)
+    console.log("Successfully added.")
     return res.status(201).json(result);
   }).catch((error)=> {
+    console.log("Error -> ",error)
     return res.status(500).json({error: error});
   });
 
