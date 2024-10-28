@@ -67,7 +67,7 @@ const AddEmployee = () => {
     ) {
       addEmployee(departmentId, branchId, firstName, lastName, birthday, gender, maritalStatus, address, email, nic, jobTitleId, payGradeId, employeeStatusId, contactNumber).then(() => {
         notifySuccess("Employee Added Sucessfully");
-        navigate("/employee");
+        navigate("/employee/all");
       }).catch((error) => {
         notifyError(`Failed to Add Employee: ${error}`);
       })

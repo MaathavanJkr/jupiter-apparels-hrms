@@ -31,10 +31,29 @@ export const createEmployee = async (req: Request, res: Response) => {
     NIC,
     job_title_id,
     pay_grade_id,
-    employee_status_id,
+    employment_status_id,
     contact_number,
   } = req.body;
+  const missingFields = [];
+  if (!department_id) missingFields.push("department_id");
+  if (!branch_id) missingFields.push("branch_id");
+  if (!first_name) missingFields.push("first_name");
+  if (!last_name) missingFields.push("last_name");
+  if (!birthday) missingFields.push("birthday");
+  if (!gender) missingFields.push("gender");
+  if (!marital_status) missingFields.push("marital_status");
+  if (!address) missingFields.push("address");
+  if (!email) missingFields.push("email");
+  if (!NIC) missingFields.push("NIC");
+  if (!job_title_id) missingFields.push("job_title_id");
+  if (!pay_grade_id) missingFields.push("pay_grade_id");
+  if (!employment_status_id) missingFields.push("employment_status_id");
+  if (!contact_number) missingFields.push("contact_number");
 
+  if (missingFields.length > 0) {
+    console.log("Missing fields:", missingFields);
+    return res.status(400).json({ error: "Missing required fields", missingFields });
+  }
   if (
     !department_id ||
     !branch_id ||
@@ -48,10 +67,10 @@ export const createEmployee = async (req: Request, res: Response) => {
     !NIC ||
     !job_title_id ||
     !pay_grade_id ||
-    !employee_status_id ||
+    !employment_status_id ||
     !contact_number!
   ) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: "Missing required fields in controller" });
   }
 
   const employee: Employee = {
@@ -68,7 +87,7 @@ export const createEmployee = async (req: Request, res: Response) => {
     NIC: NIC as string,
     job_title_id: job_title_id as string,
     pay_grade_id: pay_grade_id as string,
-    employee_status_id: employee_status_id as string,
+    employment_status_id: employment_status_id as string,
     contact_number: contact_number as string,
   } as Employee;
 

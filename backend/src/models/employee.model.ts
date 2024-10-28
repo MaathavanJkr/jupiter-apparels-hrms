@@ -30,7 +30,7 @@ export interface Employee extends RowDataPacket {
   NIC: string;
   job_title_id: string;
   pay_grade_id: string;
-  employee_status_id: string;
+  employment_status_id: string;
   contact_number: string;
   cust_attr_1_value: string;
   cust_attr_2_value: string;
@@ -60,13 +60,32 @@ export const createEmployeeModel = async (
     NIC,
     job_title_id,
     pay_grade_id,
-    employee_status_id,
+    employment_status_id,
     contact_number,
     cust_attr_1_value,
     cust_attr_2_value,
     cust_attr_3_value,
   } = employee;
+  const missingFields = [];
+  if (!department_id) missingFields.push("department_id");
+  if (!branch_id) missingFields.push("branch_id");
+  if (!first_name) missingFields.push("first_name");
+  if (!last_name) missingFields.push("last_name");
+  if (!birthday) missingFields.push("birthday");
+  if (!gender) missingFields.push("gender");
+  if (!marital_status) missingFields.push("marital_status");
+  if (!address) missingFields.push("address");
+  if (!email) missingFields.push("email");
+  if (!NIC) missingFields.push("NIC");
+  if (!job_title_id) missingFields.push("job_title_id");
+  if (!pay_grade_id) missingFields.push("pay_grade_id");
+  if (!employment_status_id) missingFields.push("employment_status_id");
+  if (!contact_number) missingFields.push("contact_number");
 
+  if (missingFields.length > 0) {
+    console.log("Missing fields:", missingFields);
+    //return res.status(400).json({ error: "Missing required fields", missingFields });
+  }
   employee.employee_id = uuidv4();
 
   if (
@@ -83,17 +102,17 @@ export const createEmployeeModel = async (
     !NIC ||
     !job_title_id ||
     !pay_grade_id ||
-    !employee_status_id ||
+    !employment_status_id ||
     !contact_number
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    return { error: "Missing required fields in model", data: null, message: null };
   }
 
   try {
     await db
       .promise()
       .query(
-        "CALL CreateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "CALL CreateEmployee(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
           employee.employee_id,
           department_id,
@@ -109,7 +128,7 @@ export const createEmployeeModel = async (
           NIC,
           job_title_id,
           pay_grade_id,
-          employee_status_id,
+          employment_status_id,
           contact_number,
           cust_attr_1_value,
           cust_attr_2_value,
@@ -122,7 +141,7 @@ export const createEmployeeModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
