@@ -17,7 +17,7 @@ const UpdateLeaveApplicationData = () => {
 
   const navigate = useNavigate();
   const handleLeaveAppDataChange = (
-    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
+    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newLeaveAppData: LeaveAppData = {
       ...leaveAppData,
@@ -80,41 +80,58 @@ const UpdateLeaveApplicationData = () => {
               <option value="noPay">No Pay Leave</option>
             </select>
           </div>
-          <h1 className="mt-4 text-lg text-black dark:text-white">Start Date</h1>
-          <input
-            className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
-            name="startdate"
-            type="date"
-            placeholder="Enter start date"
-            onChange={handleLeaveAppDataChange}
-          />
 
-          <h1 className="mt-4 text-lg text-black dark:text-white">End Date</h1>
-          <input
-            className="shadow-lg rounded-md p-3 mt-3 w-4/5 dark:bg-blue-900"
-            name="enddate"
-            type="date"
-            placeholder="Enter end date"
-            onChange={handleLeaveAppDataChange}
-          />
+          <div className="flex flex-col md:flex-row">
 
-          <h1 className="mt-4 text-lg text-black dark:text-white">Reason</h1>
-          <input
-            className="shadow-lg rounded-md p-3 mt-3 w-4/5 pb-10 dark:bg-blue-900"
-            name="reason"
-            type="text"
-            placeholder="Enter reason"
-            onChange={handleLeaveAppDataChange}
-          />
+            <div className="mb-4.5 md:w-1/2 md:pr-2">
+              <label className="mb-2.5 block text-black dark:text-white">
+                Start Date <span className="text-meta-1">*</span>
+              </label>
+              <input
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                name="startdate"
+                type="date"
+                placeholder="Enter start date"
+                onChange={handleLeaveAppDataChange}
+              />
+            </div>
+
+            <div className="mb-4.5 md:w-1/2 md:pl-2">
+
+              <label className="mb-2.5 block text-black dark:text-white">
+                End Date <span className="text-meta-1">*</span>
+              </label>
+              <input
+                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                name="enddate"
+                type="date"
+                placeholder="Enter end date"
+                onChange={handleLeaveAppDataChange}
+              />
+            </div>
+          </div>
+
+          <div className="mb-4.5">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Reason <span className="text-meta-1">*</span>
+            </label>
+            <textarea
+              rows={6}
+              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              placeholder="Enter Reason"
+              name="reason"
+              onChange={handleLeaveAppDataChange}
+            ></textarea>
+          </div>
         </div>
         <div className="-mx-3 flex flex-wrap gap-y-4">
           <div className="w-full px-3 2xsm:w-1/2">
             <button onClick={handleSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
-              Add Employee
+              Apply Leave
             </button>
           </div>
           <div className="w-full px-3 2xsm:w-1/2">
-            <button onClick={() => { navigate('/employee/all') }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-4 hover:bg-meta-4 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+            <button onClick={() => { navigate('/leave/my') }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-4 hover:bg-meta-4 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
               View All
             </button>
           </div>
