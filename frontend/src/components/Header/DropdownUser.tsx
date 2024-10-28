@@ -8,10 +8,9 @@ const DropdownUser = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.clear();
-
     navigate('/auth/login');
   }
-  const user = localStorage.getItem('user');
+  const user = localStorage.getItem('user_id');
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       {user && (

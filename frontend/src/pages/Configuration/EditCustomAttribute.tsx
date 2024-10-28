@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { CustomAttributeData } from '../../types/configuration';
+import { ToastContainer } from 'react-toastify';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 
 const EditCustomAttribute = () => {
@@ -24,56 +26,54 @@ const EditCustomAttribute = () => {
 
   return (
     <DefaultLayout>
-      <div className="flex items-center justify-center ">
-        <div className="mt-10 w-[40%] h-[50%] bg-gray-300 p-6 rounded-lg shadow-lg dark:bg-blue-950">
-          <h2 className="text-2xl font-bold text-black shadow-lg text-center bg-gray-200 py-5 dark:bg-blue-900 dark:text-white">
-            Edit Custom Attribute
-          </h2>
-          <div className="pt-5">
-            <h1 className="text-lg text-black dark:text-white">
-              Custom Attribute 1
-            </h1>
-            <input
-              className="shadow-lg rounded-md p-3 mt-3 w-4/5  dark:bg-blue-900"
-              name="cust_attr_1_value"
-              type="text"
-              placeholder="Enter Custom Attribute"
-              onChange={handleCustomAttributeDataChange}
-            ></input>
-          </div>
-          <div className="pt-5">
-            <h1 className="text-lg text-black dark:text-white">
-              Custom Attribute 2
-            </h1>
-            <input
-              className="shadow-lg rounded-md p-3 mt-3 w-4/5  dark:bg-blue-900"
-              name="cust_attr_2_value"
-              type="text"
-              placeholder="Enter Custom Attribute"
-              onChange={handleCustomAttributeDataChange}
-            ></input>
-          </div>
-          <div className="pt-5">
-            <h1 className="text-lg text-black dark:text-white">
-              Custom Attribute 3
-            </h1>
-            <input
-              className="shadow-lg rounded-md p-3 mt-3 w-4/5  dark:bg-blue-900"
-              name="cust_attr_3_value"
-              type="text"
-              placeholder="Enter Custom Attribute"
-              onChange={handleCustomAttributeDataChange}
-            ></input>
-          </div>
-          <div className="mt-12 flex justify-normal">
-            <button className="shadow-lg m-2 rounded-lg bg-blue-700 card-btn font-bold text-black self-center hover:bg-green-500 dark:text-white">
-              Submit
-            </button>
-            <button className="shadow-lg card-btn rounded-lg bg-gray-500 text-black font-bold self-center hover:bg-red-600 dark:text-white">
-              Cancel
-            </button>
-          </div>
+      <Breadcrumb pageName="Edit Custom Attributes" />
+      <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
+        <div className="mb-4.5">
+          <label className="mb-2.5 block text-black dark:text-white">
+            Custom Attribute 1 <span className="text-meta-1">*</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Custom Attribute"
+            name="cust_attr_1_value"
+            onChange={handleCustomAttributeDataChange}
+            className="w-1/2 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+          />
         </div>
+        <div className="mb-4.5">
+          <label className="mb-2.5 block text-black dark:text-white">
+            Custom Attribute 2 <span className="text-meta-1">*</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Custom Attribute"
+            name="cust_attr_2_value"
+            onChange={handleCustomAttributeDataChange}
+            className="w-1/2 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+          />
+        </div>
+        <div className="mb-4.5">
+          <label className="mb-2.5 block text-black dark:text-white">
+            Custom Attribute 3 <span className="text-meta-1">*</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Custom Attribute"
+            name="cust_attr_3_value"
+            onChange={handleCustomAttributeDataChange}
+            className="w-1/2 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+          />
+        </div>
+
+        <div className="w-full px-3 2xsm:w-1/2">
+          <button
+            // onClick={handleSubmit}
+            className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark"
+          >
+            Save
+          </button>
+        </div>
+        <ToastContainer />
       </div>
     </DefaultLayout>
   );
