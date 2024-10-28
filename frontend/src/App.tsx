@@ -15,7 +15,7 @@ import Profile from './pages/User/Profile';
 import ChangePassword from './pages/User/ChangePassword';
 import LeaveHistory from './pages/Leaves/LeaveHistory';
 import ViewLeave from './pages/Leaves/ViewLeave';
-import SupervisorLeave from './pages/Leaves/SupervisorLeave';
+import ManageLeaveApplications from './pages/Leaves/ManageLeaves';
 import Dashboard from './pages/Dashboard';
 import OrganizationConfig from './pages/Configuration/OrganizationConfig';
 
@@ -246,11 +246,11 @@ function App() {
       />
       <Route
         //path="/supervisor/leaveview/:supervisor_id"
-          path="/employee/supervisor/employees/:supervisor_id"
+          path="/leave/manage"
         element={
           <>
             <PageTitle title="Leave | Jupiter Apparels" />
-            <SupervisorLeave />
+            <ManageLeaveApplications />
           </>
         }
       />

@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { getUserByUsernameModel } from "../models/user.model";
 import { hashPassword } from "../utils/hashPassword";
-import { getEmployeeIdByUserIdModel } from "../models/employee.model";
+import { getEmployeeIdByUserIdModel, getEmployeesUnderSupervisorModel } from "../models/employee.model";
 
 // login
 export const loginUser = async (req: Request, res: Response) => {
@@ -33,8 +33,10 @@ export const loginUser = async (req: Request, res: Response) => {
   const isvalid = user.password === password;
   //NEED TO UPDATE ABOVE LINE
 
+  console.log(user);
   if (isvalid) {
-    const {data} = await getEmployeeIdByUserIdModel(user.user_id)
+    const employeeId = await getEmployeeIdforUser(user.user_id)
+    const isSup = await isSupervisor(employeeId);
     return res.status(200).send({
       error: null,
       message: "successfully logged in",
@@ -42,7 +44,8 @@ export const loginUser = async (req: Request, res: Response) => {
         username: user.username,
         user_id: user.user_id,
         role: user.role,
-        employee_id: data.employee_id,
+        employee_id: employeeId,
+        isSupervisor: isSup
       }),
       user,
     });
@@ -79,3 +82,13 @@ export const generateJwtToken = (data: JWTToken) => {
     expiresIn: maxAge,
   });
 };
+
+const getEmployeeIdforUser = async (user_id: string) => {
+  const { data } = await getEmployeeIdByUserIdModel(user_id);
+  return data.employee_id;
+}
+
+const isSupervisor = async (employee_id: string) => {
+  const { data } = await getEmployeesUnderSupervisorModel(employee_id);
+  return data.length > 0;
+}

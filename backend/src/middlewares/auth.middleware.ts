@@ -44,6 +44,7 @@ export const adminAuth = (
           id: (decodedToken as JwtPayload).user_id,
           role: (decodedToken as JwtPayload).role,
           employee_id: (decodedToken as JwtPayload).employee_id,
+          isSupervisor: (decodedToken as JwtPayload).isSupervisor,
         };
         next();
       }
@@ -83,6 +84,7 @@ export const userAuth = (
         id: (decodedToken as JwtPayload).user_id,
         role: (decodedToken as JwtPayload).role,
         employee_id: (decodedToken as JwtPayload).employee_id,
+        isSupervisor: (decodedToken as JwtPayload).isSupervisor,
       };
       next();
     });

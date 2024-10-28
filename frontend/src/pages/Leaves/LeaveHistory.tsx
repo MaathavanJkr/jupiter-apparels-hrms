@@ -31,7 +31,7 @@ const LeaveHistory = () => {
 
     return (
         <DefaultLayout>
-            <Breadcrumb pageName="Leaves" />
+            <Breadcrumb pageName="My Leave History" />
             <div className="mb-6">
                 <Link to={`/leave/apply`}>
                     <button className="flex gap-1 block rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">

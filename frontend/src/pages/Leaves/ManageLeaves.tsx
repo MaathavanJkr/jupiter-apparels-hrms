@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { Employee, LeaveApplication } from '../../types/types';
@@ -7,12 +7,12 @@ import LeaveTable from '../../components/Tables/LeaveTable';
 import { getEmployeesUnder } from '../../services/supervisorServices';
 import { getLeaveApplicationsByID } from "../../services/leaveServices";
 
-const SupervisorLeave = () => {
-    const { supervisor_id } = useParams<{ supervisor_id: string }>();
-
+const ManageLeaveApplications = () => {
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [leaveApplications, setLeaveApplications] = useState<Record<string, LeaveApplication[]>>({});
     const navigate = useNavigate();
+
+    const supervisor_id = localStorage.getItem('employee_id');
     const isSupervisor = true;
 
     // Redirect if not a supervisor
@@ -24,7 +24,11 @@ const SupervisorLeave = () => {
 
     // Fetch employees under the supervisor
     useEffect(() => {
-        const fetchEmployees = async (supervisor_id: string) => {
+        const fetchEmployees = async () => {
+            if (!supervisor_id) {
+                console.log("Supervisor ID is not defined");
+                return;
+            }
             try {
                 const fetchedEmployees = await getEmployeesUnder(supervisor_id);
 
@@ -44,13 +48,8 @@ const SupervisorLeave = () => {
                 console.log('Error fetching employees:', error);
             }
         };
-
-        if (supervisor_id) {
-            fetchEmployees(supervisor_id);
-        } else {
-            console.log("Supervisor ID is not defined");
-        }
-    }, [supervisor_id]);
+        fetchEmployees();
+    }, []);
 
     // Fetch leave applications for each employee
     const fetchLeaveApplications = async (employee_id: string) => {
@@ -81,7 +80,7 @@ const SupervisorLeave = () => {
 
     return (
         <DefaultLayout>
-            <Breadcrumb pageName="Leaves" />
+            <Breadcrumb pageName="Manage Leaves" />
             <h2>Employee Leaves</h2>
             {employees.length > 0 && (
                 employees.map(employee => {
@@ -105,4 +104,4 @@ const SupervisorLeave = () => {
     );
 };
 
-export default SupervisorLeave;
+export default ManageLeaveApplications;
