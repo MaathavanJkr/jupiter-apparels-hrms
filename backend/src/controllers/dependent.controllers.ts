@@ -107,9 +107,9 @@ export const getEmployeeDependentByEmployeeID = async (
   req: Request,
   res: Response
 ) => {
-  const { id } = req.params;
+  const { employee_id } = req.params;
 
-  await getEmployeeDependentByEmployeeIDModel(id)
+  await getEmployeeDependentByEmployeeIDModel(employee_id)
     .then((result) => {
       return res.status(200).json(result);
     })

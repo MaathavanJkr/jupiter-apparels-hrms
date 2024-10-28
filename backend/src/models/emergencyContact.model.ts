@@ -175,7 +175,7 @@ export const getEmergencyContactByEmployeeIDModel = async (
       };
     } else {
       return {
-        data: (result[0] as EmergencyContact[])[0],
+        data: (result[0] as EmergencyContact[]),
         error: null,
         message: null,
       };

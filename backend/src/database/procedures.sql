@@ -97,6 +97,8 @@ DROP PROCEDURE IF EXISTS UpdateUser;
 DROP PROCEDURE IF EXISTS DeleteUser;
 DROP PROCEDURE IF EXISTS ChangePassword;
 DROP PROCEDURE IF EXISTS GetUserByID;
+DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
+DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
 -- ---------------------------------------------------------------------------------
 
 

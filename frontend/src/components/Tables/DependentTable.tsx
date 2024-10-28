@@ -49,7 +49,7 @@ const DependentTable = ({ employee_id }: { employee_id: string }) => {
 
     const handleEditDependent = () => {
         if (name !== '' && relationship !== '' && birthdate !== '') {
-            updateDependent(dependentId, name, relationship, birthdate)
+            updateDependent(dependentId, name, relationship, new Date(birthdate).toISOString().split('T')[0])
                 .then(() => {
                     notifySuccess("Updated Successfully");
                     setModalOpen(false);

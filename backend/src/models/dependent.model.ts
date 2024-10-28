@@ -162,7 +162,7 @@ export const getEmployeeDependentByEmployeeIDModel = async (
       return { data: null, error: "Dependent not found", message: null };
     } else {
       return {
-        data: (result[0] as EmployeeDependent[])[0],
+        data: (result[0] as EmployeeDependent[]),
         error: null,
         message: null,
       };
