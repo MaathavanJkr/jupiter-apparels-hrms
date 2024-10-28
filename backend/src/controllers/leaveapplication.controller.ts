@@ -76,6 +76,22 @@ export const getLeaveApplicationsByEmployeeID = async (req: Request, res: Respon
     }
 };
 
+export const getMyLeaveApplications = async (req: Request, res: Response) => {
+  const employee_id  = req.user?.employee_id;
+
+  if (!employee_id) {
+      return res.status(400).json({ error: "Missing employee ID in backend" });
+  }
+
+  try {
+      const result = await getLeaveApplicationsByEmployeeIDModel(employee_id);
+      return res.status(200).json(result);
+  } catch (error) {
+      return res.status(500).json({ error });
+  }
+};
+
+
 export const updateLeaveApplication = async (req: Request, res: Response) => {
   const { application_id } = req.params;
   const {

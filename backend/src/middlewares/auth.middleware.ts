@@ -15,7 +15,7 @@ const extractToken = (req: Request): string | undefined => {
 
 // Middleware for Admin Authentication
 export const adminAuth = (
-  req: Request & { user_id: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -59,7 +59,7 @@ export const adminAuth = (
 
 // Middleware for User Authentication
 export const userAuth = (
-  req: Request & { user_id: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {

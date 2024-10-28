@@ -29,6 +29,7 @@ import Features from './pages/Home/Features';
 import EditCustomAttribute from './pages/Configuration/EditCustomAttribute';
 import EmployeeDashboardPage from './pages/EmployeeDashboard';
 import UserControl from './pages/User/UserControl';
+import MyLeaveHistory from './pages/Leaves/MyLeaveHistory';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -211,6 +212,16 @@ function App() {
           <>
             <PageTitle title="Apply Leave | Jupiter Apparels" />
             <ApplyLeave />
+          </>
+        }
+      />
+      <Route
+        path="/leave/my"
+        //   path="/leave/history/test"
+        element={
+          <>
+            <PageTitle title="Leave History | Jupiter Apparels" />
+            <MyLeaveHistory />
           </>
         }
       />

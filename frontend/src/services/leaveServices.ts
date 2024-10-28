@@ -59,6 +59,20 @@ export const getUsedLeavesByID = async (employee_id: string) => {
   }
 };
 
+export const getMyLeaveApplications = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get('leave/my', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+};
+
 export const getLeaveApplicationsByID = async (employee_id: string) => {
   try {
     const token = localStorage.getItem('token');
