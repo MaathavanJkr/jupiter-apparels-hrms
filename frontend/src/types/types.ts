@@ -158,6 +158,9 @@ export interface Organization {
   reg_no: number;
 }
 
+export interface CustomAttribute {
+  name: string;
+}
 export interface EDRData {
   department: string;
 }
