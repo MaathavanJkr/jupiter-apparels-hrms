@@ -6,6 +6,7 @@ export const fetchEDRReportData = async (EDRData: EDRData) => {
     const response = await axiosInstance.get(
       `/report/employee/dept/${EDRData.department}`,
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching report data:', error);
