@@ -50,6 +50,7 @@ DROP TRIGGER IF EXISTS check_active_job_title_before_update;
 DROP TRIGGER IF EXISTS validate_leave_dates_before_insert;
 DROP TRIGGER IF EXISTS validate_leave_dates_before_update;
 DROP TRIGGER IF EXISTS prevent_overlapping_leaves;
+DROP TRIGGER IF EXISTS check_user_account_creation;
 
 
 
@@ -553,6 +554,25 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- Ensures that employees cannot create more than 1 user account 
+DELIMITER $$
+CREATE TRIGGER check_user_account_creation BEFORE INSERT ON users
+FOR EACH ROW 
+BEGIN
+    DECLARE existing_employee_id VARCHAR(255);
+
+    -- Check if the employee_id already exists
+    SELECT employee_id INTO existing_employee_id
+    FROM users
+    WHERE employee_id = NEW.employee_id
+    LIMIT 1;
+
+    -- If it exists, raise an error
+    IF existing_employee_id IS NOT NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The Employee Already has an account.';
+    END IF;
+END $$
+DELIMITER ;
 
 
 

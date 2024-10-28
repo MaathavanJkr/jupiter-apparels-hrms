@@ -28,6 +28,7 @@ import Contact from './pages/Home/Contact';
 import Features from './pages/Home/Features';
 import EditCustomAttribute from './pages/Configuration/EditCustomAttribute';
 import EmployeeDashboardPage from './pages/EmployeeDashboard';
+import UserControl from './pages/User/UserControl';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -159,7 +160,16 @@ function App() {
         }
       />
       <Route
-        path="/user/create"
+        path="/user/view/:user_id"
+        element={
+          <>
+            <PageTitle title="User Account Creation | Jupiter Apparels" />
+            <UserControl />
+          </>
+        }
+      />
+      <Route
+        path="/user/create/:employee_id"
         element={
           <>
             <PageTitle title="User Account Creation | Jupiter Apparels" />

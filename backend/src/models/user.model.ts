@@ -2,6 +2,7 @@ import { RowDataPacket } from "mysql2";
 import db from "../database/database";
 import { hashPassword } from "../utils/hashPassword";
 import { Output } from "./output.model";
+import { v4 as uuidv4 } from "uuid";
 
 export interface User extends RowDataPacket {
   user_id: string;
@@ -18,20 +19,24 @@ export interface User extends RowDataPacket {
 
 export const createUserModel = async (user: User): Promise<Output> => {
   const { employee_id, role, username, password } = user;
+  user.user_id = uuidv4();
 
   if (!employee_id || !role || !username || !password) {
     return { error: "Missing required fields", data: null, message: null };
   }
-  const hashedPassword = hashPassword(password);
+
+  const hashedPassword = await hashPassword(password);
+ 
 
   try {
     await db
       .promise()
-      .query("CALL CreateUser(?, ?, ?, ?)", [
+      .query("CALL CreateUser(?, ?, ?, ?, ?)", [
+        user.user_id,
         employee_id,
         role,
         username,
-        hashedPassword,
+        hashedPassword || "password",
       ]);
     return {
       message: "User created successfully",
@@ -39,7 +44,8 @@ export const createUserModel = async (user: User): Promise<Output> => {
       data: user,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    console.log(error)
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -105,22 +111,19 @@ export const getAllUsersModel = async (): Promise<Output> => {
 };
 
 export const updateUserModel = async (user: User): Promise<Output> => {
-  const { user_id, employee_id, role, username, password } = user;
+  const { user_id, role, username } = user;
 
-  if (!user_id || !employee_id || !role || !username || !password) {
+  if (!user_id  || !role || !username) {
     return { error: "Missing required fields", data: null, message: null };
   }
-  const hashedPassword = hashPassword(password);
 
   try {
     await db
       .promise()
-      .query("CALL UpdateUser(?, ?, ?, ?, ?)", [
+      .query("CALL UpdateUser(?, ?, ?)", [
         user_id,
-        employee_id,
         role,
         username,
-        hashedPassword,
       ]);
     return {
       message: "User updated successfully",
@@ -140,3 +143,22 @@ export const deleteUserModel = async (id: string): Promise<Output> => {
     return { data: null, error, message: "Database Query Failed" };
   }
 };
+
+export const ChangePasswordModel = async (id: string, new_password: string): Promise<Output> => {
+  if (!new_password) {
+    return { error: "Missing required fields", data: null, message: null };
+  }
+  try {
+    await db
+    .promise()
+    .query("CALL ChangePassword(?, ?)", [id, new_password]);
+    return {
+      message: "Password changed successfully",
+      error: null,
+      data: null,
+    };
+  } catch (error) { 
+    return { error, message: "Database Query Failed", data: null };
+  }
+}
+

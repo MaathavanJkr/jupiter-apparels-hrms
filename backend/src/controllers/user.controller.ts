@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
-import {getAllUsersModel} from "../models/user.model";
+import { ChangePasswordModel, createUserModel, deleteUserModel, getUserByIDModel, getAllUsersModel, updateUserModel, User } from "../models/user.model";
 
 
 
@@ -10,20 +9,35 @@ export const createUser = async (req: Request, res: Response) => {
   if (!employee_id || !role || !username || !password) {
     return res.status(400).json({ error: "Missing required fields" });
   }
-  const salt = bcrypt.genSaltSync(10);
-  const hashedPassword = bcrypt.hashSync(password, salt);
-  console.log(hashedPassword);
+  const user: User =  {
+    employee_id: employee_id as string,
+    role: role as string,
+    username: username as string,
+    password: password as string,
+  } as User;
 
-  res.status(200).json({ message: "User created successfully" });
+  await createUserModel(user)
+  .then((result)=>{
+    console.log("result -> ",result)
+    console.log("Successfully added.")
+    return res.status(201).json(result);
+  }).catch((error)=> {
+    console.log("Error -> ",error)
+    return res.status(500).json({error: error});
+  });
+
 };
 
 export const getUserByID = async (req: Request, res: Response) => {
   const id = req.params.id;
 
-  res.status(200).json({ message: `User with id: ${id} found` });
+  await getUserByIDModel(id)
+  .then((result)=>{ 
+    return res.status(200).json(result);
+  }).catch((error)=> {  
+    return res.status(500).json({error: error});
+  });
 };
-
-
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -41,23 +55,41 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-
+export const getUsers = async (req: Request, res: Response) => {
+  res.status(200).json({ message: "All users found" });
+};
 
 export const updateUser = async (req: Request, res: Response) => {
   const id = req.params.id;
-  const { employee_id, role, username, password } = req.body;
+  const { role, username} = req.body;
+  const user: User = {
+    user_id: id,
+    role: role,
+    username: username
+  } as User;
 
-  if (!employee_id || !role || !username || !password) {
+  if (!role || !username) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  res.status(200).json({ message: `User with id: ${id} updated successfully` });
+  await updateUserModel(user)
+  .then((result)=>{
+    return res.status(200).json(result);
+  }).catch((error)=> { 
+    return res.status(500).json({error: error});
+  });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
   const id = req.params.id;
 
-  res.status(200).json({ message: `User with id: ${id} deleted successfully` });
+  await deleteUserModel(id)
+  .then((result)=> {
+    return res.status(200).json(result);
+  })
+  .catch((error)=>{
+    return res.status(500).json({error: error});
+  })
 };
 
 export const changePassword = async (req: Request, res: Response) => {
@@ -68,7 +100,26 @@ export const changePassword = async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  res.status(200).json({ message: `Password changed successfully for ${id}` });
+  const user : User = await getUserByIDModel(id).then((result)=> {
+    return result.data}).catch((error)=> {
+    return res.status(500).json({error: error});
+    });
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  if (user.password !== old_password) { // need to add decyption here
+    return res.status(401).json({ error: "Invalid password" });
+  }
+
+  await ChangePasswordModel(id, new_password)
+  .then((result)=> {
+    return res.status(200).json(result);
+  }).catch((error)=> {
+    return res.status(500).json({error: error});
+  });
+
 };
 
 // Need to Implement the above functions
