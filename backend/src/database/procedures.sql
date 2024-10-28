@@ -92,6 +92,7 @@ DROP PROCEDURE IF EXISTS GetAllSupervisorIDs;
 DROP PROCEDURE IF EXISTS GetEmployeeBasicInfoByUserID;
 DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
 DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
+DROP PROCEDURE IF EXISTS GetAllUsers;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1099,5 +1100,12 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
+CREATE PROCEDURE GetAllUsers()
+BEGIN
+    SELECT * FROM users;
+END $$
+
+DELIMITER ;
 
 
