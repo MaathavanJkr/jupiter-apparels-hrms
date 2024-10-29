@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Employee,
   Branch,
@@ -14,6 +14,7 @@ import {
   updateEmployee,
   deleteEmployee,
   getEmployeeByID,
+  findSupervisors,
 } from '../../services/employeeServices';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,7 +29,6 @@ const EmployeeTable = ({
   payGradeData,
   jobTitleData,
   statusData,
-  supervisorData,
   customAttributeData,
 }: {
   employeeData: EmployeeInfo[];
@@ -80,13 +80,25 @@ const EmployeeTable = ({
     ? statusData
     : [];
   const payGrades: PayGrade[] = Array.isArray(payGradeData) ? payGradeData : [];
-  const supervisors: Supervisor[] = Array.isArray(supervisorData)
-    ? supervisorData
-    : [];
 
   const customAttributes: CustomAttribute[] = Array.isArray(customAttributeData)
     ? customAttributeData
     : [];
+
+  const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
+
+  useEffect(() => {
+    const fetchSupervisors = async () => {
+      try {
+        const supervisors: Supervisor[] = await findSupervisors(departmentId,payGradeId,employeeId);
+        setSupervisors(supervisors);
+        setSupervisorId(supervisors[0].supervisor_id);
+      } catch (error) {
+        console.error('Failed to fetch Supervisors', error);
+      }
+    }
+    fetchSupervisors();
+  },[departmentId,payGradeId])
 
   const fetchEmployee = async (employee_id: string) => {
     try {

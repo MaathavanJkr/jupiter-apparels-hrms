@@ -11,7 +11,8 @@ import {
     updateEmployeeModel,
     getEmployeesUnderSupervisorModel,
     getEmployeeIdByUserIdModel,
-    getAllUniqueSupervisorsModel
+    getAllUniqueSupervisorsModel,
+    findSupervisorsModel
 
 } from "../models/employee.model";
 
@@ -249,3 +250,21 @@ export const getAllUniqueSupervisors = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Failed to retrieve supervisors" });
     }
 };
+
+export const findSupervisors = async (req: Request, res: Response) => {
+  const {department_id, pay_grade_id,employee_id} = req.body;
+  if (!department_id || !pay_grade_id) {
+      return res.status(400).json({ error: "Missing required data" });
+  }
+  try {
+      const result = await findSupervisorsModel(department_id, pay_grade_id,employee_id);
+      if (!result.data) {
+          return res.status(404).json({ error: "No supervisors found" });
+      }
+
+      return res.status(200).json(result);
+  } catch (error) {
+      //console.log("error: " + error);
+      return res.status(500).json({ message: "Failed to retrieve supervisors", error:error });
+  }
+}

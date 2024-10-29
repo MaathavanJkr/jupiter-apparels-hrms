@@ -241,3 +241,20 @@ export const getEmployeeIdByUserId = async (user_id: string) => {
     }
 };
 
+export const findSupervisors = async (department_id: string,pay_grade_id:string,employee_id:string) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axiosInstance.post('/employee/supervisors', {
+            department_id,
+            pay_grade_id,
+            employee_id
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        throw error.response.data.error;
+    }
+};
