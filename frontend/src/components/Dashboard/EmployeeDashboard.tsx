@@ -80,21 +80,23 @@ const EmployeeDashboard = () => {
     <div>
       {/* Greeting section */}
       <div className="text-2xl font-bold text-primary mb-1">
-        Welcome, {userInfo?.first_name?.toUpperCase()} {userInfo?.last_name?.toUpperCase()}! 👋
+        Welcome, {userInfo?.first_name?.toUpperCase()}{' '}
+        {userInfo?.last_name?.toUpperCase()}! 👋
       </div>
-       {/* Remaining Leaves Chart */}
-       <div className="mt-4 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark flex-1">
-  <div className="flex items-center justify-between mb-3.5"> {/* Flex container for title and button */}
-    <h2 className="text-xl text-primary font-bold">Remaining Leaves</h2>
-    
-    {/* Button */}
-    <button
-      onClick={() => navigate('/leave/history/' + userInfo?.employee_id)}
-      className="flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-    >
-      View Leave History
-    </button>
-  </div>
+      {/* Remaining Leaves Chart */}
+      <div className="mt-4 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark flex-1">
+        <div className="flex items-center justify-between mb-3.5">
+          {' '}
+          {/* Flex container for title and button */}
+          <h2 className="text-xl text-primary font-bold">Remaining Leaves</h2>
+          {/* Button */}
+          <button
+            onClick={() => navigate('/leave/history/' + userInfo?.employee_id)}
+            className="flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          >
+            View Leave History
+          </button>
+        </div>
 
   {/* Container for data boxes */}
   {/* Container for data boxes */}
@@ -128,42 +130,40 @@ const EmployeeDashboard = () => {
 
 </div>
 
-        <div className="flex space-x-2">
-  {/* Leave Overview */}
-  <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark flex-1"> 
-    <h2 className="text-4xl text-primary font-bold mb-3.5">
-      Leave Overview
-    </h2>
-    <LeaveChart
-      leaveTypes={leaveTypes}
-      remainingLeaves={remaining}
-      usedLeaves={used}
-    />
-  </div>
+      <div className="flex space-x-2">
+        {/* Leave Overview */}
+        <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark flex-1">
+          <h2 className="text-4xl text-primary font-bold mb-3.5">
+            Leave Overview
+          </h2>
+          <LeaveChart
+            leaveTypes={leaveTypes}
+            remainingLeaves={remaining}
+            usedLeaves={used}
+          />
+        </div>
 
-  {/* Supervisor Information */}
-  <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark flex-1"> 
-    <h2 className="text-4xl text-primary font-bold mb-10"> 
-      Supervisor Information
-    </h2>
-    <p className="text-gray-1000 dark:text-gray-300">
-      <span className="font-bold">Full Name:</span>{' '}
-      <span className="font-thin">
-        {supervisor?.first_name + ' ' + supervisor?.last_name}
-      </span>
-    </p>
-    <p className="text-gray-1000 dark:text-gray-300">
-      <span className="font-bold">Email :</span>{' '}
-      <span className="font-thin">{supervisor?.email}</span>
-    </p>
-    <p className="text-gray-1000 dark:text-gray-300">
-      <span className="font-bold">Contact :</span>{' '}
-      <span className="font-thin">{supervisor?.contact_number}</span>
-    </p>
-  </div>
-
-</div>
-
+        {/* Supervisor Information */}
+        <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark flex-1">
+          <h2 className="text-4xl text-primary font-bold mb-10">
+            Supervisor Information
+          </h2>
+          <p className="text-gray-1000 dark:text-gray-300">
+            <span className="font-bold">Full Name:</span>{' '}
+            <span className="font-thin">
+              {supervisor?.first_name + ' ' + supervisor?.last_name}
+            </span>
+          </p>
+          <p className="text-gray-1000 dark:text-gray-300">
+            <span className="font-bold">Email :</span>{' '}
+            <span className="font-thin">{supervisor?.email}</span>
+          </p>
+          <p className="text-gray-1000 dark:text-gray-300">
+            <span className="font-bold">Contact :</span>{' '}
+            <span className="font-thin">{supervisor?.contact_number}</span>
+          </p>
+        </div>
+      </div>
 
       {/* Add Supervisor Pending Leave Table */}
       {isSupervisor && (
@@ -178,17 +178,13 @@ const EmployeeDashboard = () => {
       )}
       <div className="flex gap-6">
         <button
-          onClick={() =>
-            navigate( '/profile/'+ userInfo?.user_id)
-          }
+          onClick={() => navigate('/profile/' + userInfo?.user_id)}
           className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           View Profile
         </button>
         <button
-          onClick={() =>
-              navigate('/leave/apply/')
-          }
+          onClick={() => navigate('/leave/apply/')}
           className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           Apply Leave
@@ -205,9 +201,7 @@ const EmployeeDashboard = () => {
         )}
         {isSupervisor && (
           <button
-            onClick={() =>
-              navigate('/employee/all')
-            }
+            onClick={() => navigate('/employee/all')}
             className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Manage Employees
@@ -215,9 +209,7 @@ const EmployeeDashboard = () => {
         )}
         {isSupervisor && (
           <button
-            onClick={() =>
-              navigate('/user/create')
-            }
+            onClick={() => navigate('/user/create')}
             className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Create User Account

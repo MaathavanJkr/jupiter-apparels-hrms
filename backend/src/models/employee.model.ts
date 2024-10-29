@@ -39,7 +39,7 @@ export interface Employee extends RowDataPacket {
 
 export interface Supervisor extends RowDataPacket {
   supervisor_id?: string;
-   // full_name: string;
+  full_name: string;
 }
 
 
@@ -402,6 +402,22 @@ export const getAllUniqueSupervisorsModel = async (): Promise<Output> => {
         };
     }
 };
+
+export const findSupervisorsModel = async (department_id:string, paygrade_id:string,employee_id:string): Promise<Output> => {
+  try {
+    const [result] = await db
+    .promise()
+    .query<RowDataPacket[][]>("CALL FindSupervisors(?,?,?)", [department_id, paygrade_id,employee_id]);
+
+    return { data: result[0] as Supervisor[], error: null, message: null };
+  }catch(error){
+    throw {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+}
 
 
 
