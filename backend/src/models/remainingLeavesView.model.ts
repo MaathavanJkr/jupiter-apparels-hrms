@@ -45,7 +45,7 @@ export const getRemainingLeavesByEmployeeIDModel = async (
       };
     } else {
       return {
-        data: result[0] as RemainingLeaves[],
+        data: result[0][0] as RemainingLeaves,
         error: null,
         message: null,
       };

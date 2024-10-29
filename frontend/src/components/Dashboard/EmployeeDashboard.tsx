@@ -57,7 +57,9 @@ const EmployeeDashboard = () => {
             userInfo.employee_id,
           );
           setUsedLeaves(usedLeaves);
+          console.log('Used Leaves:', usedLeaves);
           setRemainingLeaves(remainingLeaves);
+          console.log('Remaining Leaves:', remainingLeaves);
         }
       } catch (error) {
         console.log('Error Fetching Supervisor:', error);
@@ -72,8 +74,8 @@ const EmployeeDashboard = () => {
     'Maternity Leave',
     'No pay Leave',
   ];
-  const remaining = [10, 20, 15, 5];
-  const used = [5, 12, 7, 3];
+  const used = [usedLeaves?.used_annual_leaves || 0, usedLeaves?.used_casual_leaves || 0, usedLeaves?.used_maternity_leaves || 0, usedLeaves?.used_nopay_leaves || 0];
+  const remaining = [remainingLeaves?.remaining_annual_leaves || 0, remainingLeaves?.remaining_casual_leaves || 0, remainingLeaves?.remaining_maternity_leaves || 0, remainingLeaves?.remaining_nopay_leaves  || 0];
   return (
     <div>
       {/* Greeting section */}
@@ -101,25 +103,25 @@ const EmployeeDashboard = () => {
     {/* Box 1 */}
     <div className="bg-blue-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark flex-1 min-w-[200px]">
       <p className="text-lg font-semibold">Annual Leaves</p>
-      <p className="text-xl font-bold">10</p> {/* Replace with dynamic value */}
+      <p className="text-xl font-bold">{remainingLeaves?.remaining_annual_leaves}</p> {/* Replace with dynamic value */}
     </div>
 
     {/* Box 2 */}
     <div className="bg-blue-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark flex-1 min-w-[200px]">
       <p className="text-lg font-semibold">Casual Leaves</p>
-      <p className="text-xl font-bold">5</p> {/* Replace with dynamic value */}
+      <p className="text-xl font-bold">{remainingLeaves?.remaining_casual_leaves}</p> {/* Replace with dynamic value */}
     </div>
 
     {/* Box 3 */}
     <div className="bg-blue-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark flex-1 min-w-[200px]">
       <p className="text-lg font-semibold">Maternity Leaves</p>
-      <p className="text-xl font-bold">7</p> {/* Replace with dynamic value */}
+      <p className="text-xl font-bold">{remainingLeaves?.remaining_maternity_leaves}</p> {/* Replace with dynamic value */}
     </div>
 
     {/* Box 4 */}
     <div className="bg-blue-100 dark:bg-meta-4 p-4 rounded-lg border border-stroke dark:border-strokedark flex-1 min-w-[200px]">
       <p className="text-lg font-semibold">No Pay Leaves</p>
-      <p className="text-xl font-bold">2</p> {/* Replace with dynamic value */}
+      <p className="text-xl font-bold">{remainingLeaves?.remaining_nopay_leaves}</p> {/* Replace with dynamic value */}
     </div>
 
   </div>

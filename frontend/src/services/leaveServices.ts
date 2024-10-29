@@ -66,7 +66,7 @@ export const createLeaveApplication = async (
 export const getLeaveBalanceByID = async (employee_id: string) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('leave/balance/' + employee_id, {
+    const response = await axiosInstance.get('remainingLeavesView/' + employee_id, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -79,7 +79,7 @@ export const getLeaveBalanceByID = async (employee_id: string) => {
 export const getUsedLeavesByID = async (employee_id: string) => {
   try {
     const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('leave/used/' + employee_id, {
+    const response = await axiosInstance.get('usedLeavesView/' + employee_id, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

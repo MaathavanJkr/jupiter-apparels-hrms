@@ -37,7 +37,7 @@ export const getUsedLeavesByEmployeeIDModel = async (
       .query<RowDataPacket[][]>("CALL GetUsedLeavesByEmployeeID(?)", [
         employee_id,
       ]);
-    return { data: (result[0] as UsedLeaves[])[0], error: null, message: null };
+    return { data: (result[0][0] as UsedLeaves), error: null, message: null };
   } catch (error) {
     return {
       data: null,
