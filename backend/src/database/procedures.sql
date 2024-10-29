@@ -1156,12 +1156,10 @@ CREATE PROCEDURE FindSupervisors(
 BEGIN
     DECLARE p_pay_grade_level INT;
 
-    -- Assign pay grade level to the variable
     SELECT paygrade INTO p_pay_grade_level 
     FROM pay_grades 
     WHERE pay_grade_id = p_pay_grade_id;
 
-    -- Select supervisors based on department and pay grade level
     SELECT CONCAT(first_name, ' ', last_name) AS full_name, employee_id AS supervisor_id 
     FROM employee_basic_info
     WHERE(department_id = p_department_id AND pay_grade_level > p_pay_grade_level AND employee_id != p_employee_id) 
