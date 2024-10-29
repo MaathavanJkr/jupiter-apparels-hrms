@@ -4,7 +4,7 @@ import { JWTToken } from "../models/0auth.model";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { getUserByUsernameModel } from "../models/user.model";
-import { hashPassword } from "../utils/hashPassword";
+import { comparePassword } from "../utils/hashPassword";
 import { getEmployeesUnderSupervisorModel } from "../models/employee.model";
 
 // login
@@ -25,20 +25,14 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(400).send({ error: "User does not exists" });
   }
 
-  const hashedPassword = await hashPassword(password);
-  console.log(hashedPassword);
+  const isvalid = await comparePassword(password, user.password);
 
-  //need to use hashed password when checking
-  //NEED TO UPDATE BELOW LINE
-  const isvalid = user.password === password;
-  //NEED TO UPDATE ABOVE LINE
-
-  console.log(user);
   if (isvalid) {
     const isSup = await isSupervisor(user.employee_id);
+    user.is_supervisor = isSup;
     return res.status(200).send({
       error: null,
-      message: "successfully logged in",
+      message: "Successfully Logged In",
       token: generateJwtToken({
         username: user.username,
         user_id: user.user_id,

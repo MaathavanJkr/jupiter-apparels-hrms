@@ -10,30 +10,41 @@ import backgroundImage from '../../images/616991.jpg';
 const LogIn: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role'); // fetch role from local storage if available
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleSignin = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-    if (username != '' && password != '') {
-      await login(username, password)
-        .then(() => {
-          navigate('/dashboard'); //need to change to dashboard later
-        })
-        .catch((err) => {
-          notifyError(err);
-        });
+    if (username !== '' && password !== '') {
+      try {
+        // Await the result from login, which includes the user's role
+        const { role } = await login(username, password); // get role from login service
+  
+        // Use the role to decide which dashboard to navigate to
+        if (role === 'Admin') {
+          navigate('/dashboard'); // Redirect to admin dashboard
+        } else {
+          navigate('/dashboard/employee'); // Redirect to employee dashboard
+        }
+      }catch (err) {
+          notifyError(err as string);
+        }
     } else {
       notifyError('Fill all Fields');
     }
   };
+
   useEffect(() => {
     if (token) {
-      navigate('/dashboard'); //need to change to dashboard later
+      if (role === 'Admin') {
+        navigate('/dashboard'); // Redirect to admin dashboard
+      } else {
+        navigate('/dashboard/employee'); // Redirect to employee dashboard
+      }
     }
-  }, []);
-
+  }, [navigate, token, role]);
   return (
     <>
       <div className="h-screen overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

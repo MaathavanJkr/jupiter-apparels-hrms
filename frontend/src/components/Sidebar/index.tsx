@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import SidebarLinkGroup from './SidebarLinkGroup'
+import SidebarLinkGroup from './SidebarLinkGroup'//
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -54,6 +54,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       document.querySelector('body')?.classList.remove('sidebar-expanded');
     }
   }, [sidebarExpanded]);
+
+  // Retrieve the user role from localStorage
+  const userRole = localStorage.getItem('role'); 
+  const isSupervisor = localStorage.getItem('is_supervisor') == "true";
+  const isAdmin = userRole === 'Admin'; 
+  const isAuthorizedUser = userRole === 'Admin' || userRole === 'HR manager'; 
 
   return (
     <aside
@@ -119,26 +125,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
               {/* <!-- Menu Item Dashboard --> */}
-              {/* <!-- Menu Item Dashboard --> */}
-              <li>
-                <NavLink
-                  to="/dashboard/employee"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/' ||
-                    pathname.includes('dashboard/employee')) &&
-                    'bg-graydark dark:bg-meta-4'
-                    }`}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
-                  </svg>
-
-                  Employee Dashboard
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Dashboard --> */}
 
               {/* <!-- Menu Item Employee --> */}
-              <ul className="flex flex-col gap-1.5">
+              { isAuthorizedUser && (
+                <ul className="flex flex-col gap-1.5">
                 <SidebarLinkGroup
                   activeCondition={
                     pathname === '/employee' || pathname.includes('employee/')
@@ -218,6 +208,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }}
                 </SidebarLinkGroup>
               </ul>
+              )}
+                
               {/* <!-- Menu Item Employee --> */}
 
               {/* <!-- Menu Item Leave --> */}
@@ -295,7 +287,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 My Leaves
                               </NavLink>
                             </li>
-                            {"isSupervisor" == "isSupervisor" && (
+                            {isSupervisor && (
                                 <li>
                                   <NavLink
                                       to={`/leave/manage`}
@@ -320,7 +312,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Leave --> */}
 
               {/* <!-- Menu Item Report --> */}
-              <li>
+              {isAuthorizedUser && (
+                <li>
                 <NavLink
                     to="/report"
                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/report' ||
@@ -336,9 +329,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Reports
                 </NavLink>
               </li>
+              )}
               {/* <!-- Menu Item Report --> */}
               {/* <!-- Menu Item Config --> */}
-              <ul className="flex flex-col gap-1.5">
+              {isAdmin && (
+                <ul className="flex flex-col gap-1.5">
                 <SidebarLinkGroup
                   activeCondition={
                     pathname === '/config' || pathname.includes('config/')
@@ -420,6 +415,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }}
                 </SidebarLinkGroup>
               </ul>
+              )}
               {/* <!-- Menu Item Config --> */}
             </ul>
           </div>

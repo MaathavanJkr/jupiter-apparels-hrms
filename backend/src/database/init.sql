@@ -1,15 +1,17 @@
 -- These 3 lines only needed for query submission.No need to add to the project.
 -- Uncomment this if DB doesn't exits in PC.
 
--- DROP DATABASE IF EXISTS jupiter_apparels;
--- CREATE DATABASE jupiter_apparels;
--- USE jupiter_apparels;
+DROP DATABASE IF EXISTS jupiter_apparels;
+CREATE DATABASE jupiter_apparels;
+USE jupiter_apparels;
+
+SET SQL_SAFE_UPDATES = 0;
 
 -- If DB doesn't exist in PC then comment this out when running the queries for the 1st time.
 -- Otherwise, it will give an error indicating branches table and the foreign key do not exist.
 -- After creating DB in PC this segment can be uncommented.
-ALTER TABLE branches
-DROP FOREIGN KEY fk_manager;
+-- ALTER TABLE branches
+-- DROP FOREIGN KEY fk_manager;
 
 
 -- Drop all tables
@@ -643,17 +645,18 @@ INSERT INTO custom_attribute_keys(name) VALUES ('preferred_language');
 
 INSERT INTO employees (employee_id, department_id, branch_id, supervisor_id, first_name, last_name, birth_date, gender, marital_status, address, email, NIC, job_title_id, pay_grade_id, employment_status_id,contact_number, cust_attr_1_value, cust_attr_2_value, cust_attr_3_value)
 VALUES
-('E0003', 'D009', 'B001', NULL, 'Michael', 'Johnson', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234','Nationality-A','AB','Tamil'),
-('E0002', 'D009', 'B001', 'E0003', 'Jane', 'Smith', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345','Nationality-B','O','English'),
+('E0001', 'D001', 'B001', NULL, 'Test', 'Admin', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567','Nationality-D','B','English'),
+('E0002', 'D009', 'B001', 'E0001', 'Test', 'Manager', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345','Nationality-B','O','English'),
+('E0003', 'D009', 'B001', 'E0001', 'Test', 'Supervisor', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234','Nationality-A','AB','Tamil'),
+('E0004', 'D003', 'B001', 'E0002', 'Test', 'Employee', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678','Nationality-A','A','Sinhala'),
+
 ('E0006', 'D002', 'B001', 'E0003', 'Sophia', 'Miller', '1983-07-25', 'Female', 'Married', '987 Birch St, City B, Pakistan', 'sophia.miller@apparel.com', 'NIC006', 'T010', 'PG003', 'S005','+923023456','Nationality-C','A','Sinhala'),
 ('E0011', 'D009', 'B002', 'E0003', 'Ethan', 'Lopez', '1989-01-23', 'Male', 'Single', '654 Cedar Ave, City K, Bangladesh', 'ethan.lopez@apparel.com', 'NIC011', 'T011', 'PG003', 'S005','+880171123','Nationality-D','B','Tamil'),
 ('E0012', 'D009', 'B002', 'E0003', 'Mia', 'Gonzalez', '1988-07-13', 'Female', 'Married', '987 Birch St, City D, Bangladesh', 'mia.gonzalez@apparel.com', 'NIC012', 'T010', 'PG003', 'S005','+880172234','Nationality-A','O','English'),
 ('E0021', 'D009', 'B003', 'E0003', 'Jack', 'King', '1987-12-04', 'Male', 'Single', '789 Pine Rd, Gampaha, Sri Lanka', 'jack.king@apparel.com', 'NIC021', 'T011', 'PG003', 'S005','+94711234','Nationality-B','A','Sinhala'),
 ('E0022', 'D009', 'B003', 'E0003', 'Grace', 'Harris', '1990-07-02', 'Female', 'Married', '321 Elm St, Matara, Sri Lanka', 'grace.harris@apparel.com', 'NIC022', 'T010', 'PG003', 'S005','+94722345','Nationality-C','AB','Tamil'),
-('E0001', 'D001', 'B001', 'E0002', 'John', 'Doe', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567','Nationality-D','B','English'),
-('E0004', 'D003', 'B001', 'E0002', 'Emily', 'Brown', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678','Nationality-A','A','Sinhala'),
 ('E0005', 'D005', 'B001', 'E0002', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789','Nationality-B','O','Tamil'),
-('E0010', 'D005', 'B001', 'E0005', 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890','Nationality-C','A','English'),
+('E0010', 'D005', 'B001', NULL, 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890','Nationality-C','A','English'),
 ('E0008', 'D005', 'B001', 'E0010', 'Ava', 'Taylor', '1993-04-17', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'ava.taylor@apparel.com', 'NIC008', 'T001', 'PG001', 'S006','+923078904','Nationality-D','B','Sinhala'),
 ('E0009', 'D005', 'B001', 'E0010', 'Lucas', 'Davis', '1982-11-19', 'Male', 'Married', '789 Pine Rd, City K, Pakistan', 'lucas.davis@apparel.com', 'NIC009', 'T002', 'PG001', 'S004','+923089012','Nationality-A','AB','Tamil'),
 ('E0007', 'D002', 'B001', 'E0006', 'James', 'Wilson', '1975-09-05', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'james.wilson@apparel.com', 'NIC007', 'T006', 'PG002', 'S003','+923023456','Nationality-B','O','English'),
@@ -750,13 +753,13 @@ INSERT INTO leave_applications VALUES ('LA0050', 'E0018', 'Annual', '2024-09-01'
 
 
 
-INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'maathavan', '123456');
-INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'shanil', '123456');
-INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'sahan', '123456');
-INSERT INTO users VALUES ('U004', 'E0007', 'HR manager', 'hiruni', '123456');
-INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'pratheep', '123456');
-INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
-INSERT INTO users VALUES ('U007', 'E0005', 'HR manager', 'David.Jones', 'password555');
+INSERT INTO users VALUES ('U001', 'E0001', 'Admin', 'admin', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U002', 'E0002', 'HR manager', 'manager', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U003', 'E0003', 'Employee', 'supervisor', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U004', 'E0004', 'Employee', 'employee', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'usere', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U007', 'E0005', 'HR manager', 'David.Jones', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
