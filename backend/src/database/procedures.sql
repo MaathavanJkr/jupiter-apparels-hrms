@@ -480,7 +480,7 @@ CREATE PROCEDURE getAllEmployeesByFilter(
     IN p_employment_status_id VARCHAR(36)
 )
 BEGIN
-    SET @query = 'SELECT 
+    SET @query = 'SELECT
                      employee_id,
                      first_name,
                      last_name,
@@ -516,7 +516,7 @@ BEGIN
     PREPARE stmt FROM @query;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
-    
+
 END $$
 
 DELIMITER ;
@@ -581,19 +581,19 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE GetFilteredEmployees(
-    IN name VARCHAR(255), 
+    IN name VARCHAR(255),
     IN department_id VARCHAR(36),
     IN branch_id VARCHAR(36),
     IN offset INT,
     IN itemsPerPage INT
 )
-BEGIN 
+BEGIN
     SET @query = 'SELECT * FROM employee_basic_info';
     SET @where_clause = '';
 
     IF name IS NOT NULL AND name != '' THEN
         SET @where_clause = CONCAT(@where_clause, ' first_name LIKE "', name, '%" OR last_name LIKE "', name, '%"');
-    END IF; 
+    END IF;
 
     IF department_id IS NOT NULL AND department_id != '' THEN
         IF LENGTH(@where_clause) > 0 THEN
@@ -627,17 +627,17 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE PROCEDURE GetFilteredEmployeeCount(
-    IN name VARCHAR(255), 
+    IN name VARCHAR(255),
     IN department_id VARCHAR(36),
     IN branch_id VARCHAR(36)
 )
-BEGIN 
+BEGIN
     SET @query = 'SELECT COUNT(*) as count FROM employees';
     SET @where_clause = '';
 
     IF name IS NOT NULL AND name != '' THEN
         SET @where_clause = CONCAT(@where_clause, ' first_name LIKE "', name, '%" OR last_name LIKE "', name, '%"');
-    END IF; 
+    END IF;
 
     IF department_id IS NOT NULL AND department_id != '' THEN
         IF LENGTH(@where_clause) > 0 THEN
@@ -898,13 +898,13 @@ CREATE PROCEDURE UpdateUser(
     IN role VARCHAR(50),
     IN username VARCHAR(50)
 )
-BEGIN 
+BEGIN
     UPDATE users
     SET role = role, username = username
     WHERE user_id = userID;
 END $$
 
-CREATE PROCEDURE DeleteUser (IN userID VARCHAR(255)) 
+CREATE PROCEDURE DeleteUser (IN userID VARCHAR(255))
 BEGIN
     DELETE FROM users WHERE user_id = userID;
 END $$
@@ -934,7 +934,7 @@ CREATE PROCEDURE GetEmployeeBasicInfoByID(IN p_employee_id VARCHAR(36))
 BEGIN
     SELECT * FROM employee_basic_info WHERE employee_id = p_employee_id;
 END $$
--- Procedure to get employee basic info by user ID. 
+-- Procedure to get employee basic info by user ID.
 CREATE PROCEDURE GetEmployeeBasicInfoByUserID(IN p_user_id VARCHAR(36))
 BEGIN
     SELECT * FROM employee_basic_info WHERE user_id = p_user_id;
@@ -1046,18 +1046,18 @@ BEGIN
 END $$
 DELIMITER ;
 
---Procedure to get all the leave applications for a supervisor
+-- Procedure to get all the leave applications for a supervisor
 DELIMITER $$
 CREATE PROCEDURE getAllLeaveApplicationsForSupervisor(
 IN super_id VARCHAR(36))
 BEGIN
 
 	SELECT * FROM leave_applications WHERE application_id IN (
-	SELECT application_id FROM leave_applications JOIN employees 
-    ON leave_applications.employee_id = employees.employee_id 
+	SELECT application_id FROM leave_applications JOIN employees
+    ON leave_applications.employee_id = employees.employee_id
     WHERE employees.supervisor_id = super_id);
 
-END$$ 
+END$$
 DELIMITER ;
 
 DELIMITER $$
@@ -1066,21 +1066,21 @@ CREATE PROCEDURE getTotalLeavesByDepartmentForPeriod(
     IN p_end_date DATE
 )
 BEGIN
-    SELECT 
+    SELECT
         d.department_id,
         d.name AS department_name,
         COUNT(la.application_id) AS total_leaves
-    FROM 
+    FROM
         employees e
-    JOIN 
+    JOIN
         departments d ON e.department_id = d.department_id
-    JOIN 
+    JOIN
         leave_applications la ON e.employee_id = la.employee_id
-    WHERE 
+    WHERE
         la.start_date BETWEEN p_start_date AND p_end_date
-    GROUP BY 
-        d.department_id
-    ORDER BY 
+    GROUP BY
+        d.department_id,d.name
+    ORDER BY
         d.name;
 END $$
 
@@ -1123,13 +1123,13 @@ DELIMITER ;
 DELIMITER $$
 -- procedure to get all custom attribute names
 CREATE PROCEDURE GetAllCustomAttributes()
-BEGIN 
+BEGIN
     SELECT name FROM custom_attribute_keys;
 END $$
 
 -- procedure to get specific custom attribute name by key
-CREATE PROCEDURE GetCustomAttributeByKey(IN attr_key INT) 
-BEGIN 
+CREATE PROCEDURE GetCustomAttributeByKey(IN attr_key INT)
+BEGIN
     SELECT name FROM custom_attribute_keys WHERE custom_attribute_key_id = attr_key;
 END $$
 
