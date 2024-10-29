@@ -10,6 +10,6 @@ const router = Router();
 
 router.get("/employee/dept/:id", getEmployeesByDepartment);
 router.get("/totalleaves", getTotalLeavesByDepartmentForPeriod);
-router.get("/count", getReportByGroup);
+router.get("/employee", getReportByGroup);
 
 export default router;

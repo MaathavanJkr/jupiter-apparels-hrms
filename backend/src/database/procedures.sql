@@ -82,9 +82,6 @@ DROP PROCEDURE IF EXISTS GetLeaveApplicationByEmployeeID;
 DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 DROP PROCEDURE IF EXISTS getTotalLeavesByDepartmentForPeriod;
 DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
-DROP PROCEDURE IF EXISTS getReportByDepartment;
-DROP PROCEDURE IF EXISTS getReportByJobTitle;
-DROP PROCEDURE IF EXISTS getReportByPayGrade;
 DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
@@ -100,6 +97,10 @@ DROP PROCEDURE IF EXISTS GetUserByID;
 DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
 DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
 DROP PROCEDURE IF EXISTS FindSupervisors;
+DROP PROCEDURE IF EXISTS getEmployeeByJobTitleID;
+DROP PROCEDURE IF EXISTS getEmployeeByDepartmentID;
+DROP PROCEDURE IF EXISTS getEmployeeByPayGradeID;
+DROP PROCEDURE IF EXISTS getEmployeeByEmployementStatusID;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1116,3 +1117,34 @@ END $$
 
 DELIMITER ;
 
+
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByJobTitleID(IN jobTitleID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status FROM employee_basic_info WHERE job_title_id = jobTitleID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByDepartmentID(IN departmentID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status FROM employee_basic_info WHERE department_id = departmentID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByPayGradeID(IN payGradeID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status FROM employee_basic_info WHERE pay_grade_id = payGradeID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByEmployementStatusID(IN employmentStatusID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status 
+    FROM employee_basic_info 
+    WHERE employment_status_id = employmentStatusID;
+END $$
+DELIMITER ;
