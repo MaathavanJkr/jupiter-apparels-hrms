@@ -15,6 +15,7 @@ export const login = async (username: string, password: string) => {
     localStorage.setItem('username', user.username);
     localStorage.setItem('role', user.role);
     localStorage.setItem('employee_id', user.employee_id);
+    localStorage.setItem('is_supervisor', user.is_supervisor);
     return { role: user.role };
   } catch (error: any) {
     console.error('Error logging in:', error);

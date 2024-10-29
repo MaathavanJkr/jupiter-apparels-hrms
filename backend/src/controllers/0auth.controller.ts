@@ -29,9 +29,10 @@ export const loginUser = async (req: Request, res: Response) => {
 
   if (isvalid) {
     const isSup = await isSupervisor(user.employee_id);
+    user.is_supervisor = isSup;
     return res.status(200).send({
       error: null,
-      message: "successfully logged in",
+      message: "Successfully Logged In",
       token: generateJwtToken({
         username: user.username,
         user_id: user.user_id,

@@ -57,8 +57,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
   // Retrieve the user role from localStorage
   const userRole = localStorage.getItem('role'); 
+  const isSupervisor = localStorage.getItem('is_supervisor') == "true";
   const isAdmin = userRole === 'Admin'; 
-  const isEmployee = userRole === 'Employee';
   const isAuthorizedUser = userRole === 'Admin' || userRole === 'HR manager'; 
 
   return (
@@ -287,7 +287,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 My Leaves
                               </NavLink>
                             </li>
-                            {"isSupervisor" == "isSupervisor" && (
+                            {isSupervisor && (
                                 <li>
                                   <NavLink
                                       to={`/leave/manage`}
