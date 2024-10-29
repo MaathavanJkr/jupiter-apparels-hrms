@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ChangePasswordModel, createUserModel, deleteUserModel, getUserByIDModel, getAllUsersModel, updateUserModel, User } from "../models/user.model";
+import { comparePassword } from "../utils/hashPassword";
 
 
 
@@ -109,8 +110,9 @@ export const changePassword = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "User not found" });
   }
 
-  if (user.password !== old_password) { // need to add decyption here
-    return res.status(401).json({ error: "Invalid password" });
+  const passwordMatch = await comparePassword(old_password, user.password);
+  if (passwordMatch) { // need to add decyption here
+    return res.status(401).json({ error: "Old Password doesnot match" });
   }
 
   await ChangePasswordModel(id, new_password)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Employee, EmployeeCount, EmployeeCountByDepartment, LeaveCount, User, UserInfo } from '../../types/types';
+import { Employee, EmployeeCount, EmployeeCountByDepartment, User, UserInfo } from '../../types/types';
 import RingChart from '../Charts/RingChart';
 import { getEmployees } from '../../services/employeeServices';
 import { useNavigate } from 'react-router-dom';
@@ -107,6 +107,7 @@ const AdminDashboard = () => {
 
     fetchUserCount();
   }, []);
+
 
   return (
     <>

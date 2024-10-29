@@ -26,7 +26,6 @@ export const createUserModel = async (user: User): Promise<Output> => {
   }
 
   const hashedPassword = await hashPassword(password);
- 
 
   try {
     await db
