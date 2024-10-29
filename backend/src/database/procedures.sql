@@ -99,6 +99,7 @@ DROP PROCEDURE IF EXISTS ChangePassword;
 DROP PROCEDURE IF EXISTS GetUserByID;
 DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
 DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
+DROP PROCEDURE IF EXISTS FindSupervisors;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1143,4 +1144,27 @@ END $$
 
 DELIMITER ;
 
+-- procedure to get possible supervisors for an employee
+
+DELIMITER $$
+
+CREATE PROCEDURE FindSupervisors(
+    IN p_employee_id VARCHAR(255),
+    IN p_department_id VARCHAR(255),
+    IN p_pay_grade_id VARCHAR(255)
+)
+BEGIN
+    DECLARE p_pay_grade_level INT;
+
+    SELECT paygrade INTO p_pay_grade_level 
+    FROM pay_grades 
+    WHERE pay_grade_id = p_pay_grade_id;
+
+    SELECT CONCAT(first_name, ' ', last_name) AS full_name, employee_id AS supervisor_id 
+    FROM employee_basic_info
+    WHERE(department_id = p_department_id AND pay_grade_level > p_pay_grade_level AND employee_id != p_employee_id) 
+          OR (role = 'Admin');
+END $$
+
+DELIMITER ;
 

@@ -10,6 +10,7 @@ import {
   getFilteredCount,
   getEmployeesUnderSupervisor,
   getEmployeeIdByUserId, getAllUniqueSupervisors,
+  findSupervisors
 
 } from "../controllers/employee.controller";
 import { getEmployeeBasicInfoByUserID } from "../controllers/employeeBasicInfoView.controller";
@@ -20,6 +21,7 @@ router.post("/", createEmployee);
 router.get("/", getAllEmployees);
 router.post("/search", getFilteredEmployees);
 router.post("/search/count", getFilteredCount);
+router.post("/supervisors",findSupervisors)
 router.get("/:id", getEmployeeByID);
 router.put("/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
