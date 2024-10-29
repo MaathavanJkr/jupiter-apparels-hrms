@@ -9,14 +9,15 @@ export const login = async (username: string, password: string) => {
     });
     const token = response.data.token;
     const user = response.data.user;
+
     localStorage.setItem('token', token);
     localStorage.setItem('user_id', user.user_id);
     localStorage.setItem('username', user.username);
     localStorage.setItem('role', user.role);
     localStorage.setItem('employee_id', user.employee_id);
-    return true;
+    return { role: user.role };
   } catch (error: any) {
     console.error('Error logging in:', error);
-    throw error.response.data.error;
+    throw error.response?.data?.error;
   }
 };
