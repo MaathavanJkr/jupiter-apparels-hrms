@@ -1,15 +1,17 @@
 -- These 3 lines only needed for query submission.No need to add to the project.
 -- Uncomment this if DB doesn't exits in PC.
 
--- DROP DATABASE IF EXISTS jupiter_apparels;
--- CREATE DATABASE jupiter_apparels;
--- USE jupiter_apparels;
+DROP DATABASE IF EXISTS jupiter_apparels;
+CREATE DATABASE jupiter_apparels;
+USE jupiter_apparels;
+
+SET SQL_SAFE_UPDATES = 0;
 
 -- If DB doesn't exist in PC then comment this out when running the queries for the 1st time.
 -- Otherwise, it will give an error indicating branches table and the foreign key do not exist.
 -- After creating DB in PC this segment can be uncommented.
-ALTER TABLE branches
-DROP FOREIGN KEY fk_manager;
+-- ALTER TABLE branches
+-- DROP FOREIGN KEY fk_manager;
 
 
 -- Drop all tables
@@ -750,13 +752,13 @@ INSERT INTO leave_applications VALUES ('LA0050', 'E0018', 'Annual', '2024-09-01'
 
 
 
-INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'maathavan', '123456');
-INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'shanil', '123456');
-INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'sahan', '123456');
-INSERT INTO users VALUES ('U004', 'E0007', 'HR manager', 'hiruni', '123456');
-INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'pratheep', '123456');
-INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', 'password707');
-INSERT INTO users VALUES ('U007', 'E0005', 'HR manager', 'David.Jones', 'password555');
+INSERT INTO users VALUES ('U001', 'E0004', 'Admin', 'admin', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U002', 'E0001', 'HR manager', 'manager', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U003', 'E0020', 'Employee', 'employee', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U004', 'E0007', 'HR manager', 'userm', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'usere', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U007', 'E0005', 'HR manager', 'David.Jones', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
