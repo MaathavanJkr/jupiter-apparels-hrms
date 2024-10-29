@@ -70,7 +70,7 @@ export const getReportByGroup = async (req: Request, res: Response) => {
       if (!result.data) {
         return res
           .status(404)
-          .json({ error: "Used leaves information not found" });
+          .json({ error: "Report By Group Data not found" });
       }
       return res.status(200).json(result);
     })

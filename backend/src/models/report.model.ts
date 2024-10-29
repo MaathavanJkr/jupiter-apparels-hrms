@@ -24,7 +24,7 @@ export const getEmployeesByDepartmentIDModel = async (
     const [result] = await db
       .promise()
       .query<RowDataPacket[][]>(
-        "CALL getAllEmployeesByFilter(?, null, null, null, null)",
+        "CALL GetFilteredEmployees(null, ?, null, null, null)",
         [dept_id]
       );
     if (Array.isArray(result) && result.length === 0) {
