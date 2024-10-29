@@ -25,13 +25,8 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(400).send({ error: "User does not exists" });
   }
 
-  //need to use hashed password when checking
-  //NEED TO UPDATE BELOW LINE
   const isvalid = await comparePassword(password, user.password);
 
-  //NEED TO UPDATE ABOVE LINE
-
-  console.log(user);
   if (isvalid) {
     const isSup = await isSupervisor(user.employee_id);
     return res.status(200).send({
