@@ -1191,7 +1191,7 @@ BEGIN
             WHEN leave_category = 'Casual' THEN remaining_casual_leaves
             WHEN leave_category = 'Maternity' THEN remaining_maternity_leaves
             WHEN leave_category = 'Nopay' THEN remaining_nopay_leaves
-            ELSE total_remaining_leaves
+            ELSE total_remaining_leave_days
         END AS remaining_leaves
     FROM remaining_leaves_view
     WHERE employee_id = emp_id;
