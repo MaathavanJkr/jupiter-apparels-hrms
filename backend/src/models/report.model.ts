@@ -142,3 +142,28 @@ export const getTotalLeavesByDepartmentForPeriodModel = async (
     return { data: null, error, message: "Database Query Failed" };
   }
 };
+
+export const getReportsByCustomAttributeModel = async (
+  attribute_number: number,
+  attribute_value: string
+) : Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>(
+        "CALL getReportByCustomAttribute(?, ?)",
+        [attribute_number, attribute_value]
+      );
+    if (Array.isArray(result) && result.length === 0) {
+      throw { data: null, error: "No Employees with this custom attribute value", message: null };
+    } else {
+      return {
+        data: result[0],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    throw { data: null, error, message: "Database Query Failed" };
+  }
+}

@@ -101,6 +101,7 @@ DROP PROCEDURE IF EXISTS getEmployeeByJobTitleID;
 DROP PROCEDURE IF EXISTS getEmployeeByDepartmentID;
 DROP PROCEDURE IF EXISTS getEmployeeByPayGradeID;
 DROP PROCEDURE IF EXISTS getEmployeeByEmployementStatusID;
+DROP PROCEDURE IF EXISTS GetReportByCustomAttribute;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1074,7 +1075,7 @@ DELIMITER $$
 -- procedure to get all custom attribute names
 CREATE PROCEDURE GetAllCustomAttributes()
 BEGIN
-    SELECT name FROM custom_attribute_keys;
+    SELECT * FROM custom_attribute_keys;
 END $$
 
 -- procedure to get specific custom attribute name by key
@@ -1148,3 +1149,29 @@ BEGIN
     WHERE employment_status_id = employmentStatusID;
 END $$
 DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE GetReportByCustomAttribute(
+    IN p_custom_attribute_key_id INT,
+    IN p_custom_attribute_value VARCHAR(255)
+) 
+BEGIN 
+    -- Define the dynamic column name based on the attribute key ID
+    SET @attr = CONCAT('cust_attr_', p_custom_attribute_key_id, '_value');
+    
+    -- Construct the dynamic SQL query with proper handling of quotes
+    SET @query = CONCAT('SELECT * FROM employee_basic_info WHERE ', @attr, ' = ?');
+    
+    -- Prepare and execute the dynamic statement with parameterized value
+    PREPARE stmt FROM @query;
+    SET @value = p_custom_attribute_value;
+    EXECUTE stmt USING @value;
+    
+    -- Clean up the prepared statement
+    DEALLOCATE PREPARE stmt;
+END $$
+
+DELIMITER ;
+
+

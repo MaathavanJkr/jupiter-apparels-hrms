@@ -5,6 +5,7 @@ import {
   getEmployeesByEmploymentStatusIDModel,
   getEmployeesByJobTitleIDModel,
   getEmployeesByPayGradeIDModel,
+  getReportsByCustomAttributeModel,
   getTotalLeavesByDepartmentForPeriodModel,
   reportGroups,
 } from "../models/report.model";
@@ -191,3 +192,28 @@ export const getReportByGroup = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getReportByCustomAttribute = async (req: Request, res: Response) => {
+  const {attribute_number, attribute_value} = req.body;
+  if (!attribute_number || !attribute_value) {
+    return res.status(400).json({ error: "Missing attribute number or value" });
+  }
+  if (attribute_number < 1 || attribute_number > 3) {
+    return res.status(400).json({
+      error: "Invalid attribute number. Please use 1, 2, 3",
+    });
+  }
+
+  await getReportsByCustomAttributeModel(attribute_number, attribute_value)
+    .then((result) => {
+      if (!result.data) {
+        return res
+          .status(404)
+          .json({ error: "Information not foud" });
+      }
+      return res.status(200).json(result);
+    })
+    .catch((error) => {
+      return res.status(500).json({ error });
+    });
+}

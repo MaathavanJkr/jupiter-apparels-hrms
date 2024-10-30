@@ -39,3 +39,15 @@ export const fetchGERReportData = async (GERData: GERData) => {
     console.error('Error fetching report data:', error);
   }
 };
+
+export const fetchCAReportData = async (custom_attribute_number: number, custom_attribute_value: string) => {
+  try {
+    const response = await axiosInstance.post(`/report/custom`, {
+      attribute_number: custom_attribute_number,
+      attribute_value: custom_attribute_value,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching report data:', error);
+  }
+}
