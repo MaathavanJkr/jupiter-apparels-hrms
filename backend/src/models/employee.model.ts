@@ -364,7 +364,7 @@ export const deleteEmployeeModel = async (
       data: { id: employee_id },
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Could not delete Employee", data: null };
   }
 };
 
