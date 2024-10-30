@@ -196,22 +196,41 @@ CREATE INDEX idx_pay_grade_id_allocated ON allocated_leaves(pay_grade_id);
 -- ---------------------------------------------------------------------------
 
 -- Function to get the total approved leaves of a particular type for a given employee.
+-- DELIMITER $$
+-- CREATE FUNCTION get_used_leaves(emp_id VARCHAR(36), type ENUM('Annual', 'Casual', 'Maternity', 'Nopay'))
+-- RETURNS INT
+-- DETERMINISTIC
+-- BEGIN
+--     DECLARE used_leaves_count INT;
+--
+--     -- Get the count of approved leaves for the given employee and leave type
+--     SELECT COUNT(*)
+--     INTO used_leaves_count
+--     FROM leave_applications
+--     WHERE employee_id = emp_id
+--       AND leave_type = type
+--       AND status = 'Approved';
+--
+--     RETURN IFNULL(used_leaves_count, 0);
+-- END$$
+-- DELIMITER ;
+
 DELIMITER $$
 CREATE FUNCTION get_used_leaves(emp_id VARCHAR(36), type ENUM('Annual', 'Casual', 'Maternity', 'Nopay'))
 RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE used_leaves_count INT;
+    DECLARE used_leave_days INT;
 
-    -- Get the count of approved leaves for the given employee and leave type
-    SELECT COUNT(*)
-    INTO used_leaves_count
+    -- Calculate the sum of days between start_date and end_date for approved leaves
+    SELECT SUM(DATEDIFF(end_date, start_date))
+    INTO used_leave_days
     FROM leave_applications
     WHERE employee_id = emp_id
       AND leave_type = type
       AND status = 'Approved';
 
-    RETURN IFNULL(used_leaves_count, 0);
+    RETURN IFNULL(used_leave_days, 0);
 END$$
 DELIMITER ;
 
@@ -315,6 +334,31 @@ GROUP BY
 
 -- View to show the number of used leaves for each employee by leave category using the reusable function.
 -- For leave management module.
+-- CREATE VIEW used_leaves_view AS
+-- SELECT
+--     e.employee_id,
+--     CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+--
+--     -- Used Annual Leaves
+--     get_used_leaves(e.employee_id, 'Annual') AS used_annual_leaves,
+--
+--     -- Used Casual Leaves
+--     get_used_leaves(e.employee_id, 'Casual') AS used_casual_leaves,
+--
+--     -- Used Maternity Leaves
+--     get_used_leaves(e.employee_id, 'Maternity') AS used_maternity_leaves,
+--
+--     -- Used No-pay Leaves
+--     get_used_leaves(e.employee_id, 'Nopay') AS used_nopay_leaves,
+--
+--     -- Total used leaves
+--     (get_used_leaves(e.employee_id, 'Annual') +
+--      get_used_leaves(e.employee_id, 'Casual') +
+--      get_used_leaves(e.employee_id, 'Maternity') +
+--      get_used_leaves(e.employee_id, 'Nopay')) AS total_used_leaves
+--
+-- FROM employees e;
+
 CREATE VIEW used_leaves_view AS
 SELECT
     e.employee_id,
@@ -332,11 +376,11 @@ SELECT
     -- Used No-pay Leaves
     get_used_leaves(e.employee_id, 'Nopay') AS used_nopay_leaves,
 
-    -- Total used leaves
+    -- Total used leave days
     (get_used_leaves(e.employee_id, 'Annual') +
      get_used_leaves(e.employee_id, 'Casual') +
      get_used_leaves(e.employee_id, 'Maternity') +
-     get_used_leaves(e.employee_id, 'Nopay')) AS total_used_leaves
+     get_used_leaves(e.employee_id, 'Nopay')) AS total_used_leave_days
 
 FROM employees e;
 
@@ -344,6 +388,32 @@ FROM employees e;
 
 -- View to show the remaining leaves for each employee by leave category using the reusable function.
 -- For leave management module.
+-- CREATE VIEW remaining_leaves_view AS
+-- SELECT
+--     e.employee_id,
+--     CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+--
+--     -- Remaining Annual Leaves
+--     (al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) AS remaining_annual_leaves,
+--
+--     -- Remaining Casual Leaves
+--     (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) AS remaining_casual_leaves,
+--
+--     -- Remaining Maternity Leaves
+--     (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) AS remaining_maternity_leaves,
+--
+--     -- Remaining No-pay Leaves
+--     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')) AS remaining_nopay_leaves,
+--
+--     -- Total Remaining Leaves
+--     ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
+--      (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
+--      (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
+--      (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) AS total_remaining_leaves
+--
+-- FROM employees e
+-- JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
+
 CREATE VIEW remaining_leaves_view AS
 SELECT
     e.employee_id,
@@ -361,11 +431,11 @@ SELECT
     -- Remaining No-pay Leaves
     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')) AS remaining_nopay_leaves,
 
-    -- Total Remaining Leaves
+    -- Total remaining leave days
     ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
      (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
      (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
-     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) AS total_remaining_leaves
+     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) AS total_remaining_leave_days
 
 FROM employees e
 JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;

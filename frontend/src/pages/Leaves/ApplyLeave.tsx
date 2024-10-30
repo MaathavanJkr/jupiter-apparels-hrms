@@ -71,7 +71,7 @@ const UpdateLeaveApplicationData = () => {
       let leaveType = '';
       switch (leaveAppData.leaveType) {
         case "annual":
-          leaveType  = 'Annual';
+          leaveType = 'Annual';
           break;
         case "casual":
           leaveType = 'Casual';
@@ -85,43 +85,49 @@ const UpdateLeaveApplicationData = () => {
         default:
           throw new Error('Invalid leave type specified.');
       }
-      // fetching remaining leave count for the specified employee and the specified type
-      const remainingLeaves = await getRemainingLeaves(employeeId,leaveType);
+
+      // Calculate selected leave days
+      const startDate = new Date(leaveAppData.startdate);
+      const endDate = new Date(leaveAppData.enddate);
+      const selectedLeaveDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1;
 
 
-      // Check if the remaining leave count for the requested leave type is zero
-      if (remainingLeaves.remaining_leaves == 0) {
-        notifyError(`No leaves left in this category.`);
+      // Fetch remaining leaves for the specified employee and leave type
+      const remainingLeaves = await getRemainingLeaves(employeeId, leaveType);
+
+      // Check if selected leave days exceed remaining leaves
+      if (selectedLeaveDays > remainingLeaves.remaining_leaves) {
+        notifyError(`Insufficient leaves. You have only ${remainingLeaves.remaining_leaves} remaining.`);
         return;
       }
 
-      // Fetch all the pending leaves count for the employee
-      const pendingLeaves = await getPendingLeavesCount(employeeId);
-
-      // Determine the pending count for the selected leave type
-      let pendingCountForType = 0;
-      switch (leaveAppData.leaveType.toLowerCase()) {
-        case "annual":
-          pendingCountForType = pendingLeaves[0].annual_pending_leaves ;
-          break;
-        case "casual":
-          pendingCountForType = pendingLeaves[0].casual_pending_leaves ;
-          break;
-        case "maternity":
-          pendingCountForType = pendingLeaves[0].maternity_pending_leaves ;
-          break;
-        case "nopay":
-          pendingCountForType = pendingLeaves[0].nopay_pending_leaves;
-          break;
-        default:
-          throw new Error('Invalid leave type specified.');
-      }
-
-      // Check if the pending leave count exceeds the remaining leave count for the selected leave type
-      if (pendingCountForType >= remainingLeaves.remaining_leaves) {
-        notifyError("You cannot submit more leave applications until your supervisor reviews your existing requests. Please check back later.");
-        return;
-      }
+      // Fetch all pending leave counts for the employee
+      // const pendingLeaves = await getPendingLeavesCount(employeeId);
+      //
+      // // Determine pending count for the selected leave type
+      // let pendingCountForType = 0;
+      // switch (leaveAppData.leaveType.toLowerCase()) {
+      //   case "annual":
+      //     pendingCountForType = pendingLeaves[0].annual_pending_leaves;
+      //     break;
+      //   case "casual":
+      //     pendingCountForType = pendingLeaves[0].casual_pending_leaves;
+      //     break;
+      //   case "maternity":
+      //     pendingCountForType = pendingLeaves[0].maternity_pending_leaves;
+      //     break;
+      //   case "nopay":
+      //     pendingCountForType = pendingLeaves[0].nopay_pending_leaves;
+      //     break;
+      //   default:
+      //     throw new Error('Invalid leave type specified.');
+      // }
+      //
+      // // Check if the pending leave count exceeds the remaining leave count
+      // if (pendingCountForType >= remainingLeaves.remaining_leaves) {
+      //   notifyError("You cannot submit more leave applications until your supervisor reviews your existing requests. Please check back later.");
+      //   return;
+      // }
 
       // Call the API to create a leave application
       const response = await applyLeave(
@@ -138,19 +144,115 @@ const UpdateLeaveApplicationData = () => {
         return;
       }
 
+      // Notify success and navigate after a short delay
       notifySuccess("Application Submitted Successfully");
-
       setTimeout(() => {
         navigate('/leave/my');
       }, 2000);
-    } catch (err: any) {
-      if (err.message) {
-        notifyError(err.message); // show specific errors
-      } else {
-        notifyError("Could not create application");
-      }
+
+    } catch (err) {
+
+      notifyError("Could not create application");
     }
   };
+
+
+  // const handleSubmit = async () => {
+  //   // Check if all fields are filled
+  //   if (!leaveAppData.leaveType || !leaveAppData.startdate || !leaveAppData.enddate || !leaveAppData.reason) {
+  //     notifyError("Please fill in all fields");
+  //     return;
+  //   }
+  //
+  //   if (!employeeId) {
+  //     notifyError("Employee ID not found");
+  //     return;
+  //   }
+  //
+  //   try {
+  //     let leaveType = '';
+  //     switch (leaveAppData.leaveType) {
+  //       case "annual":
+  //         leaveType  = 'Annual';
+  //         break;
+  //       case "casual":
+  //         leaveType = 'Casual';
+  //         break;
+  //       case "maternity":
+  //         leaveType = 'Maternity';
+  //         break;
+  //       case "nopay":
+  //         leaveType = 'Nopay';
+  //         break;
+  //       default:
+  //         throw new Error('Invalid leave type specified.');
+  //     }
+  //     // fetching remaining leave count for the specified employee and the specified type
+  //     const remainingLeaves = await getRemainingLeaves(employeeId,leaveType);
+  //
+  //
+  //     // Check if the remaining leave count for the requested leave type is zero
+  //     if (remainingLeaves.remaining_leaves == 0) {
+  //       notifyError(`No leaves left in this category.`);
+  //       return;
+  //     }
+  //
+  //     // Fetch all the pending leaves count for the employee
+  //     const pendingLeaves = await getPendingLeavesCount(employeeId);
+  //
+  //     // Determine the pending count for the selected leave type
+  //     let pendingCountForType = 0;
+  //     switch (leaveAppData.leaveType.toLowerCase()) {
+  //       case "annual":
+  //         pendingCountForType = pendingLeaves[0].annual_pending_leaves ;
+  //         break;
+  //       case "casual":
+  //         pendingCountForType = pendingLeaves[0].casual_pending_leaves ;
+  //         break;
+  //       case "maternity":
+  //         pendingCountForType = pendingLeaves[0].maternity_pending_leaves ;
+  //         break;
+  //       case "nopay":
+  //         pendingCountForType = pendingLeaves[0].nopay_pending_leaves;
+  //         break;
+  //       default:
+  //         throw new Error('Invalid leave type specified.');
+  //     }
+  //
+  //     // Check if the pending leave count exceeds the remaining leave count for the selected leave type
+  //     if (pendingCountForType >= remainingLeaves.remaining_leaves) {
+  //       notifyError("You cannot submit more leave applications until your supervisor reviews your existing requests. Please check back later.");
+  //       return;
+  //     }
+  //
+  //     // Call the API to create a leave application
+  //     const response = await applyLeave(
+  //         employeeId,
+  //         leaveAppData.leaveType,
+  //         leaveAppData.startdate,
+  //         leaveAppData.enddate,
+  //         leaveAppData.reason
+  //     );
+  //
+  //     // Check if the response contains an error
+  //     if (response.error) {
+  //       notifyError(response.error.message);
+  //       return;
+  //     }
+  //
+  //     notifySuccess("Application Submitted Successfully");
+  //
+  //     setTimeout(() => {
+  //       navigate('/leave/my');
+  //     }, 2000);
+  //   } catch (err: any) {
+  //     if (err.message) {
+  //       notifyError(err.message); // show specific errors
+  //     } else {
+  //       notifyError("Could not create application");
+  //     }
+  //   }
+  // };
 
 
 
