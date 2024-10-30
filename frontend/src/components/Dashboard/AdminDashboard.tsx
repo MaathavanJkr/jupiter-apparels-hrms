@@ -98,7 +98,7 @@ const AdminDashboard = () => {
         const uCount: number = users.length;
         setUserCount(uCount);
 
-        const hrCount: number = users.filter(user => user.role === "HR manager").length;
+        const hrCount: number = users.filter(user => user.role === "Manager").length;
         setHRcount(hrCount);
       } catch (error) {
         console.log('Error Fetching User Count:', error);
