@@ -82,9 +82,6 @@ DROP PROCEDURE IF EXISTS GetLeaveApplicationByEmployeeID;
 DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 DROP PROCEDURE IF EXISTS getTotalLeavesByDepartmentForPeriod;
 DROP PROCEDURE IF EXISTS getAllEmployeesByFilter;
-DROP PROCEDURE IF EXISTS getReportByDepartment;
-DROP PROCEDURE IF EXISTS getReportByJobTitle;
-DROP PROCEDURE IF EXISTS getReportByPayGrade;
 DROP PROCEDURE IF EXISTS getAllLeaveApplicationsForSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeesUnderSupervisor;
 DROP PROCEDURE IF EXISTS GetEmployeeIdByUserId;
@@ -100,6 +97,11 @@ DROP PROCEDURE IF EXISTS GetUserByID;
 DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
 DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
 DROP PROCEDURE IF EXISTS FindSupervisors;
+DROP PROCEDURE IF EXISTS getEmployeeByJobTitleID;
+DROP PROCEDURE IF EXISTS getEmployeeByDepartmentID;
+DROP PROCEDURE IF EXISTS getEmployeeByPayGradeID;
+DROP PROCEDURE IF EXISTS getEmployeeByEmployementStatusID;
+DROP PROCEDURE IF EXISTS GetReportByCustomAttribute;
 DROP Procedure IF EXISTS GetRemainingLeavesByCategory;
 DROP Procedure IF EXISTS getPendingLeavesCount;
 -- ---------------------------------------------------------------------------------
@@ -471,58 +473,6 @@ CREATE PROCEDURE GetAllEmployees()
 BEGIN
     SELECT * FROM employees;
 END $$
-
--- Procedure to get all employees by filter
-DELIMITER $$
-
-CREATE PROCEDURE getAllEmployeesByFilter(
-    IN p_department_id VARCHAR(36),
-    IN p_branch_id VARCHAR(36),
-    IN p_job_title_id VARCHAR(36),
-    IN p_pay_grade_id VARCHAR(36),
-    IN p_employment_status_id VARCHAR(36)
-)
-BEGIN
-    SET @query = 'SELECT
-                     employee_id,
-                     first_name,
-                     last_name,
-                     email,
-                     contact_number,
-                     department_id,
-                     branch_id,
-                     job_title_id,
-                     pay_grade_id,
-                     employment_status_id
-                 FROM employees WHERE 1 = 1';
-
-    IF p_department_id IS NOT NULL THEN
-        SET @query = CONCAT(@query, ' AND department_id = "', p_department_id, '"');
-    END IF;
-
-    IF p_branch_id IS NOT NULL THEN
-        SET @query = CONCAT(@query, ' AND branch_id = "', p_branch_id, '"');
-    END IF;
-
-    IF p_job_title_id IS NOT NULL THEN
-        SET @query = CONCAT(@query, ' AND job_title_id = "', p_job_title_id, '"');
-    END IF;
-
-    IF p_pay_grade_id IS NOT NULL THEN
-        SET @query = CONCAT(@query, ' AND pay_grade_id = "', p_pay_grade_id, '"');
-    END IF;
-
-    IF p_employment_status_id IS NOT NULL THEN
-        SET @query = CONCAT(@query, ' AND employment_status_id = "', p_employment_status_id, '"');
-    END IF;
-
-    PREPARE stmt FROM @query;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
-
-END $$
-
-DELIMITER ;
 
 -- Procedure to update an employee
 DELIMITER $$
@@ -1127,7 +1077,7 @@ DELIMITER $$
 -- procedure to get all custom attribute names
 CREATE PROCEDURE GetAllCustomAttributes()
 BEGIN
-    SELECT name FROM custom_attribute_keys;
+    SELECT * FROM custom_attribute_keys;
 END $$
 
 -- procedure to get specific custom attribute name by key
@@ -1151,9 +1101,9 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE FindSupervisors(
-    IN p_employee_id VARCHAR(255),
     IN p_department_id VARCHAR(255),
-    IN p_pay_grade_id VARCHAR(255)
+    IN p_pay_grade_id VARCHAR(255),
+    IN p_employee_id VARCHAR(255)
 )
 BEGIN
     DECLARE p_pay_grade_level INT;
@@ -1169,6 +1119,63 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByJobTitleID(IN jobTitleID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status FROM employee_basic_info WHERE job_title_id = jobTitleID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByDepartmentID(IN departmentID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status FROM employee_basic_info WHERE department_id = departmentID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByPayGradeID(IN payGradeID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status FROM employee_basic_info WHERE pay_grade_id = payGradeID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE getEmployeeByEmployementStatusID(IN employmentStatusID VARCHAR(255))
+BEGIN
+    SELECT first_name, last_name, department_name, branch_name, job_title, pay_grade, employment_status 
+    FROM employee_basic_info 
+    WHERE employment_status_id = employmentStatusID;
+END $$
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE GetReportByCustomAttribute(
+    IN p_custom_attribute_key_id INT,
+    IN p_custom_attribute_value VARCHAR(255)
+) 
+BEGIN 
+    -- Define the dynamic column name based on the attribute key ID
+    SET @attr = CONCAT('cust_attr_', p_custom_attribute_key_id, '_value');
+    
+    -- Construct the dynamic SQL query with proper handling of quotes
+    SET @query = CONCAT('SELECT * FROM employee_basic_info WHERE ', @attr, ' = ?');
+    
+    -- Prepare and execute the dynamic statement with parameterized value
+    PREPARE stmt FROM @query;
+    SET @value = p_custom_attribute_value;
+    EXECUTE stmt USING @value;
+    
+    -- Clean up the prepared statement
+    DEALLOCATE PREPARE stmt;
+END $$
+
+DELIMITER ;
+
 
 
 -- Procedure to get remaining

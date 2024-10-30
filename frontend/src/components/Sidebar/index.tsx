@@ -59,7 +59,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const userRole = localStorage.getItem('role'); 
   const isSupervisor = localStorage.getItem('is_supervisor') == "true";
   const isAdmin = userRole === 'Admin'; 
-  const isAuthorizedUser = userRole === 'Admin' || userRole === 'HR manager'; 
+  const isAuthorizedUser = userRole === 'Admin' || userRole === 'Manager'; 
 
   return (
     <aside

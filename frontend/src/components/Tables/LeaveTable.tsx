@@ -43,7 +43,7 @@ const LeaveTable = ({
               </th>
               {isSupervisor && (
                   <th className="py-4 px-4 font-medium text-black text-center dark:text-white">
-                    Actions
+                   View
                   </th>
               )}
             </tr>

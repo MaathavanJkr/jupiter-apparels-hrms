@@ -2,14 +2,8 @@ import axiosInstance from '../axiosConfig';
 
 export const getDependentByID = async (employee_id: string) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.get(
       'dependent/employee/' + employee_id,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
     return response.data.data;
   } catch (error) {
@@ -24,7 +18,6 @@ export const addDependent = async (
   birth_date: string,
 ) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.post(
       '/dependent',
       {
@@ -32,11 +25,6 @@ export const addDependent = async (
         name,
         relationship_to_employee,
         birth_date,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 
@@ -55,18 +43,12 @@ export const updateDependent = async (
   birth_date: string,
 ) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.put(
       '/dependent/' + dependent_id,
       {
         name,
         relationship_to_employee,
         birth_date,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
     console.log('Response: ', response);
@@ -79,12 +61,7 @@ export const updateDependent = async (
 
 export const deleteDependent = async (dependent_id: string) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.delete('/dependent/' + dependent_id, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.delete('/dependent/' + dependent_id,);
     return response.data.data;
   } catch (error) {
     console.error('Error deleting dependent: ', error);

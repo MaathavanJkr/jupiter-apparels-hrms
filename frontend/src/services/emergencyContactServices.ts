@@ -2,14 +2,8 @@ import axiosInstance from '../axiosConfig';
 
 export const getContactByID = async (employee_id: string) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.get(
       'emergencycontact/employee/' + employee_id,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
     return response.data.data;
   } catch (error) {
@@ -25,7 +19,6 @@ export const addContact = async (
   address: string,
 ) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.post(
       '/emergencycontact',
       {
@@ -34,11 +27,6 @@ export const addContact = async (
         relationship,
         contact_number,
         address,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 
@@ -58,7 +46,6 @@ export const updateContact = async (
   address: string,
 ) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.put(
       '/emergencycontact/' + emergency_id,
       {
@@ -66,11 +53,6 @@ export const updateContact = async (
         relationship,
         contact_number,
         address,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
     console.log('Response: ', response);
@@ -83,14 +65,8 @@ export const updateContact = async (
 
 export const deleteContact = async (emergency_id: string) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.delete(
       '/emergencycontact/' + emergency_id,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
     return response.data.data;
   } catch (error) {
