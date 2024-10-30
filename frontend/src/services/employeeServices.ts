@@ -15,6 +15,9 @@ export const addEmployee = async (
   pay_grade_id: string,
   employment_status_id: string,
   contact_number: string,
+  cust_attr_1_value: string,
+  cust_attr_2_value: string,
+  cust_attr_3_value: string,
 ) => {
   try {
     const token = localStorage.getItem('token');
@@ -35,6 +38,9 @@ export const addEmployee = async (
         pay_grade_id,
         employment_status_id,
         contact_number,
+        cust_attr_1_value,
+        cust_attr_2_value,
+        cust_attr_3_value,
       },
       {
         headers: {
