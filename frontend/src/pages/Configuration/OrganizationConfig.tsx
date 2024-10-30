@@ -42,7 +42,7 @@ const OrganizationConfig = () => {
       organization.address !== '' &&
       organization.reg_no !== 0
     ) {
-      updateOrganization(organization)
+      await updateOrganization(organization)
         .then(() => {
           notifySuccess('Successfully Updated');
         })
@@ -111,7 +111,7 @@ const OrganizationConfig = () => {
         </div>
         <ToastContainer />
       </div>
-    </DefaultLayout >
+    </DefaultLayout>
   );
 };
 
