@@ -13,8 +13,8 @@ export const getOrganization = async () => {
 export const updateOrganization = async (org: Organization) => {
   try {
     const response = await axiosInstance.put(
-      '/organization',
-      { org },
+      `/organization/${org.organization_id}`,
+      { name: org.name, address: org.address, reg_no: org.reg_no },
     );
     return response.data.data;
   } catch (error) {

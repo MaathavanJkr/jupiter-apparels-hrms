@@ -196,22 +196,41 @@ CREATE INDEX idx_pay_grade_id_allocated ON allocated_leaves(pay_grade_id);
 -- ---------------------------------------------------------------------------
 
 -- Function to get the total approved leaves of a particular type for a given employee.
+-- DELIMITER $$
+-- CREATE FUNCTION get_used_leaves(emp_id VARCHAR(36), type ENUM('Annual', 'Casual', 'Maternity', 'Nopay'))
+-- RETURNS INT
+-- DETERMINISTIC
+-- BEGIN
+--     DECLARE used_leaves_count INT;
+--
+--     -- Get the count of approved leaves for the given employee and leave type
+--     SELECT COUNT(*)
+--     INTO used_leaves_count
+--     FROM leave_applications
+--     WHERE employee_id = emp_id
+--       AND leave_type = type
+--       AND status = 'Approved';
+--
+--     RETURN IFNULL(used_leaves_count, 0);
+-- END$$
+-- DELIMITER ;
+
 DELIMITER $$
 CREATE FUNCTION get_used_leaves(emp_id VARCHAR(36), type ENUM('Annual', 'Casual', 'Maternity', 'Nopay'))
 RETURNS INT
 DETERMINISTIC
 BEGIN
-    DECLARE used_leaves_count INT;
+    DECLARE used_leave_days INT;
 
-    -- Get the count of approved leaves for the given employee and leave type
-    SELECT COUNT(*)
-    INTO used_leaves_count
+    -- Calculate the sum of days between start_date and end_date for approved leaves
+    SELECT SUM(DATEDIFF(end_date, start_date))
+    INTO used_leave_days
     FROM leave_applications
     WHERE employee_id = emp_id
       AND leave_type = type
       AND status = 'Approved';
 
-    RETURN IFNULL(used_leaves_count, 0);
+    RETURN IFNULL(used_leave_days, 0);
 END$$
 DELIMITER ;
 
@@ -235,7 +254,7 @@ SELECT
     e.gender,
     e.marital_status,
     e.address,
-    e.email, 
+    e.email,
     e.contact_number,
     e.NIC,
     e.cust_attr_1_value,
@@ -253,7 +272,7 @@ SELECT
     es.status AS employment_status,
     es.employment_status_id AS employment_status_id,
     CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name,
-    s.supervisor_id AS supervisor_id
+    e.supervisor_id AS supervisor_id
 FROM
     employees e
 JOIN
@@ -266,7 +285,7 @@ JOIN
     pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
 JOIN
     employment_statuses es ON e.employment_status_id = es.employment_status_id
-LEFT JOIN 
+LEFT JOIN
     users u ON e.employee_id = u.employee_id
 LEFT JOIN
     employees s ON e.supervisor_id = s.employee_id;
@@ -318,6 +337,31 @@ GROUP BY
 
 -- View to show the number of used leaves for each employee by leave category using the reusable function.
 -- For leave management module.
+-- CREATE VIEW used_leaves_view AS
+-- SELECT
+--     e.employee_id,
+--     CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+--
+--     -- Used Annual Leaves
+--     get_used_leaves(e.employee_id, 'Annual') AS used_annual_leaves,
+--
+--     -- Used Casual Leaves
+--     get_used_leaves(e.employee_id, 'Casual') AS used_casual_leaves,
+--
+--     -- Used Maternity Leaves
+--     get_used_leaves(e.employee_id, 'Maternity') AS used_maternity_leaves,
+--
+--     -- Used No-pay Leaves
+--     get_used_leaves(e.employee_id, 'Nopay') AS used_nopay_leaves,
+--
+--     -- Total used leaves
+--     (get_used_leaves(e.employee_id, 'Annual') +
+--      get_used_leaves(e.employee_id, 'Casual') +
+--      get_used_leaves(e.employee_id, 'Maternity') +
+--      get_used_leaves(e.employee_id, 'Nopay')) AS total_used_leaves
+--
+-- FROM employees e;
+
 CREATE VIEW used_leaves_view AS
 SELECT
     e.employee_id,
@@ -335,11 +379,11 @@ SELECT
     -- Used No-pay Leaves
     get_used_leaves(e.employee_id, 'Nopay') AS used_nopay_leaves,
 
-    -- Total used leaves
+    -- Total used leave days
     (get_used_leaves(e.employee_id, 'Annual') +
      get_used_leaves(e.employee_id, 'Casual') +
      get_used_leaves(e.employee_id, 'Maternity') +
-     get_used_leaves(e.employee_id, 'Nopay')) AS total_used_leaves
+     get_used_leaves(e.employee_id, 'Nopay')) AS total_used_leave_days
 
 FROM employees e;
 
@@ -347,6 +391,32 @@ FROM employees e;
 
 -- View to show the remaining leaves for each employee by leave category using the reusable function.
 -- For leave management module.
+-- CREATE VIEW remaining_leaves_view AS
+-- SELECT
+--     e.employee_id,
+--     CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+--
+--     -- Remaining Annual Leaves
+--     (al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) AS remaining_annual_leaves,
+--
+--     -- Remaining Casual Leaves
+--     (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) AS remaining_casual_leaves,
+--
+--     -- Remaining Maternity Leaves
+--     (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) AS remaining_maternity_leaves,
+--
+--     -- Remaining No-pay Leaves
+--     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')) AS remaining_nopay_leaves,
+--
+--     -- Total Remaining Leaves
+--     ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
+--      (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
+--      (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
+--      (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) AS total_remaining_leaves
+--
+-- FROM employees e
+-- JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
+
 CREATE VIEW remaining_leaves_view AS
 SELECT
     e.employee_id,
@@ -376,8 +446,7 @@ SELECT
     ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
      (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
      (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
-     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) 
-    END AS total_remaining_leaves
+     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) AS total_remaining_leave_days
 
 FROM employees e
 JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
@@ -406,7 +475,7 @@ CREATE VIEW total_leaves_by_department AS
 SELECT
     d.department_id,
     d.name AS department_name,
-    SUM(ulv.total_used_leaves) AS total_leaves_taken
+    SUM(ulv.total_used_leave_days) AS total_leaves_taken
 FROM
     used_leaves_view ulv
 JOIN
@@ -469,7 +538,7 @@ CREATE VIEW employee_demographics_language_nationality AS
 SELECT
     cust_attr_1_value ,
     cust_attr_3_value ,
-    COUNT(employee_id) 
+    COUNT(employee_id)
 FROM
     employees
 GROUP BY
@@ -568,10 +637,10 @@ BEGIN
 END $$
 DELIMITER ;
 
--- Ensures that employees cannot create more than 1 user account 
+-- Ensures that employees cannot create more than 1 user account
 DELIMITER $$
 CREATE TRIGGER check_user_account_creation BEFORE INSERT ON users
-FOR EACH ROW 
+FOR EACH ROW
 BEGIN
     DECLARE existing_employee_id VARCHAR(255);
 
@@ -626,10 +695,10 @@ INSERT INTO pay_grades VALUES ('PG002', 2, 'Mid Level');    -- HR Manager, Accou
 INSERT INTO pay_grades VALUES ('PG003', 3, 'Senior Level');  -- COO, CFO
 INSERT INTO pay_grades VALUES ('PG004', 4, 'Executive Level');  -- CEO
 
-INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 15);
-INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 20);
-INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 25);
-INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 30);
+INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 50);
+INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 55);
+INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 60);
+INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 65);
 
 INSERT INTO job_titles VALUES ('T001', 'Sewing Machine Operator');
 INSERT INTO job_titles VALUES ('T002', 'Fabric Cutter');
@@ -722,7 +791,7 @@ INSERT INTO leave_applications VALUES ('LA0007', 'E0018', 'Annual', '2024-07-01'
 INSERT INTO leave_applications VALUES ('LA0008', 'E0021', 'Casual', '2024-07-10', '2024-07-12', 'Medical checkup', '2024-07-08', 'Approved', '2024-07-09');
 INSERT INTO leave_applications VALUES ('LA0009', 'E0030', 'Annual', '2024-07-15', '2024-07-20', 'Vacation', '2024-07-05', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0010', 'E0007', 'Nopay', '2024-08-01', '2024-08-03', 'Personal reasons', '2024-07-30', 'Rejected', '2024-07-31');
-INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2024-08-10', '2024-11-10', 'Pregnancy', '2024-08-01', 'Approved', '2024-08-02');
+INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2024-08-10', '2024-8-20', 'Pregnancy', '2024-08-01', 'Approved', '2024-08-02');
 INSERT INTO leave_applications VALUES ('LA0012', 'E0029', 'Annual', '2024-08-15', '2024-08-20', 'Family function', '2024-08-05', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0013', 'E0012', 'Casual', '2024-09-01', '2024-09-02', 'Doctor appointment', '2024-08-28', 'Approved', '2024-08-29');
 INSERT INTO leave_applications VALUES ('LA0014', 'E0020', 'Annual', '2024-09-05', '2024-09-08', 'Vacation', '2024-08-27', 'Approved', '2024-08-28');
@@ -735,7 +804,7 @@ INSERT INTO leave_applications VALUES ('LA0020', 'E0021', 'Casual', '2024-10-25'
 INSERT INTO leave_applications VALUES ('LA0021', 'E0003', 'Annual', '2024-11-01', '2024-11-05', 'Holiday', '2024-10-25', 'Approved', '2024-10-26');
 INSERT INTO leave_applications VALUES ('LA0022', 'E0026', 'Nopay', '2024-11-07', '2024-11-09', 'Personal reasons', '2024-11-05', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0023', 'E0015', 'Casual', '2024-11-12', '2024-11-14', 'Sick', '2024-11-10', 'Rejected', '2024-11-11');
-INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2024-11-20', '2024-12-20', 'Pregnancy', '2024-11-10', 'Approved', '2024-11-11');
+INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2024-11-20', '2024-11-27', 'Pregnancy', '2024-11-10', 'Approved', '2024-11-11');
 INSERT INTO leave_applications VALUES ('LA0025', 'E0012', 'Annual', '2024-12-01', '2024-12-05', 'Family function', '2024-11-20', 'Approved', '2024-11-21');
 INSERT INTO leave_applications VALUES ('LA0026', 'E0008', 'Annual', '2024-12-10', '2024-12-15', 'Vacation', '2024-12-01', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0027', 'E0024', 'Casual', '2024-12-20', '2024-12-22', 'Health reasons', '2024-12-18', 'Approved', '2024-12-19');

@@ -32,7 +32,7 @@ export const adminAuth = (
       if (err || !decodedToken) {
         return res
           .status(401)
-          .json({ success: false, message: "Not authorized" });
+          .json({ success: false, message: "Not authorized. Token Invalid" });
       }
       if ((decodedToken as JwtPayload).role == "Admin") {
       req.user = {
@@ -42,14 +42,15 @@ export const adminAuth = (
         isSupervisor: (decodedToken as JwtPayload).isSupervisor,
       };
       next();} else {
+        console.log(decodedToken)
         return res
         .status(401)
-        .json({ success: false, message: "Not authorized" });
+        .json({ success: false, message: "Not authorized. User Access Denied" });
       }
     });
   } catch (error) {
     console.log(error);
-    return res.status(401).json({ success: false, message: "Not authorized" });
+    return res.status(401).json({ success: false, message: "Not authorized. Internal Error" });
   }
 };
 

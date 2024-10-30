@@ -1,8 +1,6 @@
 import axiosInstance from '../axiosConfig';
 
-
 export const applyLeave = async (
-    employee_id: string,
     leaveType: string,
     start_date: string,
     end_date: string,
@@ -11,19 +9,7 @@ export const applyLeave = async (
   try {
     
 
-    // Fetch the leave balance for the specified employee and leave type
-    const remainingLeavesResponse = await axiosInstance.get(
-        `/remainingLeavesView/${employee_id}/leaves/${leaveType}`,
-    
-    );
-    const remainingLeaves = remainingLeavesResponse.data.data;
-
-    // Check if the remaining leave count for the requested leave type is zero
-    if (remainingLeaves.remaining_leaves === 0) {
-      throw new Error('Leave count for this type is already zero.');
-    }
-
-    // Create the leave application if there are remaining leaves
+    // Create the leave application if the conditions are met
     const response = await axiosInstance.post(
         '/leave/apply',
         {
@@ -34,11 +20,10 @@ export const applyLeave = async (
         },
     );
 
-    console.log('Response:', response);
-    return response.data; // Return response data if successful
+    return response.data;
   } catch (error: any) {
     console.error('Error creating leave application: ', error);
-    throw error.response ? error.response.data.error : error.message; // Throw error if request fails
+    throw error.response ? error.response.data.error : error.message;
   }
 };
 
@@ -132,22 +117,6 @@ export const approveLeave = async (application_id: string) => {
     throw error.response.data.error;
   }
 };
-// export const rejectLeave = async (application_id: string) => {
-//     try {
-//         const token = localStorage.getItem('token');
-//         const response = await axiosInstance.put(
-//             '/leave/reject/' + application_id,
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             },
-//         );
-//         return response.data.data;
-//     } catch (error) {
-//         throw error.response.data.error;
-//     }
-// };
 
 export const rejectLeave = async (application_id: string) => {
   try {
@@ -192,5 +161,41 @@ export const getPendingLeavesBySupervisorID = async (supervisor_id: string) => {
     return response.data.data;
   } catch (error) {
     throw error.response ? error.response.data.error : error.message;
+  }
+};
+
+// fetch remaining leaves for the selected employee and leave type
+export const getRemainingLeaves = async (employee_id: string, leaveType: string) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get(
+        `/remainingLeavesView/${employee_id}/leaves/${leaveType}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+};
+
+// fetch all pending leaves count for an employee
+export const getPendingLeavesCount = async (employee_id: string) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get(
+        `/leave/pending-leaves/count/${employee_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error.response.data.error; // Ensure proper error handling
   }
 };

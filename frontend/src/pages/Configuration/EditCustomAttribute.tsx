@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import { getCustomAttributes } from '../../services/attributeServices';
-
+import {
+  getCustomAttributes,
+  updateCustomAttribute,
+} from '../../services/attributeServices';
+import { notifyError, notifySuccess } from '../../services/notify';
 
 const EditCustomAttribute = () => {
   const [CustomAttribute1, setCustomAttribute1] = useState<string>('');
@@ -21,10 +24,30 @@ const EditCustomAttribute = () => {
       } catch (error) {
         console.log('Error Fetching Custom Attributes: ', error);
       }
-    }
+    };
     fetchCustomAttributes();
-  }
-  );
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      await updateCustomAttribute({
+        name: CustomAttribute1,
+        custom_attribute_key_id: 1,
+      });
+      await updateCustomAttribute({
+        name: CustomAttribute2,
+        custom_attribute_key_id: 2,
+      });
+      await updateCustomAttribute({
+        name: CustomAttribute3,
+        custom_attribute_key_id: 3,
+      });
+
+      notifySuccess('Attribute updated successfully!');
+    } catch (error) {
+      notifyError('Failed to update custom attribute.');
+    }
+  };
 
   return (
     <DefaultLayout>
@@ -72,7 +95,7 @@ const EditCustomAttribute = () => {
 
         <div className="w-full px-3 2xsm:w-1/2">
           <button
-            // onClick={handleSubmit}
+            onClick={handleSubmit}
             className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark"
           >
             Save

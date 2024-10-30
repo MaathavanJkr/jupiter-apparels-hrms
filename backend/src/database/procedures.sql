@@ -103,6 +103,8 @@ DROP PROCEDURE IF EXISTS getEmployeeByPayGradeID;
 DROP PROCEDURE IF EXISTS getEmployeeByEmployementStatusID;
 DROP PROCEDURE IF EXISTS GetReportByCustomAttribute;
 DROP Procedure IF EXISTS GetRemainingLeavesByCategory;
+DROP Procedure IF EXISTS getPendingLeavesCount;
+DROP Procedure IF EXISTS updateCustomAttributes;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1029,7 +1031,7 @@ BEGIN
     JOIN
         leave_applications la ON e.employee_id = la.employee_id
     WHERE
-        la.start_date BETWEEN p_start_date AND p_end_date
+        la.start_date BETWEEN p_start_date AND p_end_date OR la.end_date BETWEEN p_start_date AND p_end_date
     GROUP BY
         d.department_id,d.name
     ORDER BY
@@ -1189,7 +1191,7 @@ BEGIN
             WHEN leave_category = 'Casual' THEN remaining_casual_leaves
             WHEN leave_category = 'Maternity' THEN remaining_maternity_leaves
             WHEN leave_category = 'Nopay' THEN remaining_nopay_leaves
-            ELSE total_remaining_leaves
+            ELSE total_remaining_leave_days
         END AS remaining_leaves
     FROM remaining_leaves_view
     WHERE employee_id = emp_id;
@@ -1197,5 +1199,59 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
 
+CREATE PROCEDURE getPendingLeavesCount(emp_id VARCHAR(36))
+BEGIN
+    DECLARE annual_pending INT DEFAULT 0;
+    DECLARE casual_pending INT DEFAULT 0;
+    DECLARE maternity_pending INT DEFAULT 0;
+    DECLARE nopay_pending INT DEFAULT 0;
 
+    -- Count pending Annual leaves
+    SELECT COUNT(*) INTO annual_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Annual'
+      AND status = 'Pending';
+
+    -- Count pending Casual leaves
+    SELECT COUNT(*) INTO casual_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Casual'
+      AND status = 'Pending';
+
+    -- Count pending Maternity leaves
+    SELECT COUNT(*) INTO maternity_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Maternity'
+      AND status = 'Pending';
+
+    -- Count pending No-pay leaves
+    SELECT COUNT(*) INTO nopay_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Nopay'
+      AND status = 'Pending';
+
+    -- Output the result
+    SELECT
+        emp_id AS employee_id,
+        annual_pending AS annual_pending_leaves,
+        casual_pending AS casual_pending_leaves,
+        maternity_pending AS maternity_pending_leaves,
+        nopay_pending AS nopay_pending_leaves;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+    CREATE PROCEDURE updateCustomAttributes(IN custom_attribute_id INT, IN new_name VARCHAR(80))
+    BEGIN
+    UPDATE custom_attribute_keys
+    SET name = new_name
+    WHERE custom_attribute_key_id = custom_attribute_id;
+    END $$
+DELIMITER ;
