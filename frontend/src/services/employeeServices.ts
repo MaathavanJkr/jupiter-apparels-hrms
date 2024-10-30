@@ -20,7 +20,6 @@ export const addEmployee = async (
   cust_attr_3_value: string,
 ) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.post(
       '/employee',
       {
@@ -41,11 +40,6 @@ export const addEmployee = async (
         cust_attr_1_value,
         cust_attr_2_value,
         cust_attr_3_value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
     console.log('Response:', response);
@@ -79,7 +73,6 @@ export const updateEmployee = async (
   try {
     console.log('Birthday:', birthday);
 
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.put(
       `/employee/` + employee_id,
       {
@@ -102,11 +95,6 @@ export const updateEmployee = async (
         cust_attr_2_value,
         cust_attr_3_value,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
     console.log('Response:', response);
     return true;
@@ -118,12 +106,7 @@ export const updateEmployee = async (
 
 export const deleteEmployee = async (employee_id: string) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.delete(`/employee/${employee_id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.delete(`/employee/${employee_id}`);
     console.log('Response:', response);
     return true;
   } catch (error) {
@@ -140,8 +123,7 @@ export const getFilteredEmployees = async (
   itemsPerPage: number,
 ) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.post(
+      const response = await axiosInstance.post(
       '/employee/search',
       {
         name,
@@ -149,11 +131,6 @@ export const getFilteredEmployees = async (
         department_id,
         offset,
         itemsPerPage,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
     return response.data.data;
@@ -169,18 +146,12 @@ export const getFilteredCount = async (
   department_id: string,
 ) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.post(
       '/employee/search/count',
       {
         name,
         branch_id,
         department_id,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
     return response.data.count;
@@ -192,12 +163,7 @@ export const getFilteredCount = async (
 
 export const getEmployeeByID = async (employee_id: string) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('/employee/' + employee_id, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.get('/employee/' + employee_id);
     return response.data.data;
   } catch (error) {
     return error.response.data.error;
@@ -206,12 +172,7 @@ export const getEmployeeByID = async (employee_id: string) => {
 
 export const getEmployeeCount = async () => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('/employee/count', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.get('/employee/count');
     return response.data.data;
   } catch (error) {
     return error.response.data.error;
@@ -220,12 +181,7 @@ export const getEmployeeCount = async () => {
 
 export const getEmployees = async () => {
     try {
-        const token = localStorage.getItem('token');
-        const response = await axiosInstance.get('/employee', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosInstance.get('/employee');
         return response.data.data;
     } catch (error) {
         return error.response.data.error;
@@ -235,12 +191,7 @@ export const getEmployees = async () => {
 // employeeServices.js
 export const getEmployeeIdByUserId = async (user_id: string) => {
     try {
-        const token = localStorage.getItem('token');
-        const response = await axiosInstance.get(`/employee/user/${user_id}/employee`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const response = await axiosInstance.get(`/employee/user/${user_id}/employee`);
         return response.data.data.employee_id;
     } catch (error) {
         throw error.response.data.error;
@@ -249,15 +200,10 @@ export const getEmployeeIdByUserId = async (user_id: string) => {
 
 export const findSupervisors = async (department_id: string,pay_grade_id:string,employee_id:string) => {
     try {
-        const token = localStorage.getItem('token');
         const response = await axiosInstance.post('/employee/supervisors', {
             department_id,
             pay_grade_id,
             employee_id
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
         });
         return response.data.data;
     } catch (error) {
