@@ -19,4 +19,4 @@ This is the repository for the Jupiter Apparels HRMS (Human Resource Management 
 3. Run the development server: `npm run dev`
 4. Access the app in your browser at `http://localhost:5173/` 
 
-Github Repository Link: [https://github.com/MaathavanJkr/jupiter-apparels-hrms]
+Github Repository Link: https://github.com/MaathavanJkr/jupiter-apparels-hrms
