@@ -626,10 +626,10 @@ INSERT INTO pay_grades VALUES ('PG002', 2, 'Mid Level');    -- HR Manager, Accou
 INSERT INTO pay_grades VALUES ('PG003', 3, 'Senior Level');  -- COO, CFO
 INSERT INTO pay_grades VALUES ('PG004', 4, 'Executive Level');  -- CEO
 
-INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 15);
-INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 20);
-INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 25);
-INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 30);
+INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 50);
+INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 55);
+INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 60);
+INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 65);
 
 INSERT INTO job_titles VALUES ('T001', 'Sewing Machine Operator');
 INSERT INTO job_titles VALUES ('T002', 'Fabric Cutter');
