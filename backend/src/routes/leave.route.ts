@@ -6,15 +6,12 @@ import {
     getLeaveApplicationByID, updateLeaveApplication,
     applyLeave,
     getMyLeaveApplications,
-    getAllLeaveApplications,
-    deleteLeaveApplication,
-    getLeaveApplicationsForSupervisor,
+
 
 } from '../controllers/leaveapplication.controller';
 import { userAuth } from '../middlewares/auth.middleware';
 import {
-    getAllPendingLeaveApplications,
-    getPendingLeaveApplicationById, getPendingLeaveCountByEmployeeId
+     getPendingLeaveCountByEmployeeId
 } from "../controllers/pendingLeaveApplicationsView.controller";
 
 const router = express.Router();

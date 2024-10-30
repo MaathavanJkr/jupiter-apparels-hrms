@@ -172,7 +172,7 @@ const UpdateLeaveApplicationData = () => {
                 <option value="annual">Annual Leave</option>
                 <option value="casual">Casual Leave</option>
                 <option value="maternity">Maternity Leave</option>
-                <option value="noPay">No Pay Leave</option>
+                <option value="nopay">No Pay Leave</option>
               </select>
             </div>
 
