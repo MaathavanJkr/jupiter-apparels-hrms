@@ -49,7 +49,7 @@ const ChangePassword = () => {
             Old Password <span className="text-meta-1">*</span>
           </label>
           <input
-            type="text"
+            type="password"
             value={oldPassword}
             onChange={(e) => { setOldPassword(e.target.value) }}
             placeholder="Enter Old Password"
@@ -62,7 +62,7 @@ const ChangePassword = () => {
             New Password <span className="text-meta-1">*</span>
           </label>
           <input
-            type="text"
+            type="password"
             value={newPassword}
             onChange={(e) => { setNewPassword(e.target.value) }}
             placeholder="Enter New Password"
@@ -74,7 +74,7 @@ const ChangePassword = () => {
             Re-enter New Password <span className="text-meta-1">*</span>
           </label>
           <input
-            type="text"
+            type="password"
             value={password2}
             onChange={(e) => setPassword2(e.target.value)}
             placeholder="Enter New Password"
