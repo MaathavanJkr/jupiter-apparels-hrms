@@ -6,12 +6,13 @@ import {
   updatePayGrade,
   deletePayGrade,
 } from "../controllers/paygrade.controller";
+import { adminAuth, userAuth } from "../middlewares/auth.middleware";
 const router = Router();
 
-router.post("/", createPayGrade);
-router.get("/", getAllPayGrade);
-router.get("/:id", getPayGradeByID);
-router.put("/:id", updatePayGrade);
-router.delete("/:id", deletePayGrade);
+router.post("/", adminAuth, createPayGrade);
+router.get("/", userAuth, getAllPayGrade);
+router.get("/:id", userAuth, getPayGradeByID);
+router.put("/:id", adminAuth, updatePayGrade);
+router.delete("/:id", adminAuth, deletePayGrade);
 
 export default router;
