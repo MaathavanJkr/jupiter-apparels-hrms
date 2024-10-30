@@ -165,7 +165,7 @@ CREATE TABLE leave_applications (
 CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
-    role ENUM('Admin', 'Employee', 'HR manager') DEFAULT 'Employee',
+    role ENUM('Admin', 'Employee', 'Manager') DEFAULT 'Employee',
     username VARCHAR(80) NOT NULL UNIQUE,
     password VARCHAR(80) NOT NULL DEFAULT '123', -- Default password for new users added by the HR Manager.
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
@@ -754,12 +754,12 @@ INSERT INTO leave_applications VALUES ('LA0050', 'E0018', 'Annual', '2024-09-01'
 
 
 INSERT INTO users VALUES ('U001', 'E0001', 'Admin', 'admin', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
-INSERT INTO users VALUES ('U002', 'E0002', 'HR manager', 'manager', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U002', 'E0002', 'Manager', 'manager', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 INSERT INTO users VALUES ('U003', 'E0003', 'Employee', 'supervisor', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 INSERT INTO users VALUES ('U004', 'E0004', 'Employee', 'employee', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'usere', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
-INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
-INSERT INTO users VALUES ('U007', 'E0005', 'HR manager', 'David.Jones', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U006', 'E0013', 'Manager', 'Logan.Clark', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U007', 'E0005', 'Manager', 'David.Jones', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';
