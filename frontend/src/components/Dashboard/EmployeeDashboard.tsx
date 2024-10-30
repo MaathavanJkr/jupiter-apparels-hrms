@@ -30,6 +30,7 @@ const EmployeeDashboard = () => {
     const fetchuserInfo = async () => {
       try {
         const userInfo: EmployeeInfo = await getUserInfoById(user_id!);
+        console.log('User Info:', userInfo);
         setUserInfo(userInfo);
       } catch (error) {
         console.log('Error Fetching Info:', error);
@@ -46,6 +47,7 @@ const EmployeeDashboard = () => {
           const supervisor: Employee = await getEmployeeByID(
             userInfo.supervisor_id,
           );
+          console.log('Supervisor:', supervisor);
           setSupervisor(supervisor);
         }
         if (userInfo && userInfo.employee_id) {

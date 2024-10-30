@@ -23,7 +23,7 @@ router.get("/", managerAuth, getAllEmployees);
 router.post("/search", managerAuth, getFilteredEmployees);
 router.post("/search/count", managerAuth, getFilteredCount);
 router.post("/supervisors",managerAuth, findSupervisors)
-router.get("/:id", managerAuth, getEmployeeByID);
+router.get("/:id", userAuth, getEmployeeByID);
 router.put("/:id", managerAuth, updateEmployee);
 router.delete("/:id", managerAuth, deleteEmployee);
 router.get("/supervisor/employees/:supervisor_id",userAuth, getEmployeesUnderSupervisor);
