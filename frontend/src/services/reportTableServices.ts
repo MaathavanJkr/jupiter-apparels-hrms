@@ -29,7 +29,7 @@ export const fetchTLDReportData = async (TLDData: TLDData) => {
 
 export const fetchGERReportData = async (GERData: GERData) => {
   try {
-    const response = await axiosInstance.get(`/report/count`, {
+    const response = await axiosInstance.get(`/report/employee`, {
       params: {
         group: GERData.group,
       },

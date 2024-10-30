@@ -191,7 +191,7 @@ const Report = () => {
         </div>
 
         <div className="w-full mt-5">
-          {EDRReportData && <EDRTable reportdata={EDRReportData} />}
+          {EDRReportData && <EDRTable reportdata={EDRReportData.data} />}
           {TLDReportData && <TLDTable reportdata={TLDReportData} />}
           {GERReportData && <GERTable reportdata={GERReportData} />}
         </div>

@@ -84,14 +84,14 @@ export const getReportByGroup = async (req: Request, res: Response) => {
                 department.department_id
               );
               return {
-                department: department.name,
+                name: department.name,
                 employees: employees.data,
               };
             }
           )
         );
 
-        return res.status(500).json({
+        return res.status(200).json({
           data: departmentReports,
           error: null,
           message: null,
@@ -112,14 +112,14 @@ export const getReportByGroup = async (req: Request, res: Response) => {
                 jobTitle.job_title_id
               );
               return {
-                job_title: jobTitle.title,
+                name: jobTitle.title,
                 employees: employees.data,
               };
             }
           )
         );
 
-        return res.status(500).json({
+        return res.status(200).json({
           data: jobTitleReports,
           error: null,
           message: null,
@@ -140,14 +140,14 @@ export const getReportByGroup = async (req: Request, res: Response) => {
                 payGrade.pay_grade_id
               );
               return {
-                pay_grade: payGrade.paygrade,
+                name: payGrade.paygrade,
                 employees: employees.data,
               };
             }
           )
         );
 
-        return res.status(500).json({
+        return res.status(200).json({
           data: payGradeReports,
           error: null,
           message: null,
@@ -168,7 +168,7 @@ export const getReportByGroup = async (req: Request, res: Response) => {
                 status.employment_status_id
               );
               return {
-                employment_status: status.status,
+                name: status.status,
                 employees: employees.data,
               };
             }
