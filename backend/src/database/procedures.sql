@@ -102,6 +102,7 @@ DROP PROCEDURE IF EXISTS getEmployeeByDepartmentID;
 DROP PROCEDURE IF EXISTS getEmployeeByPayGradeID;
 DROP PROCEDURE IF EXISTS getEmployeeByEmployementStatusID;
 DROP PROCEDURE IF EXISTS GetReportByCustomAttribute;
+DROP Procedure IF EXISTS GetRemainingLeavesByCategory;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1173,5 +1174,28 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+
+-- Procedure to get remaining
+DELIMITER $$
+CREATE PROCEDURE GetRemainingLeavesByCategory(IN emp_id VARCHAR(50), IN leave_category VARCHAR(20))
+BEGIN
+    SELECT
+        employee_id,
+        employee_name,
+        CASE
+            WHEN leave_category = 'Annual' THEN remaining_annual_leaves
+            WHEN leave_category = 'Casual' THEN remaining_casual_leaves
+            WHEN leave_category = 'Maternity' THEN remaining_maternity_leaves
+            WHEN leave_category = 'Nopay' THEN remaining_nopay_leaves
+            ELSE total_remaining_leaves
+        END AS remaining_leaves
+    FROM remaining_leaves_view
+    WHERE employee_id = emp_id;
+END $$
+
+DELIMITER ;
+
 
 
