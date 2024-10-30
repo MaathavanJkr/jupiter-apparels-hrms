@@ -118,26 +118,3 @@ export const deleteDepartmentModel = async (
     return { error: error, message: "Database Query Failed", data: null };
   }
 };
-
-// Get Employee Count by Department ID using stored procedure
-export const getEmployeeCountByDepartmentIDModel = async (
-  id: string
-): Promise<Output> => {
-  try {
-    const [result] = await db
-      .promise()
-      .query<RowDataPacket[][]>("CALL getEmployeeCountByDepartmentID(?)", [id]);
-
-    return {
-      data: result[0],
-      error: null,
-      message: null,
-    };
-  } catch (error) {
-    return {
-      data: null,
-      error: error,
-      message: "Database Query Failed",
-    };
-  }
-};

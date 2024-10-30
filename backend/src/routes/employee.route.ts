@@ -9,9 +9,11 @@ import {
   getFilteredEmployees,
   getFilteredCount,
   getEmployeesUnderSupervisor,
-  getEmployeeIdByUserId, getAllUniqueSupervisors,
-  findSupervisors
-
+  getEmployeeIdByUserId,
+  getAllUniqueSupervisors,
+  findSupervisors,
+  getEmployeeCountByDepartmentID,
+  getEmployeeGenderCounts,
 } from "../controllers/employee.controller";
 import { getEmployeeBasicInfoByUserID } from "../controllers/employeeBasicInfoView.controller";
 
@@ -21,15 +23,16 @@ router.post("/", createEmployee);
 router.get("/", getAllEmployees);
 router.post("/search", getFilteredEmployees);
 router.post("/search/count", getFilteredCount);
-router.post("/supervisors",findSupervisors)
+router.post("/supervisors", findSupervisors);
 router.get("/:id", getEmployeeByID);
 router.put("/:id", updateEmployee);
 router.delete("/:id", deleteEmployee);
-router.get("/supervisor/employees/:supervisor_id",getEmployeesUnderSupervisor);
-router.get('/user/:user_id/employee', getEmployeeIdByUserId);
-router.get('/supervisor/',getAllUniqueSupervisors);
+router.get("/supervisor/employees/:supervisor_id", getEmployeesUnderSupervisor);
+router.get("/user/:user_id/employee", getEmployeeIdByUserId);
+router.get("/supervisor/", getAllUniqueSupervisors);
+router.get("/count/department/", getEmployeeCountByDepartmentID);
+router.get("/count/employee/", getEmployeeGenderCounts);
 
-
-router.get("/info/:user_id", getEmployeeBasicInfoByUserID)
+router.get("/info/:user_id", getEmployeeBasicInfoByUserID);
 
 export default router;

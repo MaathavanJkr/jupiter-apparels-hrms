@@ -1,10 +1,17 @@
 import { ApexOptions } from 'apexcharts';
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { EmployeeCountByDepartment } from '../../types/types';
+import { getCountByDepartment } from '../../services/employeeServices'; // Assuming your service is here
 
 interface PieChartState {
   series: number[];
+  labels: string[];
+}
+
+interface DepartmentData {
+  department_id: string;
+  department_name: string;
+  employee_count: number;
 }
 
 const options: ApexOptions = {
@@ -12,38 +19,44 @@ const options: ApexOptions = {
     fontFamily: 'Satoshi, sans-serif',
     type: 'donut',
   },
-  
-  colors: ['#AB47BC', '#1E3A5F', '#FF7043', '#66BB6A', '#FFEB3B', '#8D6E63', '#42A5F5', '#78909C', '#D4E157'],
-  
-  
-  labels: ['HR', 'Finance', 'IT', 'Marketing', 'Production', 'Customer Service', 'Sales', 'Quality Assurance', 'Corporate Management'],
-  
+  colors: [
+    '#AB47BC',
+    '#1E3A5F',
+    '#FF7043',
+    '#66BB6A',
+    '#FFEB3B',
+    '#8D6E63',
+    '#42A5F5',
+    '#78909C',
+    '#D4E157',
+  ],
   plotOptions: {
     pie: {
       donut: {
-        size: '100%',  
+        size: '100%',
         background: 'transparent',
       },
     },
   },
-  
   dataLabels: {
     enabled: false,
   },
-
   legend: {
     show: true,
-    position: 'right',  
-    horizontalAlign: 'center',  
+    position: 'right',
+    horizontalAlign: 'center',
     formatter: function (val, opts) {
-      const total = opts.w.globals.seriesTotals.reduce((acc: number, value: number) => acc + value, 0);
-      const percentage = ((opts.w.globals.series[opts.seriesIndex] / total) * 100).toFixed(2);
+      const total = opts.w.globals.seriesTotals.reduce(
+        (acc: number, value: number) => acc + value,
+        0,
+      );
+      const percentage = (
+        (opts.w.globals.series[opts.seriesIndex] / total) *
+        100
+      ).toFixed(2);
       return `${val}: ${percentage}%`;
     },
   },
-  
-  
-
   responsive: [
     {
       breakpoint: 2600,
@@ -64,36 +77,45 @@ const options: ApexOptions = {
   ],
 };
 
-const PieChart = ({countData}:{countData:EmployeeCountByDepartment}) => {
-  // const pending = (countData.dep1_count/countData.total_count)*100;
-  // const pending = (countData.dep2_count/countData.total_count)*100;
-  // const pending = (countData.dep3_count/countData.total_count)*100;
-  // const pending = (countData.dep4_count/countData.total_count)*100;
-  // const pending = (countData.dep5_count/countData.total_count)*100;
-  // const pending = (countData.dep6_count/countData.total_count)*100;
-  // const pending = (countData.dep7_count/countData.total_count)*100;
-  // const pending = (countData.dep8_count/countData.total_count)*100;
-  // const pending = (countData.dep9_count/countData.total_count)*100;
-  
+const PieChart = () => {
   const [state, setState] = useState<PieChartState>({
-    series: [25,18,20,11,8,7,4,2,5],
+    series: [],
+    labels: [],
   });
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-      series: [25,18,20,11,8,7,4,2,5],
-    }));
-  };
-  handleReset;
+  useEffect(() => {
+    // Check that response exists and has data before accessing
+    const fetchData = async () => {
+      try {
+        const response = await getCountByDepartment();
+        if (response && response.data) {
+          const series = response.data.map(
+            (department: DepartmentData) => department.employee_count,
+          );
+          const labels = response.data.map(
+            (department: DepartmentData) => department.department_name,
+          );
+
+          setState({ series, labels });
+        } else {
+          console.warn('No data in response from getCountByDepartment');
+        }
+      } catch (error: any) {
+        console.error(
+          'Error fetching department counts:',
+          error?.response || error,
+        );
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div>
-
       <div className="mb-4">
         <div id="chartThree" className="mx-auto flex justify-center">
           <ReactApexChart
-            options={options}
+            options={{ ...options, labels: state.labels }}
             series={state.series}
             type="pie"
           />

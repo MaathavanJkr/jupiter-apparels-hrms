@@ -6,7 +6,6 @@ import {
   getDepartmentByID,
   updateDepartment,
   deleteDepartment,
-  getEmployeeCountByDepartmentID,
 } from "../controllers/department.controller";
 
 const router = Router();
@@ -16,6 +15,5 @@ router.get("/", getAllDepartments);
 router.get("/:id", getDepartmentByID);
 router.put("/:id", updateDepartment);
 router.delete("/:id", deleteDepartment);
-router.get("/empcount/:id", getEmployeeCountByDepartmentID);
 
 export default router;

@@ -42,6 +42,16 @@ export interface Supervisor extends RowDataPacket {
   full_name: string;
 }
 
+export interface GenderCounts extends RowDataPacket {
+  total_male: number;
+  total_female: number;
+  total_employee: number;
+}
+export interface DepartmentEmployeeCount extends RowDataPacket {
+  department_id: number;
+  department_name: string;
+  employee_count: number;
+}
 
 export const createEmployeeModel = async (
   employee: Employee
@@ -86,7 +96,11 @@ export const createEmployeeModel = async (
     !employment_status_id ||
     !contact_number
   ) {
-    return { error: "Missing required fields in model", data: null, message: null };
+    return {
+      error: "Missing required fields in model",
+      data: null,
+      message: null,
+    };
   }
 
   try {
@@ -153,79 +167,85 @@ export const getEmployeeByIDModel = async (
 };
 
 export const getEmployeesUnderSupervisorModel = async (
-    supervisor_id: string
+  supervisor_id: string
 ): Promise<Output> => {
-    try {
-        const [result] = await db
-            .promise()
-            .query<RowDataPacket[][]>("CALL GetEmployeesUnderSupervisor(?)", [supervisor_id]);
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetEmployeesUnderSupervisor(?)", [
+        supervisor_id,
+      ]);
 
-        if (Array.isArray(result) && result.length === 0) {
-            return { data: null, error: "Employees not found", message: null };
-        } else {
-            return {
-                data: (result[0] as Employee[]),
-                error: null,
-                message: null,
-            };
-        }
-    } catch (error) {
-        return {
-            data: null,
-            error: error,
-            message: "Database Query Failed",
-        };
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Employees not found", message: null };
+    } else {
+      return {
+        data: result[0] as Employee[],
+        error: null,
+        message: null,
+      };
     }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
 };
 
 export const getEmployeeIdByUserIdModel = async (
-    user_id: string
+  user_id: string
 ): Promise<Output> => {
-    try {
-        const [result] = await db
-            .promise()
-            .query<RowDataPacket[][]>("CALL GetEmployeeIdByUserId(?)", [user_id]);
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetEmployeeIdByUserId(?)", [user_id]);
 
-        if (Array.isArray(result) && result.length === 0) {
-            return { data: null, error: "Employee ID not found", message: null };
-        } else {
-            return {
-                data: (result[0] as Employee[])[0],
-                error: null,
-                message: null,
-            };
-        }
-    } catch (error) {
-        return {
-            data: null,
-            error: error,
-            message: "Database Query Failed",
-        };
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Employee ID not found", message: null };
+    } else {
+      return {
+        data: (result[0] as Employee[])[0],
+        error: null,
+        message: null,
+      };
     }
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
 };
 
-
-
-export const getFilteredEmployeesModel = async(
+export const getFilteredEmployeesModel = async (
   name: string,
   department_id: string,
   branch_id: string,
   offset: number,
   itemPerPage: number
-) : Promise<Output> => {
-    try {
-      const [result] = await db
+): Promise<Output> => {
+  try {
+    const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [name, department_id, branch_id, offset, itemPerPage]);
-      return { data: result[0] as Employee[], error: null, message: null };
-    } catch (error) {
-      return {
-        data: null,
-        error: error,
-        message: "Database Query Failed",
-      };
-    }
-}
+      .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [
+        name,
+        department_id,
+        branch_id,
+        offset,
+        itemPerPage,
+      ]);
+    return { data: result[0] as Employee[], error: null, message: null };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+};
 
 export const getfilteredCountModel = async (
   name: string,
@@ -248,7 +268,7 @@ export const getfilteredCountModel = async (
       message: "Database Query Failed",
     };
   }
-}
+};
 export const getAllEmployeesModel = async (): Promise<Output> => {
   try {
     const [result] = await db
@@ -263,8 +283,6 @@ export const getAllEmployeesModel = async (): Promise<Output> => {
     };
   }
 };
-
-
 
 export const updateEmployeeModel = async (
   employee: Employee
@@ -384,42 +402,82 @@ export const deleteEmployeeModel = async (
 // };
 
 export const getAllUniqueSupervisorsModel = async (): Promise<Output> => {
-    try {
-        const [result] = await db
-            .promise()
-            .query<RowDataPacket[][]>("CALL GetAllSupervisorIDs()");
-
-        return {
-            data: result[0] as Employee[],
-            error: null,
-            message: "Supervisors retrieved successfully",
-        };
-    } catch (error) {
-        return {
-            data: null,
-            error: error,
-            message: "Database Query Failed",
-        };
-    }
-};
-
-export const findSupervisorsModel = async (department_id:string, paygrade_id:string,employee_id:string): Promise<Output> => {
   try {
     const [result] = await db
-    .promise()
-    .query<RowDataPacket[][]>("CALL FindSupervisors(?,?,?)", [department_id, paygrade_id,employee_id]);
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetAllSupervisorIDs()");
+
+    return {
+      data: result[0] as Employee[],
+      error: null,
+      message: "Supervisors retrieved successfully",
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+};
+
+export const findSupervisorsModel = async (
+  department_id: string,
+  paygrade_id: string,
+  employee_id: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL FindSupervisors(?,?,?)", [
+        department_id,
+        paygrade_id,
+        employee_id,
+      ]);
 
     return { data: result[0] as Supervisor[], error: null, message: null };
-  }catch(error){
+  } catch (error) {
     throw {
       data: null,
       error: error,
       message: "Database Query Failed",
     };
   }
-}
+};
 
+export const getEmployeeGenderCountsModel = async (): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL GetEmployeeGenderCounts()");
 
+    return { data: result[0] as GenderCounts[], error: null, message: null };
+  } catch (error) {
+    throw {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
+  }
+};
 
+export const getEmployeeCountByDepartmentIDModel =
+  async (): Promise<Output> => {
+    try {
+      const [result] = await db
+        .promise()
+        .query<RowDataPacket[][]>("CALL GetEmployeeCountByDepartmentID()");
 
-
+      return {
+        data: result[0] as DepartmentEmployeeCount[],
+        error: null,
+        message: null,
+      };
+    } catch (error) {
+      throw {
+        data: null,
+        error: error,
+        message: "Database Query Failed",
+      };
+    }
+  };

@@ -100,6 +100,8 @@ DROP PROCEDURE IF EXISTS GetUserByID;
 DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
 DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
 DROP PROCEDURE IF EXISTS FindSupervisors;
+DROP PROCEDURE IF EXISTS GetEmployeeGenderCounts;
+DROP PROCEDURE IF EXISTS GetEmployeeCountByDepartmentID;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1167,4 +1169,38 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+-- procedure to get the employee count according to the gender
+
+DELIMITER $$
+
+CREATE PROCEDURE GetEmployeeGenderCounts()
+BEGIN
+    SELECT 
+        SUM(CASE WHEN gender = 'Male' THEN 1 ELSE 0 END) AS total_males,
+        SUM(CASE WHEN gender = 'Female' THEN 1 ELSE 0 END) AS total_females,
+        COUNT(*) AS total_employees
+    FROM 
+        employee;
+END $$
+
+DELIMITER ;
+
+-- procedure to get the employee count according to the department.
+
+DELIMITER $$
+
+CREATE PROCEDURE GetEmployeeCountByDepartmentID()
+BEGIN
+    SELECT 
+        department_id, department_name,
+        COUNT(*) AS employee_count
+    FROM employee_basic_info 
+    GROUP BY
+        department_name, 
+        department_id;
+END $$
+
+DELIMITER ;
+
 

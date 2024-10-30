@@ -213,48 +213,74 @@ export const getEmployeeCount = async () => {
 };
 
 export const getEmployees = async () => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axiosInstance.get('/employee', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data.data;
-    } catch (error) {
-        return error.response.data.error;
-    }
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get('/employee', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    return error.response.data.error;
+  }
 };
 
 // employeeServices.js
 export const getEmployeeIdByUserId = async (user_id: string) => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axiosInstance.get(`/employee/user/${user_id}/employee`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data.data.employee_id;
-    } catch (error) {
-        throw error.response.data.error;
-    }
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get(
+      `/employee/user/${user_id}/employee`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data.employee_id;
+  } catch (error) {
+    throw error.response.data.error;
+  }
 };
 
-export const findSupervisors = async (department_id: string,pay_grade_id:string,employee_id:string) => {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await axiosInstance.post('/employee/supervisors', {
-            department_id,
-            pay_grade_id,
-            employee_id
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-        return response.data.data;
-    } catch (error) {
-        throw error.response.data.error;
-    }
+export const findSupervisors = async (
+  department_id: string,
+  pay_grade_id: string,
+  employee_id: string,
+) => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.post(
+      '/employee/supervisors',
+      {
+        department_id,
+        pay_grade_id,
+        employee_id,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+};
+
+// This should return the Employee count by department ID
+export const getCountByDepartment = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axiosInstance.get('/employee/count/department/', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.response.data.error;
+  }
 };
