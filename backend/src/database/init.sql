@@ -275,7 +275,6 @@ LEFT JOIN
 CREATE VIEW pending_leave_applications AS
 SELECT
     la.application_id,
-    la.employee_id
     CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
     la.leave_type,
     la.start_date,
