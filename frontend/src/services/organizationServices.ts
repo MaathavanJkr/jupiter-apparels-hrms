@@ -3,12 +3,7 @@ import { Organization } from '../types/types';
 
 export const getOrganization = async () => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('/organization', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.get('/organization');
     return response.data.data[0];
   } catch (error) {
     throw error.response.data.error;
@@ -17,16 +12,11 @@ export const getOrganization = async () => {
 
 export const updateOrganization = async (org: Organization) => {
   try {
-    const token = localStorage.getItem('token');
     const response = await axiosInstance.put(
       `/organization/${org.organization_id}`,
       { name: org.name, address: org.address, reg_no: org.reg_no },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
     );
+    return response.data.data;
   } catch (error) {
     throw error.response.data.error;
   }

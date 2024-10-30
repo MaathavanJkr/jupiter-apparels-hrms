@@ -2,12 +2,7 @@ import axiosInstance from '../axiosConfig';
 
 export const getEmploymentStatuses = async () => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('/employmentstatus', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axiosInstance.get('/employmentstatus');
     return response.data.data;
   } catch (error) {
     console.error('Error fetching branches:', error);
