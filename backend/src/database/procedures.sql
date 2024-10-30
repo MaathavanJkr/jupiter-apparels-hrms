@@ -1030,7 +1030,7 @@ BEGIN
     JOIN
         leave_applications la ON e.employee_id = la.employee_id
     WHERE
-        la.start_date BETWEEN p_start_date AND p_end_date
+        la.start_date BETWEEN p_start_date AND p_end_date OR la.end_date BETWEEN p_start_date AND p_end_date
     GROUP BY
         d.department_id,d.name
     ORDER BY

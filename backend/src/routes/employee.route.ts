@@ -14,7 +14,7 @@ import {
 
 } from "../controllers/employee.controller";
 import { getEmployeeBasicInfoByUserID } from "../controllers/employeeBasicInfoView.controller";
-import { managerAuth } from "../middlewares/auth.middleware";
+import { managerAuth, userAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -26,9 +26,9 @@ router.post("/supervisors",managerAuth, findSupervisors)
 router.get("/:id", managerAuth, getEmployeeByID);
 router.put("/:id", managerAuth, updateEmployee);
 router.delete("/:id", managerAuth, deleteEmployee);
-router.get("/supervisor/employees/:supervisor_id",managerAuth, getEmployeesUnderSupervisor);
-router.get('/user/:user_id/employee', managerAuth, getEmployeeIdByUserId);
-router.get('/supervisor/',managerAuth, getAllUniqueSupervisors);
+router.get("/supervisor/employees/:supervisor_id",userAuth, getEmployeesUnderSupervisor);
+router.get('/user/:user_id/employee', userAuth, getEmployeeIdByUserId);
+router.get('/supervisor/',userAuth, getAllUniqueSupervisors);
 
 
 router.get("/info/:user_id", getEmployeeBasicInfoByUserID)
