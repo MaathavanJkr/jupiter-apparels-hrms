@@ -22,9 +22,8 @@ const EmployeeDashboard = () => {
   const [supervisor, setSupervisor] = useState<Employee>();
   const [usedLeaves, setUsedLeaves] = useState<UsedLeaves>();
   const [remainingLeaves, setRemainingLeaves] = useState<LeaveBalance>();
-
-  const role = localStorage.getItem('role');
-  const isSupervisor = true;
+  
+  const isSupervisor = localStorage.getItem('is_supervisor') == "true";
 
   useEffect(() => {
     const user_id = localStorage.getItem('user_id');

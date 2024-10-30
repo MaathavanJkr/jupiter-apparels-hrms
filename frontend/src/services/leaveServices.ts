@@ -142,22 +142,6 @@ export const getLeaveApplicationsByID = async (employee_id: string) => {
   }
 };
 
-// this function should return latest leave applications  and all pending leave applications using employee_id
-export const getLatestLeaveApplicationsByID = async (employee_id: string) => {
-  try {
-    const token = localStorage.getItem('token');
-    const response = await axiosInstance.get('leave/latest/' + employee_id, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return response.data.data;
-  } catch (error) {
-    throw error.response.data.error;
-  }
-};
-
 export const getLeaveApplicationByID = async (application_id: string) => {
   try {
     const token = localStorage.getItem('token');
@@ -266,7 +250,7 @@ export const getPendingLeavesBySupervisorID = async (supervisor_id: string) => {
   try {
     const token = localStorage.getItem('token');
     const response = await axiosInstance.get(
-      `/leave/pending/supervisor/${supervisor_id}`,
+      `/leaveapplication/super/${supervisor_id}`, 
       {
         headers: {
           Authorization: `Bearer ${token}`,
