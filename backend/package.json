@@ -8,8 +8,8 @@
     "dev": "nodemon",
     "migrate": "npm run build && node dist/migrate.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint 'src/**/*.{js,ts}'",
-    "lint:fix": "eslint 'src/**/*.{js,ts}' --fix"
+    "lint": "eslint src/**/*.{js,ts}",
+    "lint:fix": "eslint src/**/*.{js,ts} --fix"
   },
   "keywords": [
     "backend"
