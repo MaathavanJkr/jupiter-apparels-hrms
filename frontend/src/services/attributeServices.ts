@@ -1,6 +1,5 @@
 import axiosInstance from '../axiosConfig';
 
-
 export const getCustomAttributes = async () => {
   try {
     const response = await axiosInstance.get('/attribute');

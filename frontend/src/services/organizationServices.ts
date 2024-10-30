@@ -19,8 +19,8 @@ export const updateOrganization = async (org: Organization) => {
   try {
     const token = localStorage.getItem('token');
     const response = await axiosInstance.put(
-      '/organization',
-      { org },
+      `/organization/${org.organization_id}`,
+      { name: org.name, address: org.address, reg_no: org.reg_no },
       {
         headers: {
           Authorization: `Bearer ${token}`,
