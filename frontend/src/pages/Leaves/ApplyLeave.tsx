@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { applyLeave } from '../../services/leaveServices';
+import { applyLeave, getLeaveBalanceByID,  } from '../../services/leaveServices';
+import {getEmployeeIdByUserId} from '../../services/employeeServices.ts'
 import { notifyError, notifySuccess } from '../../services/notify';
 import { useNavigate } from "react-router-dom";
 import { LeaveAppData } from '../../types/types.ts';
@@ -15,9 +16,32 @@ const UpdateLeaveApplicationData = () => {
     reason: '',
   });
 
+  const [employeeId, setEmployeeId] = useState('');
   const navigate = useNavigate();
+
+  // Retrieve the user ID from localStorage
+  const user_id = localStorage.getItem('user_id');
+
+  // Fetch the employee ID based on the user ID
+  useEffect(() => {
+    const fetchEmployeeId = async () => {
+      if (user_id) {
+        try {
+          const id = await getEmployeeIdByUserId(user_id);
+          setEmployeeId(id);
+        } catch (error) {
+          console.error('Error fetching employee ID:', error);
+        }
+      } else {
+        console.error('User ID is not available.');
+      }
+    };
+
+    fetchEmployeeId();
+  }, [user_id]);
+
   const handleLeaveAppDataChange = (
-    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+      event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newLeaveAppData: LeaveAppData = {
       ...leaveAppData,
@@ -29,20 +53,34 @@ const UpdateLeaveApplicationData = () => {
 
   // Handle form submission
   const handleSubmit = async () => {
-
     // Check if all fields are filled
     if (!leaveAppData.leaveType || !leaveAppData.startdate || !leaveAppData.enddate || !leaveAppData.reason) {
       notifyError("Please fill in all fields");
       return;
     }
 
+    if (!employeeId) {
+      notifyError("Employee ID not found");
+      return;
+    }
+
     try {
+      // Get the remaining leaves for the employee and leave type
+      const remainingLeaves = await getLeaveBalanceByID(employeeId);
+      console.log(remainingLeaves);
+      // Check if the remaining leave count for the requested leave type is zero
+      if (remainingLeaves[leaveAppData.leaveType] === 0) {
+        notifyError(`No remaining ${leaveAppData.leaveType} available.`);
+        return;
+      }
+
       // Call the API to create a leave application
       const response = await applyLeave(
-        leaveAppData.leaveType,
-        leaveAppData.startdate,
-        leaveAppData.enddate,
-        leaveAppData.reason
+          employeeId, // Pass the employee ID here
+          leaveAppData.leaveType,
+          leaveAppData.startdate,
+          leaveAppData.enddate,
+          leaveAppData.reason
       );
 
       if (response.error) {
@@ -60,85 +98,83 @@ const UpdateLeaveApplicationData = () => {
   };
 
   return (
-    <DefaultLayout>
-      <Breadcrumb pageName="Apply for Leave" />
-      <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
-        <div>
-          <div className="mb-4.5">
-            <label className="mb-2.5 block text-black dark:text-white">
-              Leave Type <span className="text-meta-1">*</span>
-            </label>
-            <select
-              name="leaveType"
-              onChange={handleLeaveAppDataChange}
-              className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            >
-              <option value="" disabled selected>Select Leave Type</option>
-              <option value="annual">Annual Leave</option>
-              <option value="casual">Casual Leave</option>
-              <option value="maternity">Maternity Leave</option>
-              <option value="noPay">No Pay Leave</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col md:flex-row">
-
-            <div className="mb-4.5 md:w-1/2 md:pr-2">
+      <DefaultLayout>
+        <Breadcrumb pageName="Apply for Leave" />
+        <div className="mt-10 bg-white dark:bg-boxdark shadow-lg rounded-lg p-6 space-y-4 border border-stroke dark:border-strokedark">
+          <div>
+            <div className="mb-4.5">
               <label className="mb-2.5 block text-black dark:text-white">
-                Start Date <span className="text-meta-1">*</span>
+                Leave Type <span className="text-meta-1">*</span>
               </label>
-              <input
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                name="startdate"
-                type="date"
-                placeholder="Enter start date"
-                onChange={handleLeaveAppDataChange}
-              />
+              <select
+                  name="leaveType"
+                  onChange={handleLeaveAppDataChange}
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              >
+                <option value="" disabled selected>Select Leave Type</option>
+                <option value="annual">Annual Leave</option>
+                <option value="casual">Casual Leave</option>
+                <option value="maternity">Maternity Leave</option>
+                <option value="noPay">No Pay Leave</option>
+              </select>
             </div>
 
-            <div className="mb-4.5 md:w-1/2 md:pl-2">
+            <div className="flex flex-col md:flex-row">
+              <div className="mb-4.5 md:w-1/2 md:pr-2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  Start Date <span className="text-meta-1">*</span>
+                </label>
+                <input
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    name="startdate"
+                    type="date"
+                    placeholder="Enter start date"
+                    onChange={handleLeaveAppDataChange}
+                />
+              </div>
 
+              <div className="mb-4.5 md:w-1/2 md:pl-2">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  End Date <span className="text-meta-1">*</span>
+                </label>
+                <input
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    name="enddate"
+                    type="date"
+                    placeholder="Enter end date"
+                    onChange={handleLeaveAppDataChange}
+                />
+              </div>
+            </div>
+
+            <div className="mb-4.5">
               <label className="mb-2.5 block text-black dark:text-white">
-                End Date <span className="text-meta-1">*</span>
+                Reason <span className="text-meta-1">*</span>
               </label>
-              <input
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                name="enddate"
-                type="date"
-                placeholder="Enter end date"
-                onChange={handleLeaveAppDataChange}
-              />
+              <textarea
+                  rows={6}
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  placeholder="Enter Reason"
+                  name="reason"
+                  onChange={handleLeaveAppDataChange}
+              ></textarea>
             </div>
           </div>
-
-          <div className="mb-4.5">
-            <label className="mb-2.5 block text-black dark:text-white">
-              Reason <span className="text-meta-1">*</span>
-            </label>
-            <textarea
-              rows={6}
-              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              placeholder="Enter Reason"
-              name="reason"
-              onChange={handleLeaveAppDataChange}
-            ></textarea>
+          <div className="-mx-3 flex flex-wrap gap-y-4">
+            <div className="w-full px-3 2xsm:w-1/2">
+              <button onClick={handleSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
+                Apply Leave
+              </button>
+            </div>
+            <div className="w-full px-3 2xsm:w-1/2">
+              <button onClick={() => { navigate('/leave/my') }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-4 hover:bg-meta-4 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
+                View All
+              </button>
+            </div>
           </div>
         </div>
-        <div className="-mx-3 flex flex-wrap gap-y-4">
-          <div className="w-full px-3 2xsm:w-1/2">
-            <button onClick={handleSubmit} className="block w-full rounded border border-primary bg-primary p-3 text-center font-medium text-white transition hover:bg-primary-dark">
-              Apply Leave
-            </button>
-          </div>
-          <div className="w-full px-3 2xsm:w-1/2">
-            <button onClick={() => { navigate('/leave/my') }} className="block w-full rounded border border-stroke bg-gray p-3 text-center font-medium text-black transition hover:border-meta-4 hover:bg-meta-4 hover:text-white dark:border-strokedark dark:bg-meta-4 dark:text-white dark:hover:border-meta-1 dark:hover:bg-meta-1">
-              View All
-            </button>
-          </div>
-        </div>
-      </div>
-      <ToastContainer />
-    </DefaultLayout>
+        <ToastContainer />
+      </DefaultLayout>
   );
 };
 
