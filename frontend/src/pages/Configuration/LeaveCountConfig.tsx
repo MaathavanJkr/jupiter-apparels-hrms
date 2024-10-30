@@ -6,11 +6,14 @@ import { getPayGrades } from "../../services/payGradeServices";
 import { getLeaveCountByPaygrade, updateLeaveCountByPaygrade } from "../../services/allocatedLeaveServices";
 import { notifyError, notifySuccess } from "../../services/notify";
 import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 
 const LeaveCountConfig = () => {
     const [payGrades, setPayGrades] = useState<PayGrade[]>([]);
     const [selectedPayGradeId, setSelectedPayGradeId] = useState<string>("PG001");
+
+    const navigate = useNavigate();
 
     const [annualLeaves, setAnnualLeaves] = useState<string | null>(null);
     const [casualLeaves, setCasualLeaves] = useState<string | null>(null);
@@ -60,6 +63,14 @@ const LeaveCountConfig = () => {
             notifyError("Error Saving "+error);
         }
     }
+
+    useEffect(()=>{
+        const role = localStorage.getItem("role");
+        if(role !== "Admin"){
+            navigate("/dashboard");
+        }
+
+    })
 
     useEffect(()=>{
         const fetchPayGrades = async () => {
