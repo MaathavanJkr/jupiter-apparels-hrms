@@ -430,8 +430,8 @@ SELECT
 
     -- Remaining Maternity Leaves
     CASE 
-    WHEN e.gender = "Male" THEN 0
-    WHEN e.gender = "Female" THEN (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity'))
+        WHEN e.gender = 'Male' THEN 0
+        WHEN e.gender = 'Female' THEN (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity'))
     END AS remaining_maternity_leaves,
 
     -- Remaining No-pay Leaves
@@ -439,17 +439,20 @@ SELECT
 
     -- Total Remaining Leaves
     CASE 
-    WHEN e.gender = "Male" THEN ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
-     (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
-     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')))
-    WHEN e.gender = "Female" THEN 
-    ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
-     (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
-     (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
-     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay'))) AS total_remaining_leave_days
+        WHEN e.gender = 'Male' THEN 
+            ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
+             (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
+             (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')))
+        WHEN e.gender = 'Female' THEN 
+            ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
+             (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
+             (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
+             (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')))
+    END AS total_remaining_leave_days
 
 FROM employees e
 JOIN allocated_leaves al ON e.pay_grade_id = al.pay_grade_id;
+
 
 
 -- Employees group by department
