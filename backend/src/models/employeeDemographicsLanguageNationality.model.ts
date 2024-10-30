@@ -21,7 +21,7 @@ export const getEmployeeDemographicsModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -47,7 +47,7 @@ export const getEmployeeDemographicsByLangAndNatModel = async (
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

@@ -28,7 +28,7 @@ export const getEmergencyMedicalDetailsModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -52,7 +52,7 @@ export const getEmergencyMedicalDetailsByIDModel = async (
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

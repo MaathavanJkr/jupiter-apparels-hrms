@@ -17,7 +17,7 @@ export const createPayGradeModel = async (
   payGrade.pay_grade_id = uuidv4();
 
   if (!paygrade || !grade_name) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -34,7 +34,7 @@ export const createPayGradeModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -45,7 +45,7 @@ export const getPayGradeByIDModel = async (id: string): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetPayGradeByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Pay grade not found", message: null };
+      throw { data: null, error: "Pay grade not found", message: null };
     } else {
       return {
         data: (result[0] as PayGrade[])[0],
@@ -54,7 +54,7 @@ export const getPayGradeByIDModel = async (id: string): Promise<Output> => {
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -69,7 +69,7 @@ export const getAllPayGradesModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllPayGrades()");
     return { data: result[0] as PayGrade[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -83,7 +83,7 @@ export const updatePayGradeModel = async (
   const { pay_grade_id, paygrade, grade_name } = payGrade;
 
   if (!pay_grade_id || !paygrade || !grade_name) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -100,7 +100,7 @@ export const updatePayGradeModel = async (
       data: payGrade,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -108,7 +108,7 @@ export const deletePayGradeModel = async (
   pay_grade_id: string
 ): Promise<Output> => {
   if (!pay_grade_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -119,6 +119,6 @@ export const deletePayGradeModel = async (
       data: { id: pay_grade_id },
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };

@@ -16,7 +16,7 @@ export const createJobTitleModel = async (
   jobTitle.job_title_id = uuidv4();
 
   if (!title) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -29,7 +29,7 @@ export const createJobTitleModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -40,7 +40,7 @@ export const getJobTitleByIDModel = async (id: string): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetJobTitleByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Job title not found", message: null };
+      throw { data: null, error: "Job title not found", message: null };
     } else {
       return {
         data: (result[0] as JobTitle[])[0],
@@ -49,7 +49,7 @@ export const getJobTitleByIDModel = async (id: string): Promise<Output> => {
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -64,7 +64,7 @@ export const getAllJobTitlesModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllJobTitles()");
     return { data: result[0] as JobTitle[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -78,7 +78,7 @@ export const updateJobTitleModel = async (
   const { job_title_id, title } = jobTitle;
 
   if (!job_title_id || !title) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -91,7 +91,7 @@ export const updateJobTitleModel = async (
       data: jobTitle,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -99,7 +99,7 @@ export const deleteJobTitleModel = async (
   job_title_id: string
 ): Promise<Output> => {
   if (!job_title_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -110,6 +110,6 @@ export const deleteJobTitleModel = async (
       data: { id: job_title_id },
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };

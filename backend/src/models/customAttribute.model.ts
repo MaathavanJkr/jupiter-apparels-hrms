@@ -14,7 +14,7 @@ export const getCustomAttributeModel = async (): Promise<Output> => {
         .query<RowDataPacket[][]>("CALL GetAllCustomAttributes()");
 
         if (Array.isArray(result) && result.length === 0) {
-            return { data: null, error: "Custom Attributes not found", message: null };
+            throw { data: null, error: "Custom Attributes not found", message: null };
         } else {
             return {
                 data: (result[0] as customAttribute[]),
@@ -23,7 +23,7 @@ export const getCustomAttributeModel = async (): Promise<Output> => {
             };
         }
     } catch (error) {
-        return {
+        throw {
             data: null,
             error: error,
             message: "Database Query Failed", 
@@ -39,7 +39,7 @@ export const getCustomAttributeByIDModel = async (
         .query<RowDataPacket[][]>("CALL GetCustomAttributeByKey(?)", [attribute_no]);
 
         if (Array.isArray(result) && result.length === 0) {
-            return { data: null, error: "Custom Attribute not found", message: null };
+            throw { data: null, error: "Custom Attribute not found", message: null };
         } else {
             return {
                 data: (result[0] as customAttribute[])[0],
@@ -48,7 +48,7 @@ export const getCustomAttributeByIDModel = async (
             };
         }
     } catch (error) {
-        return {
+        throw {
             data: null,
             error: error,
             message: "Database Query Failed",

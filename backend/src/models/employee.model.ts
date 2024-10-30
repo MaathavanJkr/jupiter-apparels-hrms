@@ -86,7 +86,7 @@ export const createEmployeeModel = async (
     !employment_status_id ||
     !contact_number
   ) {
-    return { error: "Missing required fields in model", data: null, message: null };
+    throw { error: "Missing required fields in model", data: null, message: null };
   }
 
   try {
@@ -135,7 +135,7 @@ export const getEmployeeByIDModel = async (
       .query<RowDataPacket[][]>("CALL GetEmployeeByID(?)", [employee_id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Employee not found", message: null };
+      throw { data: null, error: "Employee not found", message: null };
     } else {
       return {
         data: (result[0] as Employee[])[0],
@@ -144,7 +144,7 @@ export const getEmployeeByIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -161,7 +161,7 @@ export const getEmployeesUnderSupervisorModel = async (
             .query<RowDataPacket[][]>("CALL GetEmployeesUnderSupervisor(?)", [supervisor_id]);
 
         if (Array.isArray(result) && result.length === 0) {
-            return { data: null, error: "Employees not found", message: null };
+            throw { data: null, error: "Employees not found", message: null };
         } else {
             return {
                 data: (result[0] as Employee[]),
@@ -170,7 +170,7 @@ export const getEmployeesUnderSupervisorModel = async (
             };
         }
     } catch (error) {
-        return {
+        throw {
             data: null,
             error: error,
             message: "Database Query Failed",
@@ -187,7 +187,7 @@ export const getEmployeeIdByUserIdModel = async (
             .query<RowDataPacket[][]>("CALL GetEmployeeIdByUserId(?)", [user_id]);
 
         if (Array.isArray(result) && result.length === 0) {
-            return { data: null, error: "Employee ID not found", message: null };
+            throw { data: null, error: "Employee ID not found", message: null };
         } else {
             return {
                 data: (result[0] as Employee[])[0],
@@ -196,7 +196,7 @@ export const getEmployeeIdByUserIdModel = async (
             };
         }
     } catch (error) {
-        return {
+        throw {
             data: null,
             error: error,
             message: "Database Query Failed",
@@ -219,7 +219,7 @@ export const getFilteredEmployeesModel = async(
       .query<RowDataPacket[][]>("CALL GetFilteredEmployees(?, ?, ?, ?, ?)", [name, department_id, branch_id, offset, itemPerPage]);
       return { data: result[0] as Employee[], error: null, message: null };
     } catch (error) {
-      return {
+      throw {
         data: null,
         error: error,
         message: "Database Query Failed",
@@ -242,7 +242,7 @@ export const getfilteredCountModel = async (
       ]);
     return result[0][0].count;
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -256,7 +256,7 @@ export const getAllEmployeesModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllEmployees()");
     return { data: result[0] as Employee[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -309,7 +309,7 @@ export const updateEmployeeModel = async (
     !employee_status_id ||
     !contact_number
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -345,7 +345,7 @@ export const updateEmployeeModel = async (
       data: employee,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -353,7 +353,7 @@ export const deleteEmployeeModel = async (
   employee_id: string
 ): Promise<Output> => {
   if (!employee_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -395,7 +395,7 @@ export const getAllUniqueSupervisorsModel = async (): Promise<Output> => {
             message: "Supervisors retrieved successfully",
         };
     } catch (error) {
-        return {
+        throw {
             data: null,
             error: error,
             message: "Database Query Failed",

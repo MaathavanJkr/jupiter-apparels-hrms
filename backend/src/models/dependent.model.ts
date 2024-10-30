@@ -19,7 +19,7 @@ export const createEmployeeDependentModel = async (
   dependent.dependent_id = uuidv4();
 
   if (!employee_id || !name || !relationship_to_employee || !birth_date) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -37,7 +37,7 @@ export const createEmployeeDependentModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -52,7 +52,7 @@ export const getEmployeeDependentByIDModel = async (
       ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Dependent not found", message: null };
+      throw { data: null, error: "Dependent not found", message: null };
     } else {
       return {
         data: (result[0] as EmployeeDependent[])[0],
@@ -61,7 +61,7 @@ export const getEmployeeDependentByIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -80,7 +80,7 @@ export const getAllEmployeeDependentsModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -106,7 +106,7 @@ export const updateEmployeeDependentModel = async (
     !relationship_to_employee ||
     !birth_date
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -125,7 +125,7 @@ export const updateEmployeeDependentModel = async (
       data: dependent,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -133,7 +133,7 @@ export const deleteEmployeeDependentModel = async (
   dependent_id: string
 ): Promise<Output> => {
   if (!dependent_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -144,7 +144,7 @@ export const deleteEmployeeDependentModel = async (
       data: { id: dependent_id },
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -159,7 +159,7 @@ export const getEmployeeDependentByEmployeeIDModel = async (
       ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Dependent not found", message: null };
+      throw { data: null, error: "Dependent not found", message: null };
     } else {
       return {
         data: (result[0] as EmployeeDependent[]),
@@ -168,7 +168,7 @@ export const getEmployeeDependentByEmployeeIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
