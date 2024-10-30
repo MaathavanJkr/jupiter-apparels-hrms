@@ -732,7 +732,7 @@ VALUES
 ('E0001', 'D001', 'B001', NULL, 'Test', 'Admin', '1985-03-15', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'john.doe@apparel.com', 'NIC001', 'T009', 'PG002', 'S005','+923034567','Nationality-D','B','English'),
 ('E0002', 'D009', 'B001', 'E0001', 'Test', 'Manager', '1990-05-22', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'jane.smith@apparel.com', 'NIC002', 'T011', 'PG003', 'S005','+923012345','Nationality-B','O','English'),
 ('E0003', 'D009', 'B001', 'E0001', 'Test', 'Supervisor', '1978-12-01', 'Male', 'Married', '789 Pine Rd, City A, Pakistan', 'michael.johnson@apparel.com', 'NIC003', 'T012', 'PG004', 'S005','+923001234','Nationality-A','AB','Tamil'),
-('E0004', 'D003', 'B001', 'E0002', 'Test', 'Employee', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678','Nationality-A','A','Sinhala'),
+('E0004', 'D003', 'B001', 'E0003', 'Test', 'Employee', '1987-08-10', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'emily.brown@apparel.com', 'NIC004', 'T008', 'PG002', 'S001','+923045678','Nationality-A','A','Sinhala'),
 
 ('E0006', 'D002', 'B001', 'E0003', 'Sophia', 'Miller', '1983-07-25', 'Female', 'Married', '987 Birch St, City B, Pakistan', 'sophia.miller@apparel.com', 'NIC006', 'T010', 'PG003', 'S005','+923023456','Nationality-C','A','Sinhala'),
 ('E0011', 'D009', 'B002', 'E0003', 'Ethan', 'Lopez', '1989-01-23', 'Male', 'Single', '654 Cedar Ave, City K, Bangladesh', 'ethan.lopez@apparel.com', 'NIC011', 'T011', 'PG003', 'S005','+880171123','Nationality-D','B','Tamil'),

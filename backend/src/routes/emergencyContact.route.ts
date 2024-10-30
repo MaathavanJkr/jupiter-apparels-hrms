@@ -7,14 +7,14 @@ import {
   getAllEmergencyContacts,
   updateEmergencyContact,
 } from "../controllers/emergencyContact.controller";
-import { managerAuth } from "../middlewares/auth.middleware";
+import { managerAuth, userAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
 router.post("/", managerAuth, createEmergencyContact);
 router.get("/", managerAuth, getAllEmergencyContacts);
 router.get("/:id", managerAuth, getEmergencyContactByID);
-router.get("/employee/:employee_id", managerAuth, getEmergencyContactByEmployeeID);
+router.get("/employee/:employee_id", userAuth, getEmergencyContactByEmployeeID);
 router.put("/:id", managerAuth, updateEmergencyContact);
 router.delete("/:id", managerAuth, deleteEmergencyContact);
 
