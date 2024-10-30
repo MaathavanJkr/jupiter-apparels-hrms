@@ -104,6 +104,7 @@ DROP PROCEDURE IF EXISTS getEmployeeByEmployementStatusID;
 DROP PROCEDURE IF EXISTS GetReportByCustomAttribute;
 DROP Procedure IF EXISTS GetRemainingLeavesByCategory;
 DROP Procedure IF EXISTS getPendingLeavesCount;
+DROP Procedure IF EXISTS updateCustomAttributes;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1246,3 +1247,11 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
+    CREATE PROCEDURE updateCustomAttributes(IN custom_attribute_id INT, IN new_name VARCHAR(80))
+    BEGIN
+    UPDATE custom_attribute_keys
+    SET name = new_name
+    WHERE custom_attribute_key_id = custom_attribute_id;
+    END $$
+DELIMITER ;

@@ -253,7 +253,7 @@ SELECT
     es.status AS employment_status,
     es.employment_status_id AS employment_status_id,
     CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name,
-    s.supervisor_id AS supervisor_id
+    e.supervisor_id AS supervisor_id
 FROM
     employees e
 JOIN
