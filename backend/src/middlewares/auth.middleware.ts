@@ -13,7 +13,7 @@ const extractToken = (req: Request): string | undefined => {
   return undefined;
 };
 
-// Middleware for Manager Authentication
+// Middleware for Admin Authentication
 export const adminAuth = (
   req: Request,
   res: Response,
