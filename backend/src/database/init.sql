@@ -246,9 +246,12 @@ SELECT
     b.name AS branch_name,
     b.branch_id AS branch_id,
     jt.title AS job_title,
+    jt.job_title_id AS job_title_id,
     pg.grade_name AS pay_grade,
+    pg.pay_grade_id AS pay_grade_id,
     pg.paygrade AS pay_grade_level,
     es.status AS employment_status,
+    es.employment_status_id AS employment_status_id,
     CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name,
     s.supervisor_id AS supervisor_id
 FROM

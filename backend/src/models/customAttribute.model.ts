@@ -3,6 +3,7 @@ import db from "../database/database";
 import { Output } from "./output.model";
 
 export interface customAttribute extends RowDataPacket {
+    custom_attribute_key_id: number;
     name: string;
 }
 
