@@ -254,7 +254,7 @@ SELECT
     e.gender,
     e.marital_status,
     e.address,
-    e.email, 
+    e.email,
     e.contact_number,
     e.NIC,
     e.cust_attr_1_value,
@@ -282,7 +282,7 @@ JOIN
     pay_grades pg ON e.pay_grade_id = pg.pay_grade_id
 JOIN
     employment_statuses es ON e.employment_status_id = es.employment_status_id
-LEFT JOIN 
+LEFT JOIN
     users u ON e.employee_id = u.employee_id
 LEFT JOIN
     employees s ON e.supervisor_id = s.employee_id;
@@ -464,7 +464,7 @@ CREATE VIEW total_leaves_by_department AS
 SELECT
     d.department_id,
     d.name AS department_name,
-    SUM(ulv.total_used_leaves) AS total_leaves_taken
+    SUM(ulv.total_used_leave_days) AS total_leaves_taken
 FROM
     used_leaves_view ulv
 JOIN
@@ -527,7 +527,7 @@ CREATE VIEW employee_demographics_language_nationality AS
 SELECT
     cust_attr_1_value ,
     cust_attr_3_value ,
-    COUNT(employee_id) 
+    COUNT(employee_id)
 FROM
     employees
 GROUP BY
@@ -626,10 +626,10 @@ BEGIN
 END $$
 DELIMITER ;
 
--- Ensures that employees cannot create more than 1 user account 
+-- Ensures that employees cannot create more than 1 user account
 DELIMITER $$
 CREATE TRIGGER check_user_account_creation BEFORE INSERT ON users
-FOR EACH ROW 
+FOR EACH ROW
 BEGIN
     DECLARE existing_employee_id VARCHAR(255);
 
@@ -780,7 +780,7 @@ INSERT INTO leave_applications VALUES ('LA0007', 'E0018', 'Annual', '2024-07-01'
 INSERT INTO leave_applications VALUES ('LA0008', 'E0021', 'Casual', '2024-07-10', '2024-07-12', 'Medical checkup', '2024-07-08', 'Approved', '2024-07-09');
 INSERT INTO leave_applications VALUES ('LA0009', 'E0030', 'Annual', '2024-07-15', '2024-07-20', 'Vacation', '2024-07-05', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0010', 'E0007', 'Nopay', '2024-08-01', '2024-08-03', 'Personal reasons', '2024-07-30', 'Rejected', '2024-07-31');
-INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2024-08-10', '2024-11-10', 'Pregnancy', '2024-08-01', 'Approved', '2024-08-02');
+INSERT INTO leave_applications VALUES ('LA0011', 'E0024', 'Maternity', '2024-08-10', '2024-8-20', 'Pregnancy', '2024-08-01', 'Approved', '2024-08-02');
 INSERT INTO leave_applications VALUES ('LA0012', 'E0029', 'Annual', '2024-08-15', '2024-08-20', 'Family function', '2024-08-05', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0013', 'E0012', 'Casual', '2024-09-01', '2024-09-02', 'Doctor appointment', '2024-08-28', 'Approved', '2024-08-29');
 INSERT INTO leave_applications VALUES ('LA0014', 'E0020', 'Annual', '2024-09-05', '2024-09-08', 'Vacation', '2024-08-27', 'Approved', '2024-08-28');
@@ -793,7 +793,7 @@ INSERT INTO leave_applications VALUES ('LA0020', 'E0021', 'Casual', '2024-10-25'
 INSERT INTO leave_applications VALUES ('LA0021', 'E0003', 'Annual', '2024-11-01', '2024-11-05', 'Holiday', '2024-10-25', 'Approved', '2024-10-26');
 INSERT INTO leave_applications VALUES ('LA0022', 'E0026', 'Nopay', '2024-11-07', '2024-11-09', 'Personal reasons', '2024-11-05', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0023', 'E0015', 'Casual', '2024-11-12', '2024-11-14', 'Sick', '2024-11-10', 'Rejected', '2024-11-11');
-INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2024-11-20', '2024-12-20', 'Pregnancy', '2024-11-10', 'Approved', '2024-11-11');
+INSERT INTO leave_applications VALUES ('LA0024', 'E0030', 'Maternity', '2024-11-20', '2024-11-27', 'Pregnancy', '2024-11-10', 'Approved', '2024-11-11');
 INSERT INTO leave_applications VALUES ('LA0025', 'E0012', 'Annual', '2024-12-01', '2024-12-05', 'Family function', '2024-11-20', 'Approved', '2024-11-21');
 INSERT INTO leave_applications VALUES ('LA0026', 'E0008', 'Annual', '2024-12-10', '2024-12-15', 'Vacation', '2024-12-01', 'Pending', NULL);
 INSERT INTO leave_applications VALUES ('LA0027', 'E0024', 'Casual', '2024-12-20', '2024-12-22', 'Health reasons', '2024-12-18', 'Approved', '2024-12-19');
