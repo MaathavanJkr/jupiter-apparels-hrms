@@ -136,12 +136,12 @@ export const getReportByGroup = async (req: Request, res: Response) => {
 
         const payGradeReports = await Promise.all(
           payGrades.map(
-            async (payGrade: { pay_grade_id: string; paygrade: string }) => {
+            async (payGrade: { pay_grade_id: string; grade_name: string }) => {
               const employees = await getEmployeesByPayGradeIDModel(
                 payGrade.pay_grade_id
               );
               return {
-                name: payGrade.paygrade,
+                name: payGrade.grade_name,
                 employees: employees.data,
               };
             }
