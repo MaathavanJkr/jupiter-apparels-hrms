@@ -45,5 +45,4 @@ app.use("/supervisor", supervisorRoutes);
 
 app.use("/attribute", customAttributeRoutes);
 
-
 export default app;
