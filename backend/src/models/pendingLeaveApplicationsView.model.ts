@@ -35,7 +35,7 @@ export const getAllPendingLeaveApplicationsModel =
         message: null,
       };
     } catch (error) {
-      return {
+      throw {
         data: null,
         error,
         message: "Database Query Failed",
@@ -53,7 +53,7 @@ export const getPendingLeaveApplicationByIdModel = async (
         application_id,
       ]);
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Application not found", message: null };
+      throw { data: null, error: "Application not found", message: null };
     }
     return {
       data: result[0] as PendingLeaveApplication[],
@@ -61,7 +61,7 @@ export const getPendingLeaveApplicationByIdModel = async (
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

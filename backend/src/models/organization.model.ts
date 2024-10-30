@@ -18,7 +18,7 @@ export const createOrganizationModel = async (
   organization.organization_id = uuidv4();
 
   if (!name || !address || !reg_no) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -36,7 +36,7 @@ export const createOrganizationModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -47,7 +47,7 @@ export const getOrganizationByIDModel = async (id: string): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetOrganizationByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Organization not found", message: null };
+      throw { data: null, error: "Organization not found", message: null };
     } else {
       return {
         data: (result[0] as Organization[])[0],
@@ -56,7 +56,7 @@ export const getOrganizationByIDModel = async (id: string): Promise<Output> => {
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -71,7 +71,7 @@ export const getAllOrganizationsModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllOrganizations()");
     return { data: result[0] as Organization[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -85,7 +85,7 @@ export const updateOrganizationModel = async (
   const { organization_id, name, address, reg_no } = organization;
 
   if (!organization_id || !name || !address || !reg_no) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -103,7 +103,7 @@ export const updateOrganizationModel = async (
       data: organization,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -111,7 +111,7 @@ export const deleteOrganizationModel = async (
   organization_id: string
 ): Promise<Output> => {
   if (!organization_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -126,6 +126,6 @@ export const deleteOrganizationModel = async (
       data: { id: organization_id },
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };

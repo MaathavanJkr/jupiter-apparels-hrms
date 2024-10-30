@@ -139,7 +139,7 @@ export const getTotalLeavesByDepartmentForPeriodModel = async (
       };
     }
   } catch (error) {
-    return { data: null, error, message: "Database Query Failed" };
+    throw { data: null, error, message: "Database Query Failed" };
   }
 };
 

@@ -40,7 +40,7 @@ export const createLeaveApplicationModel = async (
     leaveApplication.submission_date = new Date(); // Set submission date to the current date
 
     if (!employee_id || !leave_type || !start_date || !end_date || !reason) {
-        return { error: "Missing required fields", data: null, message: null };
+        throw { error: "Missing required fields", data: null, message: null };
     }
 
     try {
@@ -59,7 +59,7 @@ export const createLeaveApplicationModel = async (
             error: null,
         };
     } catch (error) {
-        return { error, message: "Database Query Failed", data: null };
+        throw { error, message: "Database Query Failed", data: null };
     }
 };
 
@@ -67,7 +67,7 @@ export const getLeaveApplicationByIDModel = async (
     application_id: string
 ): Promise<Output> => {
     if(!application_id) {
-        return {error: "Missing application ID", data: null, message: null };
+        throw {error: "Missing application ID", data: null, message: null };
     }
 
     try {
@@ -76,7 +76,7 @@ export const getLeaveApplicationByIDModel = async (
             .query<RowDataPacket[][]>("CALL GetLeaveApplicationByID(?)", [application_id]);
 
         if (Array.isArray(result) && result.length === 0) {
-            return {
+            throw {
                 data: null,
                 error: "Leave application not found",
                 message: null,
@@ -90,7 +90,7 @@ export const getLeaveApplicationByIDModel = async (
             };
         }
     } catch (error) {
-        return {
+        throw {
             data: null,
             error,
             message: "Database Query Failed",
@@ -102,7 +102,7 @@ export const getLeaveApplicationsByEmployeeIDModel = async (
     employeeID: string
 ): Promise<Output> => {
     if (!employeeID) {
-        return { error: "Missing required fields", data: null, message: null };
+        throw { error: "Missing required fields", data: null, message: null };
     }
 
     try {
@@ -111,7 +111,7 @@ export const getLeaveApplicationsByEmployeeIDModel = async (
             .query<RowDataPacket[][]>("CALL GetLeaveApplicationByEmployeeID(?)", [employeeID]);
 
         if (Array.isArray(result) && result[0].length === 0) {
-            return {
+            throw {
                 data: null,
                 error: "No leave applications found for this employee",
                 message: null,
@@ -124,7 +124,7 @@ export const getLeaveApplicationsByEmployeeIDModel = async (
             };
         }
     } catch (error) {
-        return {
+        throw {
             data: null,
             error,
             message: "Database Query Failed",
@@ -144,7 +144,7 @@ export const getAllLeaveApplicationsModel = async (): Promise<Output> => {
             message: null,
         };
     } catch (error) {
-        return {
+        throw {
             data: null,
             error,
             message: "Database Query Failed",
@@ -173,7 +173,7 @@ export const updateLeaveApplicationModel = async (
     !reason ||
     !status
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -194,7 +194,7 @@ export const updateLeaveApplicationModel = async (
       data: leaveApplication,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -203,7 +203,7 @@ export const deleteLeaveApplicationModel = async (
     application_id: string
 ): Promise<Output> => {
     if (!application_id) {
-        return { error: "Missing required fields", data: null, message: null };
+        throw { error: "Missing required fields", data: null, message: null };
     }
 
     try {
@@ -216,7 +216,7 @@ export const deleteLeaveApplicationModel = async (
             data: { id: application_id },
         };
     } catch (error) {
-        return { error, message: "Database Query Failed", data: null };
+        throw { error, message: "Database Query Failed", data: null };
     }
 };
 
@@ -234,7 +234,7 @@ export const getLeaveApplicationsForSupervisorModel = async (
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

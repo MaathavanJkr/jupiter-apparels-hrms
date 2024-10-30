@@ -22,7 +22,7 @@ export const getAllEmployeesGroupedByDepartmentModel =
         message: null,
       };
     } catch (error) {
-      return {
+      throw {
         data: null,
         error,
         message: "Database Query Failed",
@@ -45,7 +45,7 @@ export const getEmployeesGroupedByDepartmentIDModel = async (
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

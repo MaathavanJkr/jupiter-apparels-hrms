@@ -13,26 +13,22 @@ export const getCustomAttributeModel = async (): Promise<Output> => {
       .promise()
       .query<RowDataPacket[][]>("CALL GetAllCustomAttributes()");
 
-    if (Array.isArray(result) && result.length === 0) {
-      return {
-        data: null,
-        error: "Custom Attributes not found",
-        message: null,
-      };
-    } else {
-      return {
-        data: result[0] as customAttribute[],
-        error: null,
-        message: null,
-      };
-    }
-  } catch (error) {
-    return {
-      data: null,
-      error: error,
-      message: "Database Query Failed",
-    };
-  }
+        if (Array.isArray(result) && result.length === 0) {
+            throw { data: null, error: "Custom Attributes not found", message: null };
+        } else {
+            return {
+                data: (result[0] as customAttribute[]),
+                error: null,
+                message: null,
+            };
+        }
+    } catch (error) {
+        throw {
+            data: null,
+            error: error,
+            message: "Database Query Failed", 
+        };
+    } 
 };
 export const getCustomAttributeByIDModel = async (
   attribute_no: number
@@ -44,22 +40,22 @@ export const getCustomAttributeByIDModel = async (
         attribute_no,
       ]);
 
-    if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Custom Attribute not found", message: null };
-    } else {
-      return {
-        data: (result[0] as customAttribute[])[0],
-        error: null,
-        message: null,
-      };
-    }
-  } catch (error) {
-    return {
-      data: null,
-      error: error,
-      message: "Database Query Failed",
-    };
-  }
+        if (Array.isArray(result) && result.length === 0) {
+            throw { data: null, error: "Custom Attribute not found", message: null };
+        } else {
+            return {
+                data: (result[0] as customAttribute[])[0],
+                error: null,
+                message: null,
+            };
+        }
+    } catch (error) {
+        throw {
+            data: null,
+            error: error,
+            message: "Database Query Failed",
+        };
+    } 
 };
 
 export const updateCustomAttributeByIDModel = async (

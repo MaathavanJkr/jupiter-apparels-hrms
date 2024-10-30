@@ -19,7 +19,7 @@ export const getAllRemainingLeavesModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllRemainingLeaves()");
     return { data: result[0] as RemainingLeaves[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -38,7 +38,7 @@ export const getRemainingLeavesByEmployeeIDModel = async (
       ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return {
+      throw {
         data: null,
         error: "Remaining leaves not found for this employee",
         message: null,
@@ -51,7 +51,7 @@ export const getRemainingLeavesByEmployeeIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -73,7 +73,7 @@ export const getRemainingLeavesByCategoryModel = async (
         ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return {
+      throw {
         data: null,
         error: "Remaining leaves not found for this category or employee",
         message: null,
@@ -86,7 +86,7 @@ export const getRemainingLeavesByCategoryModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

@@ -25,7 +25,7 @@ export const getEmploymentStatusByIDModel = async (
       .query<RowDataPacket[][]>("CALL GetEmploymentStatusByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return {
+      throw {
         data: null,
         error: "Employment status not found",
         message: null,
@@ -38,7 +38,7 @@ export const getEmploymentStatusByIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -57,7 +57,7 @@ export const getAllEmploymentStatusesModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
