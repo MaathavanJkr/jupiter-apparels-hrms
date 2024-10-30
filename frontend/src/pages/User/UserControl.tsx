@@ -86,7 +86,7 @@ const UserControl = () => {
           className="w-1/2 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
         >
           <option value="Employee">Employee</option>
-          <option value="HR manager">HR Manager</option>
+          <option value="Manager">Manager</option>
         </select>
 
         <div className="mt-6 w-1/2 flex gap-4">
