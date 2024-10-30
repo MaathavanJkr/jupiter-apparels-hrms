@@ -1099,9 +1099,9 @@ DELIMITER ;
 DELIMITER $$
 
 CREATE PROCEDURE FindSupervisors(
-    IN p_employee_id VARCHAR(255),
     IN p_department_id VARCHAR(255),
-    IN p_pay_grade_id VARCHAR(255)
+    IN p_pay_grade_id VARCHAR(255),
+    IN p_employee_id VARCHAR(255)
 )
 BEGIN
     DECLARE p_pay_grade_level INT;
