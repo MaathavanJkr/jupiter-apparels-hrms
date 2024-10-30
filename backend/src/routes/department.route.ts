@@ -8,14 +8,15 @@ import {
   deleteDepartment,
   getEmployeeCountByDepartmentID,
 } from "../controllers/department.controller";
+import { adminAuth, userAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/", createDepartment);
-router.get("/", getAllDepartments);
-router.get("/:id", getDepartmentByID);
-router.put("/:id", updateDepartment);
-router.delete("/:id", deleteDepartment);
-router.get("/empcount/:id", getEmployeeCountByDepartmentID);
+router.post("/", adminAuth, createDepartment);
+router.get("/", userAuth, getAllDepartments);
+router.get("/:id", userAuth, getDepartmentByID);
+router.put("/:id", adminAuth, updateDepartment);
+router.delete("/:id", adminAuth, deleteDepartment);
+router.get("/empcount/:id", userAuth, getEmployeeCountByDepartmentID);
 
 export default router;

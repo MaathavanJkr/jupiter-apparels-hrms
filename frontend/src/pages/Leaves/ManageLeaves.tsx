@@ -81,27 +81,28 @@ const ManageLeaveApplications = () => {
     return (
         <DefaultLayout>
             <Breadcrumb pageName="Manage Leaves" />
-            <h2>Employee Leaves</h2>
-            {employees.length > 0 && (
-                employees.map(employee => {
-                    const pendingApplications = leaveApplications[employee.employee_id] || [];
-                    return (
-                        pendingApplications.length > 0 && ( // Only render if there are pending applications
-                            <div key={employee.employee_id} style={{ marginBottom: '20px' }}>
-                                <h3>
-                                    {employee.first_name} {employee.last_name}
-                                </h3>
-                                <LeaveTable
-                                    leaveApplications={pendingApplications} // Pass only pending applications to LeaveTable
-                                />
-                            </div>
-                        )
+            <h2>Pending Employee Leaves</h2>
+            
+            {employees.length > 0 ? (
+                (() => {
+                    // Flatten all pending leave applications across employees into one array
+                    const allPendingApplications = employees.flatMap(employee => {
+                        const pendingApplications = leaveApplications[employee.employee_id] || [];
+                        return pendingApplications; // Collect all applications for this employee
+                    });
+    
+                    return allPendingApplications.length > 0 ? (
+                        <LeaveTable leaveApplications={allPendingApplications} /> // Pass combined list to one table
+                    ) : (
+                        <p>No pending leave applications found.</p>
                     );
-                })
+                })()
+            ) : (
+                <p>No employees found.</p>
             )}
-            {employees.length === 0 && <p>No employees found.</p>}
         </DefaultLayout>
     );
+    
 };
 
 export default ManageLeaveApplications;

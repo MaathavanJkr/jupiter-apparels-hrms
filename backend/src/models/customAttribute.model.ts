@@ -3,7 +3,8 @@ import db from "../database/database";
 import { Output } from "./output.model";
 
 export interface customAttribute extends RowDataPacket {
-  name: string;
+    custom_attribute_key_id: number;
+    name: string;
 }
 
 export const getCustomAttributeModel = async (): Promise<Output> => {

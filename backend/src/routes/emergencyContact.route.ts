@@ -7,14 +7,15 @@ import {
   getAllEmergencyContacts,
   updateEmergencyContact,
 } from "../controllers/emergencyContact.controller";
+import { managerAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/", createEmergencyContact);
-router.get("/", getAllEmergencyContacts);
-router.get("/:id", getEmergencyContactByID);
-router.get("/employee/:employee_id", getEmergencyContactByEmployeeID);
-router.put("/:id", updateEmergencyContact);
-router.delete("/:id", deleteEmergencyContact);
+router.post("/", managerAuth, createEmergencyContact);
+router.get("/", managerAuth, getAllEmergencyContacts);
+router.get("/:id", managerAuth, getEmergencyContactByID);
+router.get("/employee/:employee_id", managerAuth, getEmergencyContactByEmployeeID);
+router.put("/:id", managerAuth, updateEmergencyContact);
+router.delete("/:id", managerAuth, deleteEmergencyContact);
 
 export default router;

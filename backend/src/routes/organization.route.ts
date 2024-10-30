@@ -7,13 +7,14 @@ import {
   getAllOrganizations,
   updateOrganization,
 } from "../controllers/organization.controller";
+import { adminAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/", createOrganization);
-router.get("/", getAllOrganizations);
-router.get("/:id", getOrganizationByID);
-router.put("/:id", updateOrganization);
-router.delete("/:id", deleteOrganization);
+router.post("/", adminAuth, createOrganization);
+router.get("/", adminAuth, getAllOrganizations);
+router.get("/:id", adminAuth, getOrganizationByID);
+router.put("/:id", adminAuth, updateOrganization);
+router.delete("/:id", adminAuth, deleteOrganization);
 
 export default router;
