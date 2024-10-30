@@ -15,6 +15,14 @@ export interface PendingLeaveApplication extends RowDataPacket {
   response_date: Date;
 }
 
+export interface PendingLeaveCount extends RowDataPacket {
+  employee_id: string;
+  annual_pending_leaves: number;
+  casual_pending_leaves: number;
+  maternity_pending_leaves: number;
+  nopay_pending_leaves: number;
+}
+
 export const getAllPendingLeaveApplicationsModel =
   async (): Promise<Output> => {
     try {
@@ -49,6 +57,32 @@ export const getPendingLeaveApplicationByIdModel = async (
     }
     return {
       data: result[0] as PendingLeaveApplication[],
+      error: null,
+      message: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error,
+      message: "Database Query Failed",
+    };
+  }
+};
+
+export const getPendingLeaveCountByEmployeeIdModel = async (
+    emp_id: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+        .promise()
+        .query<RowDataPacket[][]>("CALL get_pending_leaves_count(?)", [emp_id]);
+
+    if (!result || result.length === 0) {
+      return { data: null, error: "No pending leaves found", message: null };
+    }
+
+    return {
+      data: result[0] as PendingLeaveCount[],
       error: null,
       message: null,
     };
