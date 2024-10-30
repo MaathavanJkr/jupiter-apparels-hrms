@@ -22,7 +22,7 @@ export const getEmployeesGroupedByJobTitleModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -46,7 +46,7 @@ export const getEmployeesGroupedByJobTitleIDModel = async (
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

@@ -19,7 +19,7 @@ export const getAllRemainingLeavesModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllRemainingLeaves()");
     return { data: result[0] as RemainingLeaves[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -38,7 +38,7 @@ export const getRemainingLeavesByEmployeeIDModel = async (
       ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return {
+      throw {
         data: null,
         error: "Remaining leaves not found for this employee",
         message: null,
@@ -51,10 +51,46 @@ export const getRemainingLeavesByEmployeeIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
     };
   }
 };
+
+
+export const getRemainingLeavesByCategoryModel = async (
+    employee_id: string,
+    leave_category: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+        .promise()
+        .query<RowDataPacket[][]>("CALL GetRemainingLeavesByCategory(?, ?)", [
+          employee_id,
+          leave_category,
+        ]);
+
+    if (Array.isArray(result) && result.length === 0) {
+      throw {
+        data: null,
+        error: "Remaining leaves not found for this category or employee",
+        message: null,
+      };
+    } else {
+      return {
+        data: result[0][0] as RemainingLeaves,
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    throw {
+      data: null,
+      error,
+      message: "Database Query Failed",
+    };
+  }
+};
+

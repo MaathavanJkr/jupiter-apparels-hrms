@@ -17,7 +17,7 @@ export const createDepartmentModel = async (
   department.department_id = uuidv4();
 
   if (!name) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -29,7 +29,7 @@ export const createDepartmentModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -41,7 +41,7 @@ export const getDepartmentByIDModel = async (id: string): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL getDepartmentByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Department not found", message: null };
+      throw { data: null, error: "Department not found", message: null };
     } else {
       return {
         data: (result[0] as Department[])[0],
@@ -50,7 +50,7 @@ export const getDepartmentByIDModel = async (id: string): Promise<Output> => {
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -66,7 +66,7 @@ export const getAllDepartmentsModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL getAllDepartments()");
     return { data: result[0] as Department[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -81,7 +81,7 @@ export const updateDepartmentModel = async (
   const { department_id, name } = department;
 
   if (!department_id || !name) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -95,7 +95,7 @@ export const updateDepartmentModel = async (
       data: department,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -104,7 +104,7 @@ export const deleteDepartmentModel = async (
   department_id: string
 ): Promise<Output> => {
   if (!department_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -115,6 +115,29 @@ export const deleteDepartmentModel = async (
       data: { id: department_id },
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
+  }
+};
+
+// Get Employee Count by Department ID using stored procedure
+export const getEmployeeCountByDepartmentIDModel = async (
+  id: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmployeeCountByDepartmentID(?)", [id]);
+
+    return {
+      data: result[0],
+      error: null,
+      message: null,
+    };
+  } catch (error) {
+    throw {
+      data: null,
+      error: error,
+      message: "Database Query Failed",
+    };
   }
 };

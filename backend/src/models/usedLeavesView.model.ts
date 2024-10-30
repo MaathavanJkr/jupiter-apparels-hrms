@@ -20,7 +20,7 @@ export const getAllUsedLeavesModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllUsedLeaves()");
     return { data: result[0] as UsedLeaves[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -39,7 +39,7 @@ export const getUsedLeavesByEmployeeIDModel = async (
       ]);
     return { data: (result[0][0] as UsedLeaves), error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

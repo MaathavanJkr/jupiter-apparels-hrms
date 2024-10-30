@@ -7,7 +7,7 @@ import { ToastContainer } from "react-toastify";
 const ContactTable = ({ employee_id }: { employee_id: string }) => {
 
     const role = localStorage.getItem('role');
-    const isAuthorized = (role === "Admin" || role === "HR manager");
+    const isAuthorized = (role === "Admin" || role === "Manager");
 
     const [contactId, setContactId] = useState<string>('');
     const [employeeId, setEmployeeId] = useState<string>('');

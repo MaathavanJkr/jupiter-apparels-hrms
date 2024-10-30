@@ -22,7 +22,7 @@ export const createAllocatedLeavesModel = async (
     maternity_leaves == null ||
     no_pay_leaves == null
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -40,7 +40,7 @@ export const createAllocatedLeavesModel = async (
       error: null,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -64,7 +64,7 @@ export const getAllocatedLeavesByPayGradeModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -105,7 +105,7 @@ export const updateAllocatedLeavesModel = async (
     maternity_leaves == null ||
     no_pay_leaves == null
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -124,7 +124,7 @@ export const updateAllocatedLeavesModel = async (
       data: allocatedLeaves,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -132,7 +132,7 @@ export const deleteAllocatedLeavesModel = async (
   pay_grade_id: string
 ): Promise<Output> => {
   if (!pay_grade_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -143,6 +143,6 @@ export const deleteAllocatedLeavesModel = async (
       data: { id: pay_grade_id },
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };

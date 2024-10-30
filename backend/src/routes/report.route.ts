@@ -4,12 +4,16 @@ import {
   getEmployeesByDepartment,
   getReportByGroup,
   getTotalLeavesByDepartmentForPeriod,
+  getReportByCustomAttribute
 } from "../controllers/report.controller";
+import { managerAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/employee/dept/:id", getEmployeesByDepartment);
-router.get("/totalleaves", getTotalLeavesByDepartmentForPeriod);
-router.get("/count", getReportByGroup);
+router.get("/employee/dept/:id", managerAuth, getEmployeesByDepartment);
+router.get("/totalleaves", managerAuth, getTotalLeavesByDepartmentForPeriod);
+router.get("/employee", managerAuth, getReportByGroup);
+router.post("/custom", managerAuth, getReportByCustomAttribute);
 
 export default router;
+

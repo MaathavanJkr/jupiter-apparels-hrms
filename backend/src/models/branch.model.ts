@@ -18,7 +18,7 @@ export const createBranchModel = async (branch: Branch): Promise<Output> => {
   branch.branch_id = uuidv4();
 
   if (!name || !address || !contact_number) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -37,7 +37,7 @@ export const createBranchModel = async (branch: Branch): Promise<Output> => {
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -49,7 +49,7 @@ export const getBranchByIDModel = async (id: string): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL getBranchByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Branch not found", message: null };
+      throw { data: null, error: "Branch not found", message: null };
     } else {
       return {
         data: (result[0] as Branch[])[0],
@@ -58,7 +58,7 @@ export const getBranchByIDModel = async (id: string): Promise<Output> => {
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -74,7 +74,7 @@ export const getAllBranchesModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL getAllBranches()");
     return { data: result[0] as Branch[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -87,7 +87,7 @@ export const updateBranchModel = async (branch: Branch): Promise<Output> => {
   const { branch_id, name, address, contact_number, manager_id } = branch;
 
   if (!branch_id || !name || !address || !contact_number) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -107,14 +107,14 @@ export const updateBranchModel = async (branch: Branch): Promise<Output> => {
       data: branch,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
 // Delete Branch using stored procedure
 export const deleteBranchModel = async (branch_id: string): Promise<Output> => {
   if (!branch_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -125,6 +125,6 @@ export const deleteBranchModel = async (branch_id: string): Promise<Output> => {
       data: { id: branch_id },
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };

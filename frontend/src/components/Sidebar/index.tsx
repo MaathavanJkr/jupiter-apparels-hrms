@@ -59,7 +59,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const userRole = localStorage.getItem('role'); 
   const isSupervisor = localStorage.getItem('is_supervisor') == "true";
   const isAdmin = userRole === 'Admin'; 
-  const isAuthorizedUser = userRole === 'Admin' || userRole === 'HR manager'; 
+  const isAuthorizedUser = userRole === 'Admin' || userRole === 'Manager'; 
 
   return (
     <aside
@@ -405,6 +405,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               >
 
                                 Custom Attributes
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
+                                to="/config/leaves"
+                                className={({ isActive }) =>
+                                  'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                  (isActive && '!text-white')
+                                }
+                              >
+
+                                Allocated Leaves
                               </NavLink>
                             </li>
                           </ul>

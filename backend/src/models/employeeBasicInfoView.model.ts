@@ -35,7 +35,7 @@ export const getEmployeeBasicInfoByIDModel = async (
       .query<RowDataPacket[][]>("CALL GetEmployeeBasicInfoByID(?)", [id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Employee not found", message: null };
+      throw { data: null, error: "Employee not found", message: null };
     } else {
       return {
         data: (result[0] as EmployeeBasicInfo[])[0],
@@ -44,7 +44,7 @@ export const getEmployeeBasicInfoByIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -60,7 +60,7 @@ export const getEmployeeBasicInfoByUserIDModel = async (
       .query<RowDataPacket[][]>("CALL GetEmployeeBasicInfoByUserID(?)", [user_id]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "Employee not found", message: null };
+      throw { data: null, error: "Employee not found", message: null };
     } else {
       return {
         data: (result[0] as EmployeeBasicInfo[])[0],
@@ -69,7 +69,7 @@ export const getEmployeeBasicInfoByUserIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -88,7 +88,7 @@ export const getAllEmployeesBasicInfoModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

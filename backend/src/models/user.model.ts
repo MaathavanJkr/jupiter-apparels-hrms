@@ -22,7 +22,7 @@ export const createUserModel = async (user: User): Promise<Output> => {
   user.user_id = uuidv4();
 
   if (!employee_id || !role || !username || !password) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   const hashedPassword = await hashPassword(password);
@@ -64,7 +64,7 @@ export const getUserByIDModel = async (id: string): Promise<Output> => {
       };
     }
   } catch (error) {
-    return { data: null, error, message: "Database Query Failed" };
+    throw { data: null, error, message: "Database Query Failed" };
   }
 };
 
@@ -85,7 +85,7 @@ export const getUserByUsernameModel = async (
       };
     }
   } catch (error) {
-    return { data: null, error, message: "Database Query Failed" };
+    throw { data: null, error, message: "Database Query Failed" };
   }
 };
 
@@ -105,7 +105,7 @@ export const getAllUsersModel = async (): Promise<Output> => {
       };
     }
   } catch (error) {
-    return { data: null, error, message: "Database Query Failed" };
+    throw { data: null, error, message: "Database Query Failed" };
   }
 };
 
@@ -113,7 +113,7 @@ export const updateUserModel = async (user: User): Promise<Output> => {
   const { user_id, role, username } = user;
 
   if (!user_id  || !role || !username) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -130,7 +130,7 @@ export const updateUserModel = async (user: User): Promise<Output> => {
       data: user,
     };
   } catch (error) {
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -139,13 +139,13 @@ export const deleteUserModel = async (id: string): Promise<Output> => {
     await db.promise().query("CALL DeleteUser(?)", [id]);
     return { data: null, error: null, message: "User deleted successfully" };
   } catch (error) {
-    return { data: null, error, message: "Database Query Failed" };
+    throw { data: null, error, message: "Database Query Failed" };
   }
 };
 
 export const ChangePasswordModel = async (id: string, new_password: string): Promise<Output> => {
   if (!new_password) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
   try {
     await db
@@ -157,7 +157,7 @@ export const ChangePasswordModel = async (id: string, new_password: string): Pro
       data: null,
     };
   } catch (error) { 
-    return { error, message: "Database Query Failed", data: null };
+    throw { error, message: "Database Query Failed", data: null };
   }
 }
 

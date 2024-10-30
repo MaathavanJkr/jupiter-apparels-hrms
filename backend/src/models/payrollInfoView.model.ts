@@ -18,7 +18,7 @@ export const getAllPayrollInfoModel = async (): Promise<Output> => {
       .query<RowDataPacket[][]>("CALL GetAllPayrollInfo()");
     return { data: result[0] as PayrollInfo[], error: null, message: null };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",
@@ -41,7 +41,7 @@ export const getPayrollInfoByEmployeeIDModel = async (
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

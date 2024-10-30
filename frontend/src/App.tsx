@@ -30,6 +30,7 @@ import EditCustomAttribute from './pages/Configuration/EditCustomAttribute';
 import EmployeeDashboardPage from './pages/EmployeeDashboard';
 import UserControl from './pages/User/UserControl';
 import MyLeaveHistory from './pages/Leaves/MyLeaveHistory';
+import LeaveCountConfig from './pages/Configuration/LeaveCountConfig';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -184,6 +185,15 @@ function App() {
           <>
             <PageTitle title="Organization | Jupiter Apparels" />
             <OrganizationConfig />
+          </>
+        }
+      />
+      <Route
+        path="/config/leaves"
+        element={
+          <>
+            <PageTitle title="Leave Configuration | Jupiter Apparels" />
+            <LeaveCountConfig />
           </>
         }
       />

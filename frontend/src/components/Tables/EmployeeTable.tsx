@@ -125,7 +125,7 @@ const EmployeeTable = ({
           setModalOpen(false);
         })
         .catch((error) => {
-          notifyError(`Failed to delete: ${error}`);
+          notifyError(`Failed to delete: ${error.message}`);
           setModalOpen(false);
         });
     } else {

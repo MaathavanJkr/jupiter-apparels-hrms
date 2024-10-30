@@ -6,7 +6,7 @@ import DefaultLayout from "../../layout/DefaultLayout";
 
 const EmployeeDetails = () => {
     const role = localStorage.getItem('role');
-    const isAuthorized = (role === "Admin" || role === "HR manager");
+    const isAuthorized = (role === "Admin" || role === "Manager");
 
     const { employee_id } = useParams<{ employee_id: string }>();
     return (

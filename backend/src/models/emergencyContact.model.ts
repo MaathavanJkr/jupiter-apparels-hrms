@@ -20,7 +20,7 @@ export const createEmergencyContactModel = async (
   contact.emergency_id = uuidv4();
 
   if (!employee_id || !name || !relationship || !contact_number || !address) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -39,7 +39,7 @@ export const createEmergencyContactModel = async (
       error: null,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -54,7 +54,7 @@ export const getEmergencyContactByIDModel = async (
       ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return {
+      throw {
         data: null,
         error: "Emergency contact not found",
         message: null,
@@ -67,7 +67,7 @@ export const getEmergencyContactByIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -86,7 +86,7 @@ export const getAllEmergencyContactsModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",
@@ -114,7 +114,7 @@ export const updateEmergencyContactModel = async (
     !contact_number ||
     !address
   ) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -134,7 +134,7 @@ export const updateEmergencyContactModel = async (
       data: contact,
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -142,7 +142,7 @@ export const deleteEmergencyContactModel = async (
   emergency_id: string
 ): Promise<Output> => {
   if (!emergency_id) {
-    return { error: "Missing required fields", data: null, message: null };
+    throw { error: "Missing required fields", data: null, message: null };
   }
 
   try {
@@ -153,7 +153,7 @@ export const deleteEmergencyContactModel = async (
       data: { id: emergency_id },
     };
   } catch (error) {
-    return { error: error, message: "Database Query Failed", data: null };
+    throw { error: error, message: "Database Query Failed", data: null };
   }
 };
 
@@ -168,7 +168,7 @@ export const getEmergencyContactByEmployeeIDModel = async (
       ]);
 
     if (Array.isArray(result) && result.length === 0) {
-      return {
+      throw {
         data: null,
         error: "Emergency contact not found",
         message: null,
@@ -181,7 +181,7 @@ export const getEmergencyContactByEmployeeIDModel = async (
       };
     }
   } catch (error) {
-    return {
+    throw {
       data: null,
       error: error,
       message: "Database Query Failed",

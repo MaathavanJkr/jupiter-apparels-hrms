@@ -13,7 +13,7 @@ export const getAllSupervisorIDModel = async (): Promise<Output> => {
       message: null,
     };
   } catch (error) {
-    return {
+    throw {
       data: null,
       error,
       message: "Database Query Failed",

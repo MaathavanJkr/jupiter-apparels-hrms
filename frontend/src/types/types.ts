@@ -159,6 +159,7 @@ export interface Organization {
 
 export interface CustomAttribute {
   name: string;
+  custom_attribute_key_id: number;
 }
 export interface EDRData {
   department: string;

@@ -23,12 +23,77 @@ export const getEmployeesByDepartmentIDModel = async (
   try {
     const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>(
-        "CALL getAllEmployeesByFilter(?, null, null, null, null)",
-        [dept_id]
-      );
+      .query<RowDataPacket[][]>("CALL getEmployeeByDepartmentID(?)", [dept_id]);
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "User not found", message: null };
+      return { data: null, error: "Report not found", message: null };
+    } else {
+      return {
+        data: result[0] as Employee[],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return { data: null, error, message: "Database Query Failed" };
+  }
+};
+export const getEmployeesByJobTitleIDModel = async (
+  job_title_id: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmployeeByJobTitleID(?)", [
+        job_title_id,
+      ]);
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Report not found", message: null };
+    } else {
+      return {
+        data: result[0] as Employee[],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return { data: null, error, message: "Database Query Failed" };
+  }
+};
+
+export const getEmployeesByPayGradeIDModel = async (
+  pay_grade_id: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmployeeByPayGradeID(?)", [
+        pay_grade_id,
+      ]);
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Report not found", message: null };
+    } else {
+      return {
+        data: result[0] as Employee[],
+        error: null,
+        message: null,
+      };
+    }
+  } catch (error) {
+    return { data: null, error, message: "Database Query Failed" };
+  }
+};
+
+export const getEmployeesByEmploymentStatusIDModel = async (
+  employment_status: string
+): Promise<Output> => {
+  try {
+    const [result] = await db
+      .promise()
+      .query<RowDataPacket[][]>("CALL getEmployeeByEmployementStatusID(?)", [
+        employment_status,
+      ]);
+    if (Array.isArray(result) && result.length === 0) {
+      return { data: null, error: "Report not found", message: null };
     } else {
       return {
         data: result[0] as Employee[],
@@ -65,7 +130,7 @@ export const getTotalLeavesByDepartmentForPeriodModel = async (
         [start_date, end_date]
       );
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "User not found", message: null };
+      return { data: null, error: "Report Not Found", message: null };
     } else {
       return {
         data: result[0] as TotalLeaves[],
@@ -74,23 +139,23 @@ export const getTotalLeavesByDepartmentForPeriodModel = async (
       };
     }
   } catch (error) {
-    return { data: null, error, message: "Database Query Failed" };
+    throw { data: null, error, message: "Database Query Failed" };
   }
 };
 
-export const getReportsByGroupModel = async (
-  groupBy: string
-): Promise<Output> => {
-  if (!reportGroups.includes(groupBy)) {
-    return { data: null, error: "Invalid groupBy parameter", message: null };
-  }
-
+export const getReportsByCustomAttributeModel = async (
+  attribute_number: number,
+  attribute_value: string
+) : Promise<Output> => {
   try {
     const [result] = await db
       .promise()
-      .query<RowDataPacket[][]>(`CALL getReportBy(?)`, [groupBy]);
+      .query<RowDataPacket[][]>(
+        "CALL getReportByCustomAttribute(?, ?)",
+        [attribute_number, attribute_value]
+      );
     if (Array.isArray(result) && result.length === 0) {
-      return { data: null, error: "User not found", message: null };
+      throw { data: null, error: "No Employees with this custom attribute value", message: null };
     } else {
       return {
         data: result[0],
@@ -99,6 +164,6 @@ export const getReportsByGroupModel = async (
       };
     }
   } catch (error) {
-    return { data: null, error, message: "Database Query Failed" };
+    throw { data: null, error, message: "Database Query Failed" };
   }
-};
+}
