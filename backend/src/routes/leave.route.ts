@@ -15,6 +15,8 @@ import {
      getPendingLeaveCountByEmployeeId
 } from "../controllers/pendingLeaveApplicationsView.controller";
 
+import { getAllocatedLeavesByPayGrade,updateAllocatedLeaves } from '../controllers/allocatedleaves.controller';
+
 const router = express.Router();
 
 
@@ -46,5 +48,7 @@ router.get("/super/:id", userAuth, getLeaveApplicationsForSupervisor);
 // router.get("/pending-leaves", getAllPendingLeaveApplications);
 // router.get("/pending-leaves/:id", getPendingLeaveApplicationById);
 router.get("/pending-leaves/count/:emp_id", userAuth, getPendingLeaveCountByEmployeeId);
+router.get("/allocated/:id", adminAuth, getAllocatedLeavesByPayGrade);
+router.put("/allocated/:id",adminAuth, updateAllocatedLeaves)
 
 export default router;
