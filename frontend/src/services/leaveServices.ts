@@ -176,22 +176,6 @@ export const approveLeave = async (application_id: string) => {
     throw error.response.data.error;
   }
 };
-// export const rejectLeave = async (application_id: string) => {
-//     try {
-//         const token = localStorage.getItem('token');
-//         const response = await axiosInstance.put(
-//             '/leave/reject/' + application_id,
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${token}`,
-//                 },
-//             },
-//         );
-//         return response.data.data;
-//     } catch (error) {
-//         throw error.response.data.error;
-//     }
-// };
 
 export const rejectLeave = async (application_id: string) => {
   try {
@@ -261,7 +245,7 @@ export const getPendingLeavesBySupervisorID = async (supervisor_id: string) => {
   }
 };
 
-// fetch remaining leaves for anthe selected employee and leave type
+// fetch remaining leaves for the selected employee and leave type
 export const getRemainingLeaves = async (employee_id: string, leaveType: string) => {
   try {
     const token = localStorage.getItem('token');
@@ -284,7 +268,7 @@ export const getPendingLeavesCount = async (employee_id: string) => {
   try {
     const token = localStorage.getItem('token');
     const response = await axiosInstance.get(
-        `/leaveapplication/pending-leaves/count/${employee_id}`,
+        `/leave/pending-leaves/count/${employee_id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
