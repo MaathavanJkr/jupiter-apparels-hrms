@@ -16,7 +16,6 @@ import paygradeRoutes from "./routes/paygrade.route";
 import reportRoutes from "./routes/report.route";
 import remainingLeavesViewRoute from "./routes/remainingLeavesView.route";
 import usedLeavesViewRoute from "./routes/usedLeavesView.routes";
-import leaveApplicationRoutes from "./routes/leaveapplication.route";
 import leaveRoutes from "./routes/leave.route";
 import supervisorRoutes from "./routes/supervisor.route";
 import customAttributeRoutes from "./routes/customAttribute.route";
@@ -41,7 +40,6 @@ app.use("/paygrade", paygradeRoutes);
 app.use("/report", reportRoutes);
 app.use("/remainingLeavesView", remainingLeavesViewRoute);
 app.use("/usedLeavesView", usedLeavesViewRoute);
-app.use("/leaveapplication", leaveApplicationRoutes);
 app.use("/leave", leaveRoutes);
 app.use("/supervisor", supervisorRoutes);
 
