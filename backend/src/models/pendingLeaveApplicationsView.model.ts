@@ -75,7 +75,7 @@ export const getPendingLeaveCountByEmployeeIdModel = async (
   try {
     const [result] = await db
         .promise()
-        .query<RowDataPacket[][]>("CALL get_pending_leaves_count(?)", [emp_id]);
+        .query<RowDataPacket[][]>("CALL getPendingLeavesCount(?)", [emp_id]);
 
     if (!result || result.length === 0) {
       return { data: null, error: "No pending leaves found", message: null };

@@ -101,7 +101,7 @@ DROP PROCEDURE IF EXISTS GetAllCustomAttributes;
 DROP PROCEDURE IF EXISTS GetCustomAttributeByKey;
 DROP PROCEDURE IF EXISTS FindSupervisors;
 DROP Procedure IF EXISTS GetRemainingLeavesByCategory;
-DROP Procedure IF EXISTS get_pending_leaves_count;
+DROP Procedure IF EXISTS getPendingLeavesCount;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1193,7 +1193,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE PROCEDURE get_pending_leaves_count(emp_id VARCHAR(36))
+CREATE PROCEDURE getPendingLeavesCount(emp_id VARCHAR(36))
 BEGIN
     DECLARE annual_pending INT DEFAULT 0;
     DECLARE casual_pending INT DEFAULT 0;
