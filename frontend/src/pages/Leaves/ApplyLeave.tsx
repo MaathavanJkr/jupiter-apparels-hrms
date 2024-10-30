@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { applyLeave, getLeaveBalanceByID,  } from '../../services/leaveServices';
+import {
+  applyLeave,
+  getPendingLeavesCount,
+  getRemainingLeaves,
+} from '../../services/leaveServices';
 import {getEmployeeIdByUserId} from '../../services/employeeServices.ts'
 import { notifyError, notifySuccess } from '../../services/notify';
 import { useNavigate } from "react-router-dom";
@@ -51,7 +55,6 @@ const UpdateLeaveApplicationData = () => {
     setLeaveAppData(newLeaveAppData);
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
     // Check if all fields are filled
     if (!leaveAppData.leaveType || !leaveAppData.startdate || !leaveAppData.enddate || !leaveAppData.reason) {
@@ -65,37 +68,91 @@ const UpdateLeaveApplicationData = () => {
     }
 
     try {
-      // Get the remaining leaves for the employee and leave type
-      const remainingLeaves = await getLeaveBalanceByID(employeeId);
-      console.log(remainingLeaves);
+      let leaveType = '';
+      switch (leaveAppData.leaveType) {
+        case "annual":
+          leaveType  = 'Annual';
+          break;
+        case "casual":
+          leaveType = 'Casual';
+          break;
+        case "maternity":
+          leaveType = 'Maternity';
+          break;
+        case "nopay":
+          leaveType = 'Nopay';
+          break;
+        default:
+          throw new Error('Invalid leave type specified.');
+      }
+      // fetching remaining leave count for the specified employee and the specified type
+      const remainingLeaves = await getRemainingLeaves(employeeId,leaveType);
+
+
       // Check if the remaining leave count for the requested leave type is zero
-      if (remainingLeaves[leaveAppData.leaveType] === 0) {
-        notifyError(`No remaining ${leaveAppData.leaveType} available.`);
+      if (remainingLeaves.remaining_leaves == 0) {
+        notifyError(`No leaves left in this category.`);
+        return;
+      }
+
+      // Fetch all the pending leaves count for the employee
+      const pendingLeaves = await getPendingLeavesCount(employeeId);
+
+      // Determine the pending count for the selected leave type
+      let pendingCountForType = 0;
+      switch (leaveAppData.leaveType.toLowerCase()) {
+        case "annual":
+          pendingCountForType = pendingLeaves[0].annual_pending_leaves ;
+          break;
+        case "casual":
+          pendingCountForType = pendingLeaves[0].casual_pending_leaves ;
+          break;
+        case "maternity":
+          pendingCountForType = pendingLeaves[0].maternity_pending_leaves ;
+          break;
+        case "nopay":
+          pendingCountForType = pendingLeaves[0].nopay_pending_leaves;
+          break;
+        default:
+          throw new Error('Invalid leave type specified.');
+      }
+
+      // Check if the pending leave count exceeds the remaining leave count for the selected leave type
+      if (pendingCountForType >= remainingLeaves.remaining_leaves) {
+        notifyError("You cannot submit more leave applications until your supervisor reviews your existing requests. Please check back later.");
         return;
       }
 
       // Call the API to create a leave application
       const response = await applyLeave(
-          employeeId, // Pass the employee ID here
+          employeeId,
           leaveAppData.leaveType,
           leaveAppData.startdate,
           leaveAppData.enddate,
           leaveAppData.reason
       );
 
+      // Check if the response contains an error
       if (response.error) {
         notifyError(response.error.message);
         return;
       }
+
       notifySuccess("Application Submitted Successfully");
 
       setTimeout(() => {
         navigate('/leave/my');
       }, 2000);
-    } catch (err) {
-      notifyError("Could not create application");
+    } catch (err: any) {
+      if (err.message) {
+        notifyError(err.message); // show specific errors
+      } else {
+        notifyError("Could not create application");
+      }
     }
   };
+
+
 
   return (
       <DefaultLayout>
@@ -115,7 +172,7 @@ const UpdateLeaveApplicationData = () => {
                 <option value="annual">Annual Leave</option>
                 <option value="casual">Casual Leave</option>
                 <option value="maternity">Maternity Leave</option>
-                <option value="noPay">No Pay Leave</option>
+                <option value="nopay">No Pay Leave</option>
               </select>
             </div>
 

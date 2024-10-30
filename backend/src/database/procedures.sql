@@ -103,6 +103,7 @@ DROP PROCEDURE IF EXISTS getEmployeeByPayGradeID;
 DROP PROCEDURE IF EXISTS getEmployeeByEmployementStatusID;
 DROP PROCEDURE IF EXISTS GetReportByCustomAttribute;
 DROP Procedure IF EXISTS GetRemainingLeavesByCategory;
+DROP Procedure IF EXISTS getPendingLeavesCount;
 -- ---------------------------------------------------------------------------------
 
 
@@ -1197,5 +1198,51 @@ END $$
 
 DELIMITER ;
 
+DELIMITER $$
 
+CREATE PROCEDURE getPendingLeavesCount(emp_id VARCHAR(36))
+BEGIN
+    DECLARE annual_pending INT DEFAULT 0;
+    DECLARE casual_pending INT DEFAULT 0;
+    DECLARE maternity_pending INT DEFAULT 0;
+    DECLARE nopay_pending INT DEFAULT 0;
+
+    -- Count pending Annual leaves
+    SELECT COUNT(*) INTO annual_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Annual'
+      AND status = 'Pending';
+
+    -- Count pending Casual leaves
+    SELECT COUNT(*) INTO casual_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Casual'
+      AND status = 'Pending';
+
+    -- Count pending Maternity leaves
+    SELECT COUNT(*) INTO maternity_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Maternity'
+      AND status = 'Pending';
+
+    -- Count pending No-pay leaves
+    SELECT COUNT(*) INTO nopay_pending
+    FROM leave_applications
+    WHERE employee_id = emp_id
+      AND leave_type = 'Nopay'
+      AND status = 'Pending';
+
+    -- Output the result
+    SELECT
+        emp_id AS employee_id,
+        annual_pending AS annual_pending_leaves,
+        casual_pending AS casual_pending_leaves,
+        maternity_pending AS maternity_pending_leaves,
+        nopay_pending AS nopay_pending_leaves;
+END $$
+
+DELIMITER ;
 
