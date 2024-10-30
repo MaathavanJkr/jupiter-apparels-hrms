@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import {
   applyLeave,
   getPendingLeavesCount,
   getRemainingLeaves,
 } from '../../services/leaveServices';
-import {getEmployeeIdByUserId} from '../../services/employeeServices.ts'
 import { notifyError, notifySuccess } from '../../services/notify';
 import { useNavigate } from "react-router-dom";
 import { LeaveAppData } from '../../types/types.ts';
@@ -20,29 +19,9 @@ const UpdateLeaveApplicationData = () => {
     reason: '',
   });
 
-  const [employeeId, setEmployeeId] = useState('');
+  const employeeId = localStorage.getItem('employee_id') || '';
+
   const navigate = useNavigate();
-
-  // Retrieve the user ID from localStorage
-  const user_id = localStorage.getItem('user_id');
-
-  // Fetch the employee ID based on the user ID
-  useEffect(() => {
-    const fetchEmployeeId = async () => {
-      if (user_id) {
-        try {
-          const id = await getEmployeeIdByUserId(user_id);
-          setEmployeeId(id);
-        } catch (error) {
-          console.error('Error fetching employee ID:', error);
-        }
-      } else {
-        console.error('User ID is not available.');
-      }
-    };
-
-    fetchEmployeeId();
-  }, [user_id]);
 
   const handleLeaveAppDataChange = (
       event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
@@ -59,11 +38,6 @@ const UpdateLeaveApplicationData = () => {
     // Check if all fields are filled
     if (!leaveAppData.leaveType || !leaveAppData.startdate || !leaveAppData.enddate || !leaveAppData.reason) {
       notifyError("Please fill in all fields");
-      return;
-    }
-
-    if (!employeeId) {
-      notifyError("Employee ID not found");
       return;
     }
 
@@ -131,7 +105,6 @@ const UpdateLeaveApplicationData = () => {
 
       // Call the API to create a leave application
       const response = await applyLeave(
-          employeeId,
           leaveAppData.leaveType,
           leaveAppData.startdate,
           leaveAppData.enddate,

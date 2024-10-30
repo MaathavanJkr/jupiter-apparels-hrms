@@ -1,9 +1,10 @@
 import axios from 'axios';
-
+const token = localStorage.getItem('token');
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL, // Update this if your API URL is different
   headers: {
     'Content-Type': 'application/json',
+     Authorization: `Bearer ${token}`,
   },
 });
 

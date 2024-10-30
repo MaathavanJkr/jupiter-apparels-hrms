@@ -22,15 +22,15 @@ const EmployeeDashboard = () => {
   const [supervisor, setSupervisor] = useState<Employee>();
   const [usedLeaves, setUsedLeaves] = useState<UsedLeaves>();
   const [remainingLeaves, setRemainingLeaves] = useState<LeaveBalance>();
-
-  const role = localStorage.getItem('role');
-  const isSupervisor = true;
+  
+  const isSupervisor = localStorage.getItem('is_supervisor') == "true";
 
   useEffect(() => {
     const user_id = localStorage.getItem('user_id');
     const fetchuserInfo = async () => {
       try {
         const userInfo: EmployeeInfo = await getUserInfoById(user_id!);
+        console.log('User Info:', userInfo);
         setUserInfo(userInfo);
       } catch (error) {
         console.log('Error Fetching Info:', error);
@@ -47,6 +47,7 @@ const EmployeeDashboard = () => {
           const supervisor: Employee = await getEmployeeByID(
             userInfo.supervisor_id,
           );
+          console.log('Supervisor:', supervisor);
           setSupervisor(supervisor);
         }
         if (userInfo && userInfo.employee_id) {

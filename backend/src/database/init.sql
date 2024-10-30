@@ -165,7 +165,7 @@ CREATE TABLE leave_applications (
 CREATE TABLE users (
     user_id VARCHAR(36) PRIMARY KEY,
     employee_id VARCHAR(36),
-    role ENUM('Admin', 'Employee', 'HR manager') DEFAULT 'Employee',
+    role ENUM('Admin', 'Employee', 'Manager') DEFAULT 'Employee',
     username VARCHAR(80) NOT NULL UNIQUE,
     password VARCHAR(80) NOT NULL DEFAULT '123', -- Default password for new users added by the HR Manager.
     FOREIGN KEY (employee_id) REFERENCES employees(employee_id) ON DELETE CASCADE
@@ -265,11 +265,14 @@ SELECT
     b.name AS branch_name,
     b.branch_id AS branch_id,
     jt.title AS job_title,
+    jt.job_title_id AS job_title_id,
     pg.grade_name AS pay_grade,
+    pg.pay_grade_id AS pay_grade_id,
     pg.paygrade AS pay_grade_level,
     es.status AS employment_status,
+    es.employment_status_id AS employment_status_id,
     CONCAT(s.first_name, ' ', s.last_name) AS supervisor_name,
-    s.supervisor_id AS supervisor_id
+    e.supervisor_id AS supervisor_id
 FROM
     employees e
 JOIN
@@ -426,12 +429,20 @@ SELECT
     (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) AS remaining_casual_leaves,
 
     -- Remaining Maternity Leaves
-    (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) AS remaining_maternity_leaves,
+    CASE 
+    WHEN e.gender = "Male" THEN 0
+    WHEN e.gender = "Female" THEN (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity'))
+    END AS remaining_maternity_leaves,
 
     -- Remaining No-pay Leaves
     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')) AS remaining_nopay_leaves,
 
-    -- Total remaining leave days
+    -- Total Remaining Leaves
+    CASE 
+    WHEN e.gender = "Male" THEN ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
+     (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
+     (al.no_pay_leaves - get_used_leaves(e.employee_id, 'Nopay')))
+    WHEN e.gender = "Female" THEN 
     ((al.annual_leaves - get_used_leaves(e.employee_id, 'Annual')) +
      (al.casual_leaves - get_used_leaves(e.employee_id, 'Casual')) +
      (al.maternity_leaves - get_used_leaves(e.employee_id, 'Maternity')) +
@@ -684,10 +695,10 @@ INSERT INTO pay_grades VALUES ('PG002', 2, 'Mid Level');    -- HR Manager, Accou
 INSERT INTO pay_grades VALUES ('PG003', 3, 'Senior Level');  -- COO, CFO
 INSERT INTO pay_grades VALUES ('PG004', 4, 'Executive Level');  -- CEO
 
-INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 15);
-INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 20);
-INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 25);
-INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 30);
+INSERT INTO allocated_leaves VALUES ('PG001', 20, 5, 30, 50);
+INSERT INTO allocated_leaves VALUES ('PG002', 25, 7, 45, 55);
+INSERT INTO allocated_leaves VALUES ('PG003', 30, 10, 60, 60);
+INSERT INTO allocated_leaves VALUES ('PG004', 35, 12,  75, 65);
 
 INSERT INTO job_titles VALUES ('T001', 'Sewing Machine Operator');
 INSERT INTO job_titles VALUES ('T002', 'Fabric Cutter');
@@ -824,12 +835,12 @@ INSERT INTO leave_applications VALUES ('LA0050', 'E0018', 'Annual', '2024-09-01'
 
 
 INSERT INTO users VALUES ('U001', 'E0001', 'Admin', 'admin', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
-INSERT INTO users VALUES ('U002', 'E0002', 'HR manager', 'manager', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U002', 'E0002', 'Manager', 'manager', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 INSERT INTO users VALUES ('U003', 'E0003', 'Employee', 'supervisor', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 INSERT INTO users VALUES ('U004', 'E0004', 'Employee', 'employee', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 INSERT INTO users VALUES ('U005', 'E0030', 'Employee', 'usere', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
-INSERT INTO users VALUES ('U006', 'E0013', 'HR manager', 'Logan.Clark', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
-INSERT INTO users VALUES ('U007', 'E0005', 'HR manager', 'David.Jones', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U006', 'E0013', 'Manager', 'Logan.Clark', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
+INSERT INTO users VALUES ('U007', 'E0005', 'Manager', 'David.Jones', '$2a$10$r8rzspq7OAZG1pb4FBXg.OHQNDU9l0bVoaGT90IOByx6sC0lYGnau');
 
 -- Update branches with the appropriate manager_id
 UPDATE branches SET manager_id = 'E0002' WHERE branch_id = 'B001';

@@ -32,25 +32,61 @@ export const adminAuth = (
       if (err || !decodedToken) {
         return res
           .status(401)
+          .json({ success: false, message: "Not authorized. Token Invalid" });
+      }
+      if ((decodedToken as JwtPayload).role == "Admin") {
+      req.user = {
+        id: (decodedToken as JwtPayload).user_id,
+        role: (decodedToken as JwtPayload).role,
+        employee_id: (decodedToken as JwtPayload).employee_id,
+        isSupervisor: (decodedToken as JwtPayload).isSupervisor,
+      };
+      next();} else {
+        console.log(decodedToken)
+        return res
+        .status(401)
+        .json({ success: false, message: "Not authorized. User Access Denied" });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({ success: false, message: "Not authorized. Internal Error" });
+  }
+};
+
+// Middleware for Manager Authentication
+export const managerAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = extractToken(req);
+
+  if (!token) {
+    return res
+      .status(401)
+      .json({ success: false, message: "Not authorized, No Token" });
+  }
+
+  try {
+    jwt.verify(token, config.jwtSecret, (err, decodedToken) => {
+      if (err || !decodedToken) {
+        return res
+          .status(401)
           .json({ success: false, message: "Not authorized" });
       }
-
-      // Ensure decodedToken is an object and contains the role property
-      if (
-        typeof decodedToken === "object" &&
-        (decodedToken as JwtPayload).role == "Admin"
-      ) {
-        req.user = {
-          id: (decodedToken as JwtPayload).user_id,
-          role: (decodedToken as JwtPayload).role,
-          employee_id: (decodedToken as JwtPayload).employee_id,
-          isSupervisor: (decodedToken as JwtPayload).isSupervisor,
-        };
-        next();
-      }
-      return res
+      if ((decodedToken as JwtPayload).role == "Manager" || (decodedToken as JwtPayload).role == "Admin") {
+      req.user = {
+        id: (decodedToken as JwtPayload).user_id,
+        role: (decodedToken as JwtPayload).role,
+        employee_id: (decodedToken as JwtPayload).employee_id,
+        isSupervisor: (decodedToken as JwtPayload).isSupervisor,
+      };
+      next();} else {
+        return res
         .status(401)
         .json({ success: false, message: "Not authorized" });
+      }
     });
   } catch (error) {
     console.log(error);

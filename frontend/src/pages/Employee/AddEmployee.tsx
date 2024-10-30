@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Branch, Department, JobTitle, EmploymentStatus, PayGrade } from "../../types/types";
+import { Branch, Department, JobTitle, EmploymentStatus, PayGrade, CustomAttribute } from "../../types/types";
 import { getBranches } from "../../services/branchService";
 import { getDepartments } from "../../services/departmentServices";
 import { getEmploymentStatuses } from "../../services/employmentStatusServices";
@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { notifyError, notifySuccess } from "../../services/notify";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "../../layout/DefaultLayout";
+import { getCustomAttributes } from "../../services/attributeServices";
+import { formatString } from "../../utils/stringUtils";
 
 const AddEmployee = () => {
 
@@ -28,6 +30,9 @@ const AddEmployee = () => {
   const [payGradeId, setPayGradeId] = useState<string>('');
   const [employeeStatusId, setEmployeeStatusId] = useState<string>('');
   const [contactNumber, setContactNumber] = useState<string>("");
+  const [custAttr1,setCustAttr1] = useState<string>("");
+  const [custAttr2,setCustAttr2] = useState<string>("");
+  const [custAttr3,setCustAttr3] = useState<string>("");
 
 
   const [branches, setBranches] = useState<Branch[]>([]);
@@ -35,6 +40,7 @@ const AddEmployee = () => {
   const [jobTitles, setJobTitles] = useState<JobTitle[]>([]);
   const [employmentStatuses, setEmploymentStatuses] = useState<EmploymentStatus[]>([]);
   const [payGrades, setPayGardes] = useState<PayGrade[]>([]);
+  const [customAttributes, setCustomAttributes] = useState<CustomAttribute[]>([]);
 
   const navigate = useNavigate();
 
@@ -46,11 +52,13 @@ const AddEmployee = () => {
         const jobTitles = await getJobTitles();
         const employmentStatuses = await getEmploymentStatuses();
         const payGrades = await getPayGrades();
+        const customAttributes = await getCustomAttributes();
         setJobTitles(jobTitles);
         setBranches(branches);
         setDepartments(departments);
         setEmploymentStatuses(employmentStatuses);
         setPayGardes(payGrades);
+        setCustomAttributes(customAttributes);
       } catch (error) {
         console.error("Failed to fetch Data", error);
       }
@@ -63,14 +71,14 @@ const AddEmployee = () => {
     if (firstName !== "" && lastName !== "" && email !== "" && nic !== "" && contactNumber !== "" && birthday && maritalStatus !== "" && gender !== "" && address !== ""
       && jobTitleId !== "" && branchId !== "" && departmentId !== "" && employeeStatusId !== "" && payGradeId !== ""
     ) {
-      addEmployee(departmentId, branchId, firstName, lastName, birthday, gender, maritalStatus, address, email, nic, jobTitleId, payGradeId, employeeStatusId, contactNumber).then(() => {
+      addEmployee(departmentId, branchId, firstName, lastName, birthday, gender, maritalStatus, address, email, nic, jobTitleId, payGradeId, employeeStatusId, contactNumber,custAttr1,custAttr2,custAttr3).then(() => {
         notifySuccess("Employee Added Sucessfully");
         
         setTimeout(() => {
           navigate("/employee/all");
         }, 2000);
       }).catch((error) => {
-        notifyError(`Failed to Add Employee: ${error}`);
+        notifyError(`Failed to Add Employee: ${error.error.message}`);
       })
     } else {
       console.log({
@@ -204,6 +212,38 @@ const AddEmployee = () => {
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
+              {customAttributes[0] && (
+                <div className="mb-4.5">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  {formatString(customAttributes[0].name)} 
+                </label>
+                <input
+                  type="text"
+                  value={custAttr1}
+                  onChange={(e) =>
+                    setCustAttr1(e.target.value)
+                  }
+                  placeholder= {`Enter ${formatString(customAttributes[0].name)}`}
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              )}
+              {customAttributes[2] && (
+                <div className="mb-4.5">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  {formatString(customAttributes[2].name)} 
+                </label>
+                <input
+                  type="text"
+                  value={custAttr3}
+                  onChange={(e) =>
+                    setCustAttr3(e.target.value)
+                  }
+                  placeholder= {`Enter ${formatString(customAttributes[2].name)}`}
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              )}
             </div>
             <div>
               <div className="mb-4.5">
@@ -305,7 +345,6 @@ const AddEmployee = () => {
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <div className="mb-4.5">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Address <span className="text-meta-1">*</span>
@@ -320,6 +359,22 @@ const AddEmployee = () => {
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
+              {customAttributes[1] && (
+                <div className="mb-4.5">
+                <label className="mb-2.5 block text-black dark:text-white">
+                  {formatString(customAttributes[1].name)}
+                </label>
+                <input
+                  type="text"
+                  value={custAttr2}
+                  onChange={(e) =>
+                    setCustAttr2(e.target.value)
+                  }
+                  placeholder= {`Enter ${formatString(customAttributes[1].name)}`}
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              )}
             </div>
           </div>
           <div className="-mx-3 flex flex-wrap gap-y-4">

@@ -7,13 +7,14 @@ import {
   updateBranch,
   deleteBranch,
 } from "../controllers/branch.controller";
+import { adminAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/", createBranch);
-router.get("/", getAllBranches);
-router.get("/:id", getBranchByID);
-router.put("/:id", updateBranch);
-router.delete("/:id", deleteBranch);
+router.post("/", adminAuth, createBranch);
+router.get("/", adminAuth, getAllBranches);
+router.get("/:id", adminAuth, getBranchByID);
+router.put("/:id", adminAuth, updateBranch);
+router.delete("/:id", adminAuth, deleteBranch);
 
 export default router;
