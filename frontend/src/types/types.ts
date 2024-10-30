@@ -27,32 +27,32 @@ export interface Employee {
   cust_attr_3_value: string;
 }
 export interface EmployeeInfo {
-  employee_id: string,
-  first_name:string,
-  last_name:string,
-  birth_date: string,
-  gender: string,
-  marital_status:string,
-  address:string,
-  email:string,
-  NIC:string,
-  contact_number:string,
-  department_name:string,
-  branch_name:string,
-  job_title:string,
-  employment_status:string,
-  pay_grade:string,
-  pay_grade_level: number,
-  supervisor_name:string,
-  supervisor_id: string,
-  branch_id: string,
-  department_id: string,
-  user_id:string,
-  role:string
-  username:string;
-  cust_attr_1_value:string,
-  cust_attr_2_value:string,
-  cust_attr_3_value:string,
+  employee_id: string;
+  first_name: string;
+  last_name: string;
+  birth_date: string;
+  gender: string;
+  marital_status: string;
+  address: string;
+  email: string;
+  NIC: string;
+  contact_number: string;
+  department_name: string;
+  branch_name: string;
+  job_title: string;
+  employment_status: string;
+  pay_grade: string;
+  pay_grade_level: number;
+  supervisor_name: string;
+  supervisor_id: string;
+  branch_id: string;
+  department_id: string;
+  user_id: string;
+  role: string;
+  username: string;
+  cust_attr_1_value: string;
+  cust_attr_2_value: string;
+  cust_attr_3_value: string;
 }
 export interface Branch {
   branch_id: string;
@@ -141,7 +141,6 @@ export interface EmployeeCount {
   total_count: number;
   male_count: number;
   female_count: number;
-
 }
 
 export interface LeaveCount {
@@ -173,19 +172,6 @@ export interface GERData {
 export interface TLDData {
   startdate: string;
   enddate: string;
-}
-
-export interface EmployeeCountByDepartment {
-  total_count: number;
-  dep1_count: number;
-  dep2_count: number;
-  dep3_count: number;
-  dep4_count: number;
-  dep5_count: number;
-  dep6_count: number;
-  dep7_count: number;
-  dep8_count: number;
-  dep9_count: number;
 }
 
 export interface UserInfo {

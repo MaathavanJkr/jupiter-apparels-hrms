@@ -204,9 +204,21 @@ export const findSupervisors = async (department_id: string,pay_grade_id:string,
             department_id,
             pay_grade_id,
             employee_id
-        });
+        }, );
         return response.data.data;
     } catch (error) {
         throw error.response.data.error;
     }
+};
+
+
+// This should return the Employee count by department ID
+export const getCountByDepartment = async () => {
+  try {
+    const response = await axiosInstance.get('/employee/count/department/', 
+  );
+    return response.data;
+  } catch (error) {
+    return error.response.data.error;
+  }
 };
