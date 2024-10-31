@@ -988,19 +988,19 @@ BEGIN
 END $$
 
 
--- Procedure to get employee demographics grouped by nationality and preferred language
-CREATE PROCEDURE GetEmployeeDemographics()
-BEGIN
-    SELECT * FROM employee_demographics_language_nationality;
-END $$
+-- -- Procedure to get employee demographics grouped by nationality and preferred language
+-- CREATE PROCEDURE GetEmployeeDemographics()
+-- BEGIN
+--     SELECT * FROM employee_demographics_language_nationality;
+-- END $$
 
--- Procedure to get employee demographics by nationality and preferred language
-CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_cust_attr_1_value VARCHAR(50), IN p_cust_attr_3_value VARCHAR(50))
-BEGIN
-    SELECT * FROM employee_demographics_language_nationality
-    WHERE cust_attr_1_value = p_cust_attr_1_value AND cust_attr_3_value = p_cust_attr_3_value;
-END $$
-DELIMITER ;
+-- -- Procedure to get employee demographics by nationality and preferred language
+-- CREATE PROCEDURE GetEmployeeDemographicsByLangAndNat(IN p_cust_attr_1_value VARCHAR(50), IN p_cust_attr_3_value VARCHAR(50))
+-- BEGIN
+--     SELECT * FROM employee_demographics_language_nationality
+--     WHERE cust_attr_1_value = p_cust_attr_1_value AND cust_attr_3_value = p_cust_attr_3_value;
+-- END $$
+-- DELIMITER ;
 
 -- Procedure to get all the leave applications for a supervisor
 DELIMITER $$

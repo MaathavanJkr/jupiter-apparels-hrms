@@ -7,11 +7,11 @@ import {
   getAllEmployeeDependents,
   updateEmployeeDependent,
 } from "../controllers/dependent.controllers";
-import { adminAuth, managerAuth, userAuth } from "../middlewares/auth.middleware";
+import {managerAuth, userAuth } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/", adminAuth, createEmployeeDependent);
+router.post("/", managerAuth, createEmployeeDependent);
 router.get("/", managerAuth, getAllEmployeeDependents);
 router.get("/:id", managerAuth, getEmployeeDependentByID);
 router.get("/employee/:employee_id", userAuth, getEmployeeDependentByEmployeeID);

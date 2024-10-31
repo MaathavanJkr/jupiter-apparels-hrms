@@ -24,6 +24,7 @@ const EmployeeDashboard = () => {
   const [remainingLeaves, setRemainingLeaves] = useState<LeaveBalance>();
   
   const isSupervisor = localStorage.getItem('is_supervisor') == "true";
+  const isManager = localStorage.getItem('role') == "Manager";
 
   useEffect(() => {
     const user_id = localStorage.getItem('user_id');
@@ -193,27 +194,19 @@ const EmployeeDashboard = () => {
         {isSupervisor && (
           <button
             onClick={() =>
-              navigate('/supervisor/leaveview/' + userInfo?.employee_id)
+              navigate('/leave/manage')
             }
             className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Manage Subordinates
           </button>
         )}
-        {isSupervisor && (
+        {isManager && (
           <button
             onClick={() => navigate('/employee/all')}
             className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
           >
             Manage Employees
-          </button>
-        )}
-        {isSupervisor && (
-          <button
-            onClick={() => navigate('/user/create')}
-            className="mt-4 w-auto flex items-center justify-center gap-1 rounded-lg border border-primary bg-primary py-2 px-4 text-center font-medium text-white transition hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-          >
-            Create User Account
           </button>
         )}
       </div>

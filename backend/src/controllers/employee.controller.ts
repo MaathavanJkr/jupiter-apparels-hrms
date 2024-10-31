@@ -33,6 +33,9 @@ export const createEmployee = async (req: Request, res: Response) => {
     pay_grade_id,
     employment_status_id,
     contact_number,
+    cust_attr_1_value,
+    cust_attr_2_value,
+    cust_attr_3_value
   } = req.body;
 
   if (
@@ -59,7 +62,7 @@ export const createEmployee = async (req: Request, res: Response) => {
   const employee: Employee = {
     department_id: department_id as string,
     branch_id: branch_id as string,
-    supervisor_id: "E0004", // hardcode here to set the admin as the supervisor when creating a user account.
+    supervisor_id: "E0003", // hardcode here to set the default supervisor as the supervisor when creating a user account.
     first_name: first_name as string,
     last_name: last_name as string,
     birthday: birthday as Date,
@@ -72,6 +75,9 @@ export const createEmployee = async (req: Request, res: Response) => {
     pay_grade_id: pay_grade_id as string,
     employment_status_id: employment_status_id as string,
     contact_number: contact_number as string,
+    cust_attr_1_value: cust_attr_1_value as string,
+    cust_attr_2_value: cust_attr_2_value as string,
+    cust_attr_3_value: cust_attr_3_value as string,
   } as Employee;
 
   await createEmployeeModel(employee)

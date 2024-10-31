@@ -511,43 +511,43 @@ GROUP BY
 ORDER BY
     jt.title, d.name, pg.grade_name;
 
--- Custom Report: Employees with their blood group and emergency contact details
--- For reporting module.
-CREATE VIEW emergency_medical_details AS
-SELECT
-    e.employee_id,
-    CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
-    d.name AS department,
-    b.name AS branch,
-    e.gender,
-    e.cust_attr_2_value ,
-    ec.name AS person_to_contact,
-    ec.relationship,
-    ec.contact_number,
-    ec.address
-FROM
-    employees e
-LEFT JOIN
-    departments d ON e.department_id = d.department_id
-LEFT JOIN
-    branches b ON b.branch_id = e.branch_id
-LEFT JOIN
-    emergency_contacts ec ON ec.employee_id = e.employee_id;
+-- -- Custom Report: Employees with their blood group and emergency contact details
+-- -- For reporting module.
+-- CREATE VIEW emergency_medical_details AS
+-- SELECT
+--     e.employee_id,
+--     CONCAT(e.first_name, ' ', e.last_name) AS employee_name,
+--     d.name AS department,
+--     b.name AS branch,
+--     e.gender,
+--     e.cust_attr_2_value ,
+--     ec.name AS person_to_contact,
+--     ec.relationship,
+--     ec.contact_number,
+--     ec.address
+-- FROM
+--     employees e
+-- LEFT JOIN
+--     departments d ON e.department_id = d.department_id
+-- LEFT JOIN
+--     branches b ON b.branch_id = e.branch_id
+-- LEFT JOIN
+--     emergency_contacts ec ON ec.employee_id = e.employee_id;
 
--- Custom Report: Employee demographics grouped by nationality and preferred language
--- This report helps analyze the diversity within the organization and understand language representation.
--- For reporting module.
-CREATE VIEW employee_demographics_language_nationality AS
-SELECT
-    cust_attr_1_value ,
-    cust_attr_3_value ,
-    COUNT(employee_id)
-FROM
-    employees
-GROUP BY
-    cust_attr_1_value, cust_attr_3_value
-ORDER BY
-    cust_attr_1_value, cust_attr_3_value;
+-- -- Custom Report: Employee demographics grouped by nationality and preferred language
+-- -- This report helps analyze the diversity within the organization and understand language representation.
+-- -- For reporting module.
+-- CREATE VIEW employee_demographics_language_nationality AS
+-- SELECT
+--     cust_attr_1_value ,
+--     cust_attr_3_value ,
+--     COUNT(employee_id)
+-- FROM
+--     employees
+-- GROUP BY
+--     cust_attr_1_value, cust_attr_3_value
+-- ORDER BY
+--     cust_attr_1_value, cust_attr_3_value;
 
 
 -- ---------------------------------------------------------------------------
@@ -739,8 +739,8 @@ VALUES
 ('E0012', 'D009', 'B002', 'E0003', 'Mia', 'Gonzalez', '1988-07-13', 'Female', 'Married', '987 Birch St, City D, Bangladesh', 'mia.gonzalez@apparel.com', 'NIC012', 'T010', 'PG003', 'S005','+880172234','Nationality-A','O','English'),
 ('E0021', 'D009', 'B003', 'E0003', 'Jack', 'King', '1987-12-04', 'Male', 'Single', '789 Pine Rd, Gampaha, Sri Lanka', 'jack.king@apparel.com', 'NIC021', 'T011', 'PG003', 'S005','+94711234','Nationality-B','A','Sinhala'),
 ('E0022', 'D009', 'B003', 'E0003', 'Grace', 'Harris', '1990-07-02', 'Female', 'Married', '321 Elm St, Matara, Sri Lanka', 'grace.harris@apparel.com', 'NIC022', 'T010', 'PG003', 'S005','+94722345','Nationality-C','AB','Tamil'),
-('E0005', 'D005', 'B001', 'E0002', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789','Nationality-B','O','Tamil'),
-('E0010', 'D005', 'B001', NULL, 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890','Nationality-C','A','English'),
+('E0005', 'D005', 'B001', 'E0003', 'David', 'Jones', '1992-02-14', 'Male', 'Married', '654 Cedar Ave, City A, Pakistan', 'david.jones@apparel.com', 'NIC005', 'T004', 'PG002', 'S005','+923056789','Nationality-B','O','Tamil'),
+('E0010', 'D005', 'B001', 'E0001', 'Olivia', 'Martinez', '1995-06-30', 'Female', 'Single', '321 Elm St, Springfield, Pakistan', 'olivia.martinez@apparel.com', 'NIC010', 'T004', 'PG002', 'S005','+923067890','Nationality-C','A','English'),
 ('E0008', 'D005', 'B001', 'E0010', 'Ava', 'Taylor', '1993-04-17', 'Female', 'Single', '456 Maple Ave, Springfield, Pakistan', 'ava.taylor@apparel.com', 'NIC008', 'T001', 'PG001', 'S006','+923078904','Nationality-D','B','Sinhala'),
 ('E0009', 'D005', 'B001', 'E0010', 'Lucas', 'Davis', '1982-11-19', 'Male', 'Married', '789 Pine Rd, City K, Pakistan', 'lucas.davis@apparel.com', 'NIC009', 'T002', 'PG001', 'S004','+923089012','Nationality-A','AB','Tamil'),
 ('E0007', 'D002', 'B001', 'E0006', 'James', 'Wilson', '1975-09-05', 'Male', 'Married', '123 Oak St, Springfield, Pakistan', 'james.wilson@apparel.com', 'NIC007', 'T006', 'PG002', 'S003','+923023456','Nationality-B','O','English'),
