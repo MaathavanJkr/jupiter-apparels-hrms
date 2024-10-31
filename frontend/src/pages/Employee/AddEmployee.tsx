@@ -212,7 +212,7 @@ const AddEmployee = () => {
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-              {customAttributes[0] && (
+              {customAttributes[0] && customAttributes[0].name != '' && (
                 <div className="mb-4.5">
                 <label className="mb-2.5 block text-black dark:text-white">
                   {formatString(customAttributes[0].name)} 
@@ -228,7 +228,7 @@ const AddEmployee = () => {
                 />
               </div>
               )}
-              {customAttributes[2] && (
+              {customAttributes[2] && customAttributes[2].name != '' && (
                 <div className="mb-4.5">
                 <label className="mb-2.5 block text-black dark:text-white">
                   {formatString(customAttributes[2].name)} 
@@ -359,7 +359,7 @@ const AddEmployee = () => {
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-              {customAttributes[1] && (
+              {customAttributes[1] && customAttributes[1].name != '' && (
                 <div className="mb-4.5">
                 <label className="mb-2.5 block text-black dark:text-white">
                   {formatString(customAttributes[1].name)}

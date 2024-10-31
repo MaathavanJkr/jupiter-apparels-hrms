@@ -553,17 +553,17 @@ const EmployeeTable = ({
                     </div>
                     <div>Gender : {gender}</div>
                     <div>Marital Status: {maritalStatus}</div>
-                    {cust_attr_1_value && (
+                    {cust_attr_1_value && customAttributes[0].name != '' && (
                       <div className="">
                         {formatString(customAttributes[0].name)}: {cust_attr_1_value}
                       </div>
                     )}
-                    {cust_attr_2_value && (
+                    {cust_attr_2_value && customAttributes[1].name != '' && (
                       <div className="">
                         {formatString(customAttributes[1].name)}: {cust_attr_2_value}
                       </div>
                     )}
-                    {cust_attr_3_value && (
+                    {cust_attr_3_value && customAttributes[2].name != '' && (
                       <div className="">
                         {formatString(customAttributes[2].name)}: {cust_attr_3_value}
                       </div>
@@ -805,7 +805,7 @@ const EmployeeTable = ({
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
-
+                  { customAttributes[0] && customAttributes[0].name != '' &&
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                       {formatString(customAttributes[0].name)}{' '}
@@ -818,7 +818,7 @@ const EmployeeTable = ({
                       placeholder={`Enter ${formatString(customAttributes[0].name)}`}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
-                  </div>
+                  </div>}
                 </div>
                 <div>
                   <div className="mb-4.5">
@@ -964,7 +964,7 @@ const EmployeeTable = ({
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
-
+                      { customAttributes[1] && customAttributes[1].name != '' &&
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                       {formatString(customAttributes[1].name)}{' '}
@@ -978,7 +978,8 @@ const EmployeeTable = ({
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
                   </div>
-
+}
+{ customAttributes[2] && customAttributes[2].name != '' &&
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                       {formatString(customAttributes[2].name)}{' '}
@@ -991,7 +992,7 @@ const EmployeeTable = ({
                       placeholder={`Enter ${formatString(customAttributes[2].name)}`}
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
-                  </div>
+                  </div>}
                 </div>
               </div>
               <div className="-mx-3 flex flex-wrap gap-y-4">
