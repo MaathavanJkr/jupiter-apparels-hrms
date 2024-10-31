@@ -147,10 +147,11 @@ export const ChangePasswordModel = async (id: string, new_password: string): Pro
   if (!new_password) {
     throw { error: "Missing required fields", data: null, message: null };
   }
+  const hashedPassword = await hashPassword(new_password);
   try {
     await db
     .promise()
-    .query("CALL ChangePassword(?, ?)", [id, new_password]);
+    .query("CALL ChangePassword(?, ?)", [id, hashedPassword]);
     return {
       message: "Password changed successfully",
       error: null,

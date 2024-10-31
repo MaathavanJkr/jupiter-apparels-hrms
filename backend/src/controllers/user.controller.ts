@@ -111,7 +111,7 @@ export const changePassword = async (req: Request, res: Response) => {
   }
 
   const passwordMatch = await comparePassword(old_password, user.password);
-  if (passwordMatch) { // need to add decyption here
+  if (!passwordMatch) { // need to add decyption here
     return res.status(401).json({ error: "Old Password doesnot match" });
   }
 
